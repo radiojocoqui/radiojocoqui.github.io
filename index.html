@@ -615,6 +615,120 @@ button {
     max-height: 100px !important;
   }
 }
+
+/* RADIO JOCOQUI - BURBUJAS PLANETARIAS */
+
+/* Volumen y reflejos */
+.planet {
+  border-radius: 50%;
+  overflow: visible;
+  box-shadow:
+    inset -5px -5px 9px rgba(0,0,0,.65),
+    inset 3px 3px 6px rgba(255,255,255,.22),
+    0 0 15px rgba(180,210,255,.25);
+}
+
+/* Reflejo superficial */
+.planet::before {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 28% 20%,
+    rgba(255,255,255,.6),
+    rgba(255,255,255,.12) 22%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+/* MERCURIO */
+.mercury {
+  background: radial-gradient(
+    circle at 28% 25%,
+    #ddd3c7 0%,
+    #9b9187 40%,
+    #4b4745 75%,
+    #17191e 100%
+  );
+}
+
+/* VENUS */
+.venus {
+  background: radial-gradient(
+    circle at 28% 25%,
+    #fff3c9 0%,
+    #e8b978 35%,
+    #b16a46 70%,
+    #3a2227 100%
+  );
+}
+
+/* TIERRA */
+.earth {
+  background: radial-gradient(
+    circle at 30% 25%,
+    #e0faff 0%,
+    #3ca9d4 22%,
+    #267c9a 40%,
+    #276b58 53%,
+    #173b76 72%,
+    #07152c 100%
+  );
+  box-shadow:
+    inset -5px -5px 10px #07152c,
+    0 0 13px rgba(74,178,255,.75),
+    0 0 25px rgba(74,178,255,.25);
+}
+
+/* MARTE */
+.mars {
+  background: radial-gradient(
+    circle at 28% 25%,
+    #ffd0a3 0%,
+    #c66d4d 35%,
+    #853a31 70%,
+    #291b22 100%
+  );
+}
+
+/* SATURNO */
+.saturn {
+  background: radial-gradient(
+    circle at 28% 25%,
+    #fff1c5 0%,
+    #d6b780 35%,
+    #a07c59 70%,
+    #30252b 100%
+  );
+}
+
+/* Anillos */
+.saturn::after {
+  content: "";
+  position: absolute;
+  width: 160%;
+  height: 42%;
+  top: 29%;
+  left: -30%;
+  border: 3px solid rgba(239,210,160,.85);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  box-shadow: 0 0 9px rgba(255,205,140,.3);
+}
+
+/* Movimiento atmosférico suave */
+@media (prefers-reduced-motion: no-preference) {
+  .planet {
+    animation: planetBreath 7s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes planetBreath {
+  from { filter: brightness(.9); }
+  to { filter: brightness(1.2); }
+}
 </style>
 </head>
 
