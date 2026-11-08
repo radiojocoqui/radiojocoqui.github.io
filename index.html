@@ -1,4 +1,320 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radio Jocoqui — Universo Sonoro</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at center,
+    #14283c 0%, #07111f 48%, #02050c 100%);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.universe {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+}
+
+/* ESTRELLAS */
+
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 15% 20%, white, transparent),
+    radial-gradient(1px 1px at 80% 15%, white, transparent),
+    radial-gradient(2px 2px at 70% 80%, white, transparent),
+    radial-gradient(1px 1px at 25% 75%, white, transparent),
+    radial-gradient(2px 2px at 90% 55%, white, transparent),
+    radial-gradient(1px 1px at 45% 10%, white, transparent);
+  background-size: 230px 210px;
+  opacity: .65;
+}
+
+/* IDENTIDAD */
+
+.brand {
+  position: absolute;
+  top: 35px;
+  text-align: center;
+  z-index: 10;
+}
+
+.brand h1 {
+  font-size: clamp(25px, 5vw, 42px);
+  font-weight: 300;
+  letter-spacing: 5px;
+  margin: 0;
+}
+
+.brand p {
+  font-size: 9px;
+  letter-spacing: 6px;
+  color: #9eb9d0;
+}
+
+/* SISTEMA SOLAR */
+
+.solar-system {
+  position: relative;
+  width: min(90vw, 620px);
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ORBITAS */
+
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(135, 195, 230, .22);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orbit.one {
+  width: 52%;
+  height: 52%;
+}
+
+.orbit.two {
+  width: 75%;
+  height: 75%;
+}
+
+.orbit.three {
+  width: 98%;
+  height: 98%;
+}
+
+/* PLANETAS */
+
+.planet {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.mercury {
+  width: 11px;
+  height: 11px;
+  background: #c4b5a1;
+  top: 24%;
+  left: 27%;
+  box-shadow: 0 0 12px #c4b5a1;
+}
+
+.venus {
+  width: 19px;
+  height: 19px;
+  background: radial-gradient(circle at 30% 30%, #ffe1a5, #ba7954);
+  top: 15%;
+  right: 23%;
+  box-shadow: 0 0 18px #e4a06e;
+}
+
+.earth {
+  width: 22px;
+  height: 22px;
+  background: radial-gradient(circle at 30% 30%, #b0efff, #2573b8 55%, #10284e);
+  bottom: 16%;
+  left: 15%;
+  box-shadow: 0 0 20px #4b9bc9;
+}
+
+.mars {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle at 30% 30%, #ffc0a0, #a53d30);
+  right: 10%;
+  bottom: 32%;
+  box-shadow: 0 0 14px #c65d46;
+}
+
+.saturn {
+  width: 27px;
+  height: 27px;
+  background: radial-gradient(circle at 30% 30%, #ffe7b0, #b58a52);
+  top: 48%;
+  right: 1%;
+}
+
+.saturn::after {
+  content: "";
+  position: absolute;
+  width: 43px;
+  height: 12px;
+  border: 2px solid #e9c68c;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  top: 7px;
+  left: -9px;
+}
+
+/* SOL CENTRAL */
+
+.sun {
+  width: min(48vw, 280px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 5;
+
+  background: radial-gradient(
+    circle,
+    #fff4cf 0%,
+    #ffbd78 20%,
+    #f17b49 45%,
+    #a83f3c 70%,
+    transparent 100%
+  );
+
+  box-shadow:
+    0 0 35px rgba(255, 164, 91, .8),
+    0 0 90px rgba(255, 104, 70, .55),
+    0 0 160px rgba(49, 174, 226, .22);
+}
+
+.sun::before {
+  content: "";
+  position: absolute;
+  inset: -13px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 201, 144, .4);
+}
+
+.player {
+  width: 88%;
+  position: relative;
+  z-index: 6;
+  padding: 12px;
+  border-radius: 50%;
+  background: rgba(8, 17, 30, .88);
+  border: 1px solid rgba(255, 202, 151, .65);
+  box-shadow: 0 0 30px rgba(255, 143, 89, .5);
+}
+
+.player iframe {
+  display: block;
+  width: 100%;
+  height: 155px;
+  border: 0;
+  border-radius: 12px;
+}
+
+/* PIE */
+
+.footer {
+  position: absolute;
+  bottom: 25px;
+  text-align: center;
+  color: #a5b8cb;
+  font-size: 10px;
+  letter-spacing: 5px;
+  z-index: 10;
+}
+
+/* MOVIMIENTO */
+
+@media (prefers-reduced-motion: no-preference) {
+  .planet {
+    animation: glow 4s ease-in-out infinite alternate;
+  }
+
+  .sun {
+    animation: pulse 5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes glow {
+  from { filter: brightness(.8); }
+  to { filter: brightness(1.35); }
+}
+
+@keyframes pulse {
+  from { transform: scale(.98); }
+  to { transform: scale(1.03); }
+}
+
+/* CELULARES */
+
+@media(max-width: 480px) {
+  .solar-system {
+    width: 94vw;
+  }
+
+  .sun {
+    width: 53vw;
+  }
+
+  .player {
+    padding: 7px;
+  }
+
+  .player iframe {
+    height: 125px;
+  }
+
+  .brand {
+    top: 55px;
+  }
+
+  .footer {
+    bottom: 45px;
+    letter-spacing: 3px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="universe">
+
+  <div class="stars"></div>
+
+  <header class="brand">
+    <h1>RADIO JOCOQUI</h1>
+    <p>MÚSICA · CULTURA · CONCIENCIA</p>
+  </header>
+
+  <main class="solar-system">
+
+    <div class="orbit one"></div>
+    <div class="orbit two"></div>
+    <div class="orbit three"></div>
+
+    <div class="planet mercury"></div>
+    <div class="planet venus"></div>
+    <div class="planet earth"></div>
+    <div class="planet mars"></div>
+    <div class="planet saturn"></div>
+
+    <div class="sun">
+
+      
 <div class="player">
   <iframe
     title="Radio Jocoqui - DJ Set"
@@ -8,3 +324,17 @@
     allowfullscreen>
   </iframe>
 </div>
+
+
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    UN UNIVERSO SONORO · ETERNA ∞
+  </footer>
+
+</div>
+
+</body>
+</html>
