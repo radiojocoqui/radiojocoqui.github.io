@@ -495,7 +495,18 @@ button {
 }
 
 
-/* LOGOTIPO RADIO JOCOQUI - DOBLE TAMAÑO */
+
+/* POSICIÓN DEL LOGOTIPO RADIO JOCOQUI */
+
+.brand {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 20;
+  text-align: center;
+}
 
 .brand-logo {
   display: block;
@@ -507,10 +518,26 @@ button {
   margin: 0 auto;
 }
 
+/* ESPACIO PARA EL LOGOTIPO */
+
+.universe {
+  padding-top: 210px;
+}
+
 @media (max-width: 480px) {
+  .brand {
+    top: 15px;
+  }
+
   .brand-logo {
     width: 90vw;
-    max-height: none;
+  }
+
+  .universe {
+    padding-top: 250px;
+  }
+}
+
   }
 }
 
