@@ -966,7 +966,70 @@ button {
   border-radius: 0;
   overflow: visible;
 }
-</style>
+/* SOL INTERACTIVO */
+
+.sun {
+  cursor: pointer;
+  transition: transform 0.5s ease;
+}
+
+.sun:hover {
+  transform: scale(1.035);
+}
+
+/* CONTROLES OCULTOS AL INICIO */
+
+.player {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.85);
+  pointer-events: none;
+
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease,
+    visibility 0.6s ease;
+}
+
+/* CONTROLES VISIBLES AL TOCAR EL SOL */
+
+.sun.open .player {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* MENSAJE INICIAL */
+
+.sun-message {
+  position: absolute;
+  z-index: 7;
+  text-align: center;
+  color: #fff3d6;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.sun-message span {
+  display: block;
+  font-size: clamp(11px, 2vw, 17px);
+  letter-spacing: 0.2em;
+}
+
+.sun-message small {
+  display: block;
+  margin-top: 12px;
+  font-size: clamp(9px, 1.5vw, 12px);
+  letter-spacing: 0.1em;
+}
+
+/* OCULTAR MENSAJE AL ABRIR */
+
+.sun.open .sun-message {
+  opacity: 0;
+  visibility: hidden;
+}</style>
 </head>
 
 <body>
@@ -992,7 +1055,10 @@ button {
     <div class="planet mars"></div>
     <div class="planet saturn"></div>
 
-    <div class="sun">
+    <div class="sun-message">
+  <span>RADIO JOCOQUI</span>
+  <small>☀ TOCA EL SOL PARA ESCUCHAR</small>
+</div>
       <section class="player" aria-label="Reproductor musical">
 
         <div class="audio-title">RADIO JOCOQUI</div>
@@ -1502,6 +1568,37 @@ loadTrack(0);
   }
 })();
 </script>
-</body>
+<script>
+const sun = document.getElementById("sun");
+
+function toggleSunPlayer() {
+  const isOpen = sun.classList.toggle("open");
+
+  sun.setAttribute("aria-expanded", String(isOpen));
+  sun.setAttribute(
+    "aria-label",
+    isOpen
+      ? "Cerrar reproductor de Radio Jocoqui"
+      : "Abrir reproductor de Radio Jocoqui"
+  );
+}
+
+sun.addEventListener("click", (event) => {
+  if (event.target.closest("button, input")) {
+    return;
+  }
+
+  toggleSunPlayer();
+});
+
+sun.addEventListener("keydown", (event) => {
+  if (event.target !== sun) return;
+
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    toggleSunPlayer();
+  }
+});
+</script></body>
 </html>
 
