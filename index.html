@@ -902,6 +902,70 @@ button {
     filter: brightness(1.2);
   }
 }
+
+/* =====================================
+   RADIO JOCOQUI - PLANETAS THREE.JS
+   ===================================== */
+
+/* Mantener posiciones originales */
+.planet {
+  overflow: visible !important;
+  border-radius: 50%;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  animation: none !important;
+  isolation: isolate;
+}
+
+/* Desactivar reflejos CSS anteriores */
+.planet::before,
+.planet::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Lienzo tridimensional */
+.planet canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Tamaños de las esferas */
+.mercury {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.venus {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.earth {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.mars {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.saturn {
+  width: 55px !important;
+  height: 55px !important;
+  overflow: visible !important;
+}
+
+.saturn canvas {
+  border-radius: 0;
+  overflow: visible;
+}
 </style>
 </head>
 
@@ -1161,6 +1225,283 @@ audio.addEventListener("error", () => {
 loadTrack(0);
 </script>
 
+
+<!-- RADIO JOCOQUI: PLANETAS 3D -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.1/three.min.js"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  if (!window.THREE) {
+    console.warn("Three.js no pudo cargarse");
+    return;
+  }
+
+  const THREE = window.THREE;
+
+  const planets = [
+    {
+      selector: ".mercury",
+      type: "rock",
+      base: "#91877b",
+      detail: "#4c4946",
+      speed: 0.003
+    },
+    {
+      selector: ".venus",
+      type: "cloud",
+      base: "#e5bc80",
+      detail: "#b4774b",
+      speed: 0.002
+    },
+    {
+      selector: ".earth",
+      type: "earth",
+      base: "#176db4",
+      detail: "#35865c",
+      speed: 0.004
+    },
+    {
+      selector: ".mars",
+      type: "rock",
+      base: "#b85d40",
+      detail: "#77382c",
+      speed: 0.003
+    },
+    {
+      selector: ".saturn",
+      type: "gas",
+      base: "#dbc18b",
+      detail: "#a27d59",
+      speed: 0.002
+    }
+  ];
+
+  const instances = [];
+
+  // Texturas generadas sin archivos externos
+  function makeTexture(planet) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 256;
+
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.fillStyle = planet.base;
+    ctx.fillRect(0, 0, w, h);
+
+    const base = new THREE.Color(planet.base);
+    const detail = new THREE.Color(planet.detail);
+
+    // Patrón de superficie
+    for (let i = 0; i < 1600; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+
+      let size = Math.random() * 18 + 2;
+
+      if (planet.type === "gas" ||
+          planet.type === "cloud") {
+        size = Math.random() * 35 + 10;
+      }
+
+      const mix = Math.random();
+      const color = base.clone().lerp(detail, mix);
+
+      ctx.fillStyle = "#" + color.getHexString();
+      ctx.globalAlpha = 0.15 + Math.random() * 0.45;
+
+      ctx.beginPath();
+
+      if (planet.type === "gas" ||
+          planet.type === "cloud") {
+        ctx.ellipse(
+          x, y,
+          size * 2,
+          size * 0.18,
+          0, 0, Math.PI * 2
+        );
+      } else {
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+      }
+
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+
+    if (planet.type === "earth") {
+      // Bandas de nubes semitransparentes
+      for (let i = 0; i < 55; i++) {
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+
+        ctx.fillStyle = "rgba(235,245,255,0.22)";
+        ctx.beginPath();
+        ctx.ellipse(
+          x, y,
+          15 + Math.random() * 30,
+          2 + Math.random() * 5,
+          Math.random() * 0.4,
+          0, Math.PI * 2
+        );
+        ctx.fill();
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }
+
+  function createPlanet(config) {
+    const element = document.querySelector(config.selector);
+    if (!element) return;
+
+    // Evitar crear dos renders sobre el mismo planeta
+    if (element.querySelector("canvas")) return;
+
+    let renderer;
+
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: "low-power"
+      });
+    } catch (error) {
+      console.warn("WebGL no disponible", error);
+      return;
+    }
+
+    const width = element.clientWidth;
+    const height = element.clientHeight;
+
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, 2)
+    );
+
+    renderer.setSize(width, height);
+    renderer.setClearColor(0x000000, 0);
+
+    element.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      40,
+      width / height,
+      0.1,
+      100
+    );
+
+    camera.position.z = 3.8;
+
+    const geometry = new THREE.SphereGeometry(
+      1, 48, 32
+    );
+
+    const texture = makeTexture(config);
+
+    const material = new THREE.MeshStandardMaterial({
+      map: texture,
+      roughness: 0.9,
+      metalness: 0.0
+    });
+
+    const sphere = new THREE.Mesh(geometry, material);
+
+    sphere.rotation.z = 0.15;
+    scene.add(sphere);
+
+    // Luz suave ambiental
+    scene.add(
+      new THREE.AmbientLight(0xffffff, 0.55)
+    );
+
+    // Luz principal del Sol
+    const sunlight = new THREE.DirectionalLight(
+      0xffe2bd, 2.4
+    );
+
+    sunlight.position.set(-3, 3, 5);
+    scene.add(sunlight);
+
+    // Saturno: anillos 3D
+    if (config.type === "gas") {
+      const ringGeometry = new THREE.RingGeometry(
+        1.25, 1.9, 96
+      );
+
+      const ringMaterial = new THREE.MeshBasicMaterial({
+        color: 0xd9bd88,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.78,
+        depthWrite: false
+      });
+
+      const rings = new THREE.Mesh(
+        ringGeometry,
+        ringMaterial
+      );
+
+      rings.rotation.x = 1.1;
+      rings.rotation.z = -0.35;
+
+      sphere.add(rings);
+
+      // Alejar cámara para mostrar los anillos
+      camera.position.z = 5.5;
+    }
+
+    instances.push({
+      renderer,
+      scene,
+      camera,
+      sphere,
+      speed: config.speed
+    });
+  }
+
+  planets.forEach(createPlanet);
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  let lastTime = 0;
+
+  function animate(time) {
+    requestAnimationFrame(animate);
+
+    // Limitar actualización a ~30 FPS
+    if (time - lastTime < 33) return;
+
+    lastTime = time;
+
+    instances.forEach(item => {
+      if (!reducedMotion &&
+          document.visibilityState === "visible") {
+        item.sphere.rotation.y += item.speed;
+      }
+
+      item.renderer.render(
+        item.scene,
+        item.camera
+      );
+    });
+  }
+
+  if (instances.length) {
+    requestAnimationFrame(animate);
+  }
+})();
+</script>
 </body>
 </html>
 
