@@ -1029,6 +1029,34 @@ button {
 .sun.open .sun-message {
   opacity: 0;
   visibility: hidden;
+}
+/* SOL Y REPRODUCTOR SIEMPRE VISIBLES */
+
+.sun {
+  cursor: default;
+}
+
+/* Mostrar controles permanentemente */
+
+.sun .player,
+.sun.open .player {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: scale(1) !important;
+}
+
+/* Ocultar mensaje de tocar el sol */
+
+.sun-message {
+  display: none !important;
+}
+
+/* Mantener controles sobre el sol */
+
+.player {
+  position: relative;
+  z-index: 10;
 }</style>
 </head>
 
