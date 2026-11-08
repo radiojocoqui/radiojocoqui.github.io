@@ -1057,6 +1057,16 @@ button {
 .player {
   position: relative;
   z-index: 10;
+}.sun .player,
+.sun.open .player {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: scale(1) !important;
+}
+
+.sun-message {
+  display: none !important;
 }</style>
 </head>
 
