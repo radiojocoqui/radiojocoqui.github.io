@@ -496,52 +496,75 @@ button {
 
 
 
-/* POSICIÓN DEL LOGOTIPO RADIO JOCOQUI */
 
-.brand {
-  position: absolute;
-  top: 25px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 20;
-  text-align: center;
+/* AJUSTE DE TEXTOS RADIO JOCOQUI */
+
+/* Mantener el lema debajo del logotipo */
+.brand p {
+  position: relative;
+  margin: 8px auto 0;
+  font-size: 10px;
+  letter-spacing: 3px;
+  line-height: 1.5;
+  color: #a5b8cb;
 }
 
-.brand-logo {
-  display: block;
-  width: min(90vw, 680px);
-  max-width: none;
-  max-height: none;
-  height: auto;
-  object-fit: contain;
-  margin: 0 auto;
+/* Ordenar los textos dentro del Sol */
+.player {
+  gap: 10px;
 }
 
-/* ESPACIO PARA EL LOGOTIPO */
-
-.universe {
-  padding-top: 210px;
+.audio-title {
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 2px;
 }
+
+.audio-subtitle {
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+
+.track-title {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* AJUSTES PARA IPHONE */
 
 @media (max-width: 480px) {
-  .brand {
-    top: 15px;
+
+  /* Separar el lema del sistema solar */
+  .brand p {
+    margin-top: 8px;
+    font-size: 8px;
+    letter-spacing: 2px;
   }
 
-  .brand-logo {
-    width: 90vw;
+  /* Colocar los textos del reproductor
+     sin que se empalmen */
+  .player {
+    gap: 6px;
+    padding: 12px;
   }
 
-  .universe {
-    padding-top: 250px;
+  .audio-title {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .audio-subtitle {
+    font-size: 7px;
+    line-height: 1.3;
+  }
+
+  .track-title {
+    font-size: 9px;
+    line-height: 1.3;
   }
 }
 
-  }
-}
-
-  }
 }
 </style>
 </head>
