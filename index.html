@@ -4,32 +4,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radio Jocoqui </title>
+<title>Radio Jocoqui — Universo Sonoro</title>
 
 <style>
+:root {
+  color-scheme: dark;
+  --text: #f5eee3;
+  --muted: #b4c2d2;
+  --gold: #f4c38d;
+}
+
 * {
   box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at center,
-    #14283c 0%, #07111f 48%, #02050c 100%);
-  color: white;
-  font-family: Arial, sans-serif;
+  background: #02050c;
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  font: inherit;
 }
 
 .universe {
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   isolation: isolate;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 105px 15px 40px;
+  background:
+    radial-gradient(ellipse at 50% 44%,
+      #17283d 0%,
+      #07111f 47%,
+      #02050c 85%);
 }
 
 /* ESTRELLAS */
@@ -37,13 +56,15 @@ body {
 .stars {
   position: absolute;
   inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image:
-    radial-gradient(2px 2px at 15% 20%, white, transparent),
-    radial-gradient(1px 1px at 80% 15%, white, transparent),
-    radial-gradient(2px 2px at 70% 80%, white, transparent),
-    radial-gradient(1px 1px at 25% 75%, white, transparent),
-    radial-gradient(2px 2px at 90% 55%, white, transparent),
-    radial-gradient(1px 1px at 45% 10%, white, transparent);
+    radial-gradient(1px 1px at 15% 20%, #fff, transparent),
+    radial-gradient(2px 2px at 80% 15%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 80%, #fff, transparent),
+    radial-gradient(2px 2px at 25% 75%, #fff, transparent),
+    radial-gradient(1px 1px at 90% 55%, #fff, transparent),
+    radial-gradient(1px 1px at 45% 10%, #fff, transparent);
   background-size: 230px 210px;
   opacity: .65;
 }
@@ -52,21 +73,24 @@ body {
 
 .brand {
   position: absolute;
-  top: 35px;
+  top: 30px;
+  left: 15px;
+  right: 15px;
   text-align: center;
   z-index: 10;
 }
 
 .brand h1 {
-  font-size: clamp(25px, 5vw, 42px);
-  font-weight: 300;
-  letter-spacing: 5px;
   margin: 0;
+  font-size: clamp(23px, 5vw, 42px);
+  font-weight: 300;
+  letter-spacing: .13em;
 }
 
 .brand p {
-  font-size: 9px;
-  letter-spacing: 6px;
+  margin-top: 12px;
+  font-size: 10px;
+  letter-spacing: .32em;
   color: #9eb9d0;
 }
 
@@ -74,18 +98,17 @@ body {
 
 .solar-system {
   position: relative;
-  width: min(90vw, 620px);
+  width: min(94vw, 680px);
   aspect-ratio: 1;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* ORBITAS */
-
 .orbit {
   position: absolute;
-  border: 1px solid rgba(135, 195, 230, .22);
+  border: 1px solid rgba(150, 195, 230, .2);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -111,131 +134,273 @@ body {
   position: absolute;
   border-radius: 50%;
   z-index: 2;
+  box-shadow: inset -5px -4px 8px rgba(0, 0, 0, .55);
 }
 
 .mercury {
-  width: 11px;
-  height: 11px;
-  background: #c4b5a1;
+  width: 12px;
+  height: 12px;
   top: 24%;
   left: 27%;
-  box-shadow: 0 0 12px #c4b5a1;
+  background: radial-gradient(circle at 30% 30%,
+    #e1d5c6, #887d73 65%, #383b42);
 }
 
 .venus {
-  width: 19px;
-  height: 19px;
-  background: radial-gradient(circle at 30% 30%, #ffe1a5, #ba7954);
+  width: 20px;
+  height: 20px;
   top: 15%;
   right: 23%;
-  box-shadow: 0 0 18px #e4a06e;
+  background: radial-gradient(circle at 30% 30%,
+    #ffe6b5, #bc845e 60%, #5b413b);
 }
 
 .earth {
-  width: 22px;
-  height: 22px;
-  background: radial-gradient(circle at 30% 30%, #b0efff, #2573b8 55%, #10284e);
+  width: 24px;
+  height: 24px;
   bottom: 16%;
   left: 15%;
-  box-shadow: 0 0 20px #4b9bc9;
+  background:
+    radial-gradient(ellipse at 38% 40%,
+      #7baf85 0%, transparent 35%),
+    radial-gradient(circle at 30% 30%,
+      #b0efff, #2573b8 55%, #10284e);
+  box-shadow:
+    inset -5px -4px 8px rgba(0, 0, 0, .6),
+    0 0 14px rgba(75, 155, 201, .45);
 }
 
 .mars {
-  width: 16px;
-  height: 16px;
-  background: radial-gradient(circle at 30% 30%, #ffc0a0, #a53d30);
+  width: 17px;
+  height: 17px;
   right: 10%;
   bottom: 32%;
-  box-shadow: 0 0 14px #c65d46;
+  background: radial-gradient(circle at 30% 30%,
+    #ffc0a0, #a53d30 65%, #472321);
 }
 
 .saturn {
-  width: 27px;
-  height: 27px;
-  background: radial-gradient(circle at 30% 30%, #ffe7b0, #b58a52);
+  width: 28px;
+  height: 28px;
   top: 48%;
   right: 1%;
+  background: radial-gradient(circle at 30% 30%,
+    #ffe7b0, #b58a52 65%, #4c4038);
 }
 
 .saturn::after {
   content: "";
   position: absolute;
-  width: 43px;
-  height: 12px;
-  border: 2px solid #e9c68c;
+  width: 44px;
+  height: 13px;
+  top: 7px;
+  left: -10px;
+  border: 2px solid rgba(233, 198, 140, .85);
   border-radius: 50%;
   transform: rotate(-25deg);
-  top: 7px;
-  left: -9px;
 }
 
 /* SOL CENTRAL */
 
 .sun {
-  width: min(48vw, 280px);
+  position: relative;
+  z-index: 5;
+  width: min(48vw, 290px);
   aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  position: relative;
-  z-index: 5;
+  align-items: center;
 
-  background: radial-gradient(
-    circle,
+  background: radial-gradient(circle,
     #fff4cf 0%,
     #ffbd78 20%,
     #f17b49 45%,
     #a83f3c 70%,
-    transparent 100%
-  );
+    transparent 100%);
 
   box-shadow:
     0 0 35px rgba(255, 164, 91, .8),
-    0 0 90px rgba(255, 104, 70, .55),
-    0 0 160px rgba(49, 174, 226, .22);
+    0 0 90px rgba(255, 104, 70, .5),
+    0 0 160px rgba(49, 174, 226, .2);
 }
 
 .sun::before {
   content: "";
   position: absolute;
-  inset: -13px;
+  inset: -12px;
+  border: 1px solid rgba(255, 201, 144, .35);
   border-radius: 50%;
-  border: 1px solid rgba(255, 201, 144, .4);
+  pointer-events: none;
 }
+
+/* REPRODUCTOR */
 
 .player {
-  width: 88%;
   position: relative;
   z-index: 6;
-  padding: 12px;
+  width: 86%;
+  aspect-ratio: 1;
+  padding: 18px;
   border-radius: 50%;
-  background: rgba(8, 17, 30, .88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  text-align: center;
+  background: rgba(8, 17, 30, .91);
   border: 1px solid rgba(255, 202, 151, .65);
-  box-shadow: 0 0 30px rgba(255, 143, 89, .5);
+  box-shadow: 0 0 30px rgba(255, 143, 89, .4);
 }
 
-.player iframe {
-  display: block;
+.audio-title {
+  font-size: 12px;
+  letter-spacing: .15em;
+  color: #ffe2b8;
+}
+
+.audio-subtitle {
+  font-size: 8px;
+  letter-spacing: .13em;
+  color: #b6c9db;
+}
+
+.track-title {
   width: 100%;
-  height: 155px;
-  border: 0;
-  border-radius: 12px;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.controls button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 220, 177, .45);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .07);
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.controls .play-button {
+  width: 43px;
+  height: 43px;
+  background: rgba(244, 195, 141, .18);
+  font-size: 19px;
+}
+
+.controls button:hover,
+.controls button:focus-visible {
+  background: rgba(244, 195, 141, .35);
+}
+
+.progress {
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.time-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #c6d1dc;
+}
+
+.status {
+  font-size: 9px;
+  color: #ffcc9a;
+}
+
+/* PLAYLIST */
+
+.library {
+  position: relative;
+  z-index: 8;
+  width: min(90vw, 470px);
+  margin: 0 auto 30px;
+  padding: 20px;
+  border: 1px solid rgba(165, 184, 203, .25);
+  border-radius: 18px;
+  background: rgba(5, 12, 24, .85);
+  backdrop-filter: blur(12px);
+}
+
+.library h2 {
+  margin: 0 0 15px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .22em;
+  color: var(--gold);
+}
+
+.playlist {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.track {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border: 1px solid rgba(165, 184, 203, .16);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .035);
+  color: #dce4ed;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.track:hover,
+.track:focus-visible {
+  border-color: var(--gold);
+}
+
+.track.active {
+  color: #ffdda9;
+  border-color: rgba(244, 195, 141, .6);
+  background: rgba(244, 195, 141, .1);
+}
+
+.track-number {
+  color: #a9b8ca;
+  font-size: 10px;
 }
 
 /* PIE */
 
 .footer {
-  position: absolute;
-  bottom: 25px;
+  position: relative;
+  z-index: 10;
+  margin-top: 10px;
+  padding: 0 20px 25px;
   text-align: center;
   color: #a5b8cb;
   font-size: 10px;
-  letter-spacing: 5px;
-  z-index: 10;
+  line-height: 1.8;
+  letter-spacing: .2em;
 }
 
-/* MOVIMIENTO */
+/* ANIMACIONES */
 
 @media (prefers-reduced-motion: no-preference) {
   .planet {
@@ -248,44 +413,86 @@ body {
 }
 
 @keyframes glow {
-  from { filter: brightness(.8); }
-  to { filter: brightness(1.35); }
+  from { filter: brightness(.85); }
+  to { filter: brightness(1.3); }
 }
 
 @keyframes pulse {
-  from { transform: scale(.98); }
-  to { transform: scale(1.03); }
+  from { transform: scale(.985); }
+  to { transform: scale(1.025); }
 }
 
 /* CELULARES */
 
-@media(max-width: 480px) {
-  .solar-system {
-    width: 94vw;
-  }
-
-  .sun {
-    width: 53vw;
-  }
-
-  .player {
-    padding: 7px;
-  }
-
-  .player iframe {
-    height: 125px;
+@media (max-width: 480px) {
+  .universe {
+    padding-top: 125px;
+    justify-content: flex-start;
   }
 
   .brand {
-    top: 55px;
+    top: 35px;
+  }
+
+  .brand h1 {
+    font-size: 25px;
+    letter-spacing: .1em;
+  }
+
+  .brand p {
+    font-size: 8px;
+    letter-spacing: .2em;
+  }
+
+  .solar-system {
+    width: 96vw;
+  }
+
+  .sun {
+    width: 56vw;
+  }
+
+  .player {
+    width: 90%;
+    padding: 10px;
+    gap: 5px;
+  }
+
+  .audio-title {
+    font-size: 9px;
+  }
+
+  .audio-subtitle {
+    font-size: 7px;
+  }
+
+  .track-title {
+    font-size: 9px;
+  }
+
+  .controls {
+    gap: 8px;
+  }
+
+  .controls button {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .controls .play-button {
+    width: 35px;
+    height: 35px;
+  }
+
+  .library {
+    width: 94vw;
   }
 
   .footer {
-    bottom: 45px;
-    letter-spacing: 3px;
+    font-size: 9px;
   }
 }
-
 </style>
 </head>
 
@@ -313,40 +520,236 @@ body {
     <div class="planet saturn"></div>
 
     <div class="sun">
+      <section class="player" aria-label="Reproductor musical">
 
-      
+        <div class="audio-title">RADIO JOCOQUI</div>
+        <div class="audio-subtitle">UNIVERSO SONORO ∞</div>
 
-<div class="player">
-  <div class="audio-title">RADIO JOCOQUI</div>
-  <div class="audio-subtitle">UNIVERSO SONORO ∞</div>
+        <div class="track-title" id="trackTitle">
+          Canción 01
+        </div>
 
- 
-<audio
-  controls
-  preload="none"
-  playsinline
-  style="width:100%; max-width:260px;"
->
-  <source
-    src="https://audio.radiojocoqui.com/RADIO%20JOCOQUI%20001.mp3"
-    type="audio/mpeg"
-  >
-  Tu navegador no admite audio HTML5.
-</audio>
+        <div class="controls">
+          <button id="previous" type="button"
+            aria-label="Canción anterior">⏮</button>
 
-</div>
+          <button id="play" class="play-button"
+            type="button" aria-label="Reproducir">▶</button>
 
+          <button id="next" type="button"
+            aria-label="Siguiente canción">⏭</button>
+        </div>
 
+        <input
+          id="progress"
+          class="progress"
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          aria-label="Progreso de la canción"
+        >
 
+        <div class="time-row">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+
+        <div class="status" id="status">
+          Selecciona una canción
+        </div>
+
+        <audio id="audio" preload="metadata"></audio>
+
+      </section>
     </div>
 
   </main>
 
+  <section class="library" aria-label="Biblioteca musical">
+    <h2>ARCHIVO SONORO</h2>
+    <div id="playlist" class="playlist"></div>
+  </section>
+
   <footer class="footer">
-    UN UNIVERSO SONORO · MÚSICA PARA TODO EL MUNDO / PARA TODO MOMENTO
+    UN UNIVERSO SONORO · MÚSICA PARA TODO EL MUNDO
+    / PARA TODO MOMENTO
   </footer>
 
 </div>
 
+<script>
+/*
+  PLAYLIST RADIO JOCOQUI
+
+  Los archivos deben estar en la misma carpeta
+  que index.html dentro de GitHub.
+*/
+
+const tracks = [
+  {
+    title: "Canción 01",
+    file: "cancion-01.mp3"
+  },
+  {
+    title: "Canción 02",
+    file: "cancion-02.mp3"
+  },
+  {
+    title: "Canción 03",
+    file: "cancion-03.mp3"
+  }
+];
+
+const audio = document.getElementById("audio");
+const playButton = document.getElementById("play");
+const previousButton = document.getElementById("previous");
+const nextButton = document.getElementById("next");
+const trackTitle = document.getElementById("trackTitle");
+const playlist = document.getElementById("playlist");
+const progress = document.getElementById("progress");
+const currentTimeLabel = document.getElementById("currentTime");
+const durationLabel = document.getElementById("duration");
+const statusLabel = document.getElementById("status");
+
+let currentTrack = 0;
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+
+  const minutes = Math.floor(seconds / 60);
+  const remaining = Math.floor(seconds % 60);
+
+  return minutes + ":" + String(remaining).padStart(2, "0");
+}
+
+function renderPlaylist() {
+  playlist.innerHTML = "";
+
+  tracks.forEach((track, index) => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = index === currentTrack
+      ? "track active"
+      : "track";
+
+    const name = document.createElement("span");
+    name.textContent = track.title;
+
+    const number = document.createElement("span");
+    number.className = "track-number";
+    number.textContent = String(index + 1).padStart(2, "0");
+
+    button.appendChild(name);
+    button.appendChild(number);
+
+    button.addEventListener("click", () => {
+      loadTrack(index, true);
+    });
+
+    playlist.appendChild(button);
+  });
+}
+
+function updatePlayButton() {
+  const playing = !audio.paused && !audio.ended;
+
+  playButton.textContent = playing ? "❚❚" : "▶";
+  playButton.setAttribute(
+    "aria-label",
+    playing ? "Pausar" : "Reproducir"
+  );
+}
+
+function loadTrack(index, autoplay = false) {
+  currentTrack = (index + tracks.length) % tracks.length;
+
+  audio.pause();
+  audio.src = tracks[currentTrack].file;
+  audio.load();
+
+  trackTitle.textContent = tracks[currentTrack].title;
+  progress.value = 0;
+  currentTimeLabel.textContent = "0:00";
+  durationLabel.textContent = "0:00";
+  statusLabel.textContent = "Lista para reproducir";
+
+  renderPlaylist();
+  updatePlayButton();
+
+  if (autoplay) {
+    playCurrent();
+  }
+}
+
+async function playCurrent() {
+  try {
+    statusLabel.textContent = "Cargando audio...";
+    await audio.play();
+    statusLabel.textContent = "Transmitiendo música";
+  } catch (error) {
+    statusLabel.textContent =
+      "Toca Play para iniciar o verifica el archivo";
+  }
+
+  updatePlayButton();
+}
+
+playButton.addEventListener("click", () => {
+  if (audio.paused) {
+    playCurrent();
+  } else {
+    audio.pause();
+  }
+});
+
+previousButton.addEventListener("click", () => {
+  loadTrack(currentTrack - 1, true);
+});
+
+nextButton.addEventListener("click", () => {
+  loadTrack(currentTrack + 1, true);
+});
+
+audio.addEventListener("play", () => {
+  statusLabel.textContent = "Transmitiendo música";
+  updatePlayButton();
+});
+
+audio.addEventListener("pause", updatePlayButton);
+
+audio.addEventListener("loadedmetadata", () => {
+  durationLabel.textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener("timeupdate", () => {
+  currentTimeLabel.textContent = formatTime(audio.currentTime);
+
+  if (Number.isFinite(audio.duration) && audio.duration > 0) {
+    progress.value = (audio.currentTime / audio.duration) * 100;
+  }
+});
+
+progress.addEventListener("input", () => {
+  if (Number.isFinite(audio.duration) && audio.duration > 0) {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  }
+});
+
+audio.addEventListener("ended", () => {
+  loadTrack(currentTrack + 1, true);
+});
+
+audio.addEventListener("error", () => {
+  statusLabel.textContent =
+    "No se pudo cargar el MP3";
+  updatePlayButton();
+});
+
+loadTrack(0);
+</script>
+
 </body>
 </html>
+
