@@ -10,29 +10,23 @@
 :root {
   color-scheme: dark;
   --text: #f5eee3;
-  --muted: #b4c2d2;
   --gold: #f4c38d;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
+html, body {
+  margin: 0;
   min-height: 100%;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
   background: #02050c;
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-button {
-  font: inherit;
-}
+button { font: inherit; }
 
 .universe {
   position: relative;
@@ -42,12 +36,11 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 105px 15px 40px;
+  padding: 185px 15px 40px;
   background:
-    radial-gradient(ellipse at 50% 44%,
-      #17283d 0%,
-      #07111f 47%,
+    radial-gradient(ellipse at 50% 39%,
+      #1b3049 0%,
+      #091626 43%,
       #02050c 85%);
 }
 
@@ -58,187 +51,225 @@ button {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  opacity: .75;
   background-image:
-    radial-gradient(1px 1px at 15% 20%, #fff, transparent),
+    radial-gradient(2px 2px at 15% 20%, #fff, transparent),
     radial-gradient(2px 2px at 80% 15%, #fff, transparent),
     radial-gradient(1px 1px at 70% 80%, #fff, transparent),
     radial-gradient(2px 2px at 25% 75%, #fff, transparent),
     radial-gradient(1px 1px at 90% 55%, #fff, transparent),
-    radial-gradient(1px 1px at 45% 10%, #fff, transparent);
+    radial-gradient(2px 2px at 45% 10%, #fff, transparent);
   background-size: 230px 210px;
-  opacity: .65;
 }
 
-/* IDENTIDAD */
+/* LOGOTIPO */
 
 .brand {
   position: absolute;
-  top: 30px;
-  left: 15px;
-  right: 15px;
+  top: 18px;
+  left: 0;
+  width: 100%;
+  z-index: 30;
   text-align: center;
-  z-index: 10;
 }
 
-.brand h1 {
-  margin: 0;
-  font-size: clamp(23px, 5vw, 42px);
-  font-weight: 300;
-  letter-spacing: .13em;
+.brand h1 { margin: 0; }
+
+.brand-logo {
+  display: block;
+  width: min(95vw, 780px);
+  height: 145px;
+  object-fit: contain;
+  margin: 0 auto;
 }
 
 .brand p {
-  margin-top: 12px;
+  margin: 7px auto 0;
+  color: #b4c5d7;
   font-size: 10px;
-  letter-spacing: .32em;
-  color: #9eb9d0;
+  letter-spacing: .25em;
+  line-height: 1.5;
 }
 
 /* SISTEMA SOLAR */
 
 .solar-system {
   position: relative;
-  width: min(94vw, 680px);
+  width: min(94vw, 740px);
   aspect-ratio: 1;
   flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
 }
 
 .orbit {
   position: absolute;
-  border: 1px solid rgba(150, 195, 230, .2);
+  border: 1px solid rgba(153, 196, 231, .22);
   border-radius: 50%;
   pointer-events: none;
 }
 
-.orbit.one {
-  width: 52%;
-  height: 52%;
-}
+.orbit.one { width: 52%; height: 52%; }
+.orbit.two { width: 75%; height: 75%; }
+.orbit.three { width: 98%; height: 98%; }
 
-.orbit.two {
-  width: 75%;
-  height: 75%;
-}
-
-.orbit.three {
-  width: 98%;
-  height: 98%;
-}
-
-/* PLANETAS */
+/* PLANETAS AL DOBLE */
 
 .planet {
   position: absolute;
+  z-index: 4;
   border-radius: 50%;
-  z-index: 2;
-  box-shadow: inset -5px -4px 8px rgba(0, 0, 0, .55);
+  overflow: visible;
+  background: radial-gradient(circle at 28% 23%,
+    #fff0d0, #8a7567 45%, #1b1720 100%);
+  box-shadow:
+    inset -9px -8px 14px rgba(0,0,0,.65),
+    0 0 18px rgba(255,255,255,.1);
 }
 
+.planet canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Posiciones originales */
+
 .mercury {
-  width: 12px;
-  height: 12px;
+  width: 36px;
+  height: 36px;
   top: 24%;
   left: 27%;
-  background: radial-gradient(circle at 30% 30%,
-    #e1d5c6, #887d73 65%, #383b42);
 }
 
 .venus {
-  width: 20px;
-  height: 20px;
+  width: 60px;
+  height: 60px;
   top: 15%;
   right: 23%;
-  background: radial-gradient(circle at 30% 30%,
-    #ffe6b5, #bc845e 60%, #5b413b);
 }
 
 .earth {
-  width: 24px;
-  height: 24px;
+  width: 80px;
+  height: 80px;
   bottom: 16%;
   left: 15%;
-  background:
-    radial-gradient(ellipse at 38% 40%,
-      #7baf85 0%, transparent 35%),
-    radial-gradient(circle at 30% 30%,
-      #b0efff, #2573b8 55%, #10284e);
-  box-shadow:
-    inset -5px -4px 8px rgba(0, 0, 0, .6),
-    0 0 14px rgba(75, 155, 201, .45);
+  background: radial-gradient(circle at 30% 25%,
+    #b3f7ff, #287db1 40%, #173b75 70%, #06101f);
 }
 
 .mars {
-  width: 17px;
-  height: 17px;
+  width: 56px;
+  height: 56px;
   right: 10%;
   bottom: 32%;
-  background: radial-gradient(circle at 30% 30%,
-    #ffc0a0, #a53d30 65%, #472321);
+  background: radial-gradient(circle at 30% 25%,
+    #ffd0a0, #b95b3e 45%, #401b1c);
 }
 
 .saturn {
-  width: 28px;
-  height: 28px;
+  width: 110px;
+  height: 110px;
   top: 48%;
   right: 1%;
-  background: radial-gradient(circle at 30% 30%,
-    #ffe7b0, #b58a52 65%, #4c4038);
+  background: radial-gradient(circle at 30% 25%,
+    #fff0c2, #bc9767 50%, #40312d);
 }
 
-.saturn::after {
+/* Respaldo si no carga Three.js */
+
+.saturn:not(:has(canvas))::after {
   content: "";
   position: absolute;
-  width: 44px;
-  height: 13px;
-  top: 7px;
-  left: -10px;
-  border: 2px solid rgba(233, 198, 140, .85);
+  width: 150%;
+  height: 40%;
+  top: 30%;
+  left: -25%;
+  border: 7px solid rgba(232,199,143,.85);
   border-radius: 50%;
   transform: rotate(-25deg);
 }
 
-/* SOL CENTRAL */
+/* SOL REALISTA */
 
 .sun {
-  position: relative;
-  z-index: 5;
-  width: min(48vw, 290px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: min(58vw, 330px);
   aspect-ratio: 1;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
 
-  background: radial-gradient(circle,
-    #fff4cf 0%,
-    #ffbd78 20%,
-    #f17b49 45%,
-    #a83f3c 70%,
-    transparent 100%);
+  background:
+    radial-gradient(circle at 34% 26%,
+      rgba(255,252,210,.95) 0%,
+      rgba(255,203,78,.9) 18%,
+      rgba(255,112,20,.9) 45%,
+      rgba(189,43,9,.95) 78%,
+      #591507 100%);
 
   box-shadow:
-    0 0 35px rgba(255, 164, 91, .8),
-    0 0 90px rgba(255, 104, 70, .5),
-    0 0 160px rgba(49, 174, 226, .2);
+    0 0 20px rgba(255,210,103,.95),
+    0 0 60px rgba(255,124,28,.65),
+    0 0 115px rgba(255,78,11,.35),
+    0 0 190px rgba(255,75,0,.12);
+}
+
+/* Textura de plasma */
+
+.sun-texture {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sun-texture canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 
 .sun::before {
   content: "";
   position: absolute;
-  inset: -12px;
-  border: 1px solid rgba(255, 201, 144, .35);
+  inset: -5%;
   border-radius: 50%;
+  border: 2px solid rgba(255,196,80,.3);
+  box-shadow:
+    0 0 28px rgba(255,149,33,.55),
+    inset 0 0 25px rgba(255,196,80,.25);
   pointer-events: none;
 }
 
-/* REPRODUCTOR */
+.sun::after {
+  content: "";
+  position: absolute;
+  inset: -13%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    transparent 51%,
+    rgba(255,141,23,.18) 63%,
+    transparent 74%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* REPRODUCTOR SIEMPRE VISIBLE */
 
 .player {
   position: relative;
-  z-index: 6;
+  z-index: 12;
   width: 86%;
   aspect-ratio: 1;
   padding: 18px;
@@ -249,20 +280,22 @@ button {
   justify-content: center;
   gap: 9px;
   text-align: center;
-  background: rgba(8, 17, 30, .91);
-  border: 1px solid rgba(255, 202, 151, .65);
-  box-shadow: 0 0 30px rgba(255, 143, 89, .4);
+  background: rgba(8,15,27,.91);
+  border: 1px solid rgba(255,214,157,.75);
+  box-shadow:
+    0 0 22px rgba(255,177,75,.5),
+    inset 0 0 24px rgba(255,134,37,.1);
 }
 
 .audio-title {
   font-size: 12px;
-  letter-spacing: .15em;
-  color: #ffe2b8;
+  letter-spacing: .16em;
+  color: #ffe0ad;
 }
 
 .audio-subtitle {
-  font-size: 8px;
-  letter-spacing: .13em;
+  font-size: 9px;
+  letter-spacing: .12em;
   color: #b6c9db;
 }
 
@@ -281,30 +314,30 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 13px;
 }
 
 .controls button {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(255, 220, 177, .45);
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255,220,177,.55);
   border-radius: 50%;
-  background: rgba(255, 255, 255, .07);
-  color: #fff;
+  background: rgba(255,255,255,.09);
+  color: white;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 17px;
+  touch-action: manipulation;
 }
 
 .controls .play-button {
-  width: 43px;
-  height: 43px;
-  background: rgba(244, 195, 141, .18);
-  font-size: 19px;
+  width: 49px;
+  height: 49px;
+  background: rgba(244,195,141,.22);
+  font-size: 21px;
 }
 
-.controls button:hover,
 .controls button:focus-visible {
-  background: rgba(244, 195, 141, .35);
+  outline: 2px solid #fff;
 }
 
 .progress {
@@ -317,32 +350,33 @@ button {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
+  font-size: 10px;
   color: #c6d1dc;
 }
 
 .status {
-  font-size: 9px;
+  font-size: 10px;
   color: #ffcc9a;
+  line-height: 1.3;
 }
 
-/* PLAYLIST */
+/* ARCHIVO SONORO */
 
 .library {
   position: relative;
-  z-index: 8;
-  width: min(90vw, 470px);
-  margin: 0 auto 30px;
-  padding: 20px;
-  border: 1px solid rgba(165, 184, 203, .25);
-  border-radius: 18px;
-  background: rgba(5, 12, 24, .85);
+  z-index: 20;
+  width: min(92vw, 500px);
+  margin: 45px auto 30px;
+  padding: 22px;
+  border: 1px solid rgba(165,184,203,.28);
+  border-radius: 20px;
+  background: rgba(5,12,24,.88);
   backdrop-filter: blur(12px);
 }
 
 .library h2 {
-  margin: 0 0 15px;
-  font-size: 12px;
+  margin: 0 0 17px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: .22em;
   color: var(--gold);
@@ -351,97 +385,85 @@ button {
 .playlist {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 9px;
 }
 
 .track {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   text-align: left;
-  border: 1px solid rgba(165, 184, 203, .16);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, .035);
+  border: 1px solid rgba(165,184,203,.2);
+  border-radius: 10px;
+  background: rgba(255,255,255,.04);
   color: #dce4ed;
   cursor: pointer;
-  font-size: 12px;
-}
-
-.track:hover,
-.track:focus-visible {
-  border-color: var(--gold);
+  font-size: 13px;
 }
 
 .track.active {
   color: #ffdda9;
-  border-color: rgba(244, 195, 141, .6);
-  background: rgba(244, 195, 141, .1);
+  border-color: rgba(244,195,141,.7);
+  background: rgba(244,195,141,.1);
 }
 
 .track-number {
   color: #a9b8ca;
-  font-size: 10px;
+  font-size: 11px;
 }
-
-/* PIE */
 
 .footer {
   position: relative;
-  z-index: 10;
-  margin-top: 10px;
-  padding: 0 20px 25px;
+  z-index: 20;
+  padding: 10px 20px 30px;
   text-align: center;
   color: #a5b8cb;
   font-size: 10px;
   line-height: 1.8;
-  letter-spacing: .2em;
+  letter-spacing: .17em;
 }
 
-/* ANIMACIONES */
+/* ANIMACIÓN SUAVE */
 
 @media (prefers-reduced-motion: no-preference) {
-  .planet {
-    animation: glow 4s ease-in-out infinite alternate;
-  }
-
   .sun {
-    animation: pulse 5s ease-in-out infinite alternate;
+    animation: sunPulse 6s ease-in-out infinite alternate;
   }
 }
 
-@keyframes glow {
-  from { filter: brightness(.85); }
-  to { filter: brightness(1.3); }
+@keyframes sunPulse {
+  from {
+    box-shadow:
+      0 0 20px rgba(255,210,103,.9),
+      0 0 60px rgba(255,124,28,.6),
+      0 0 115px rgba(255,78,11,.3);
+  }
+  to {
+    box-shadow:
+      0 0 30px rgba(255,220,130,1),
+      0 0 85px rgba(255,124,28,.8),
+      0 0 150px rgba(255,78,11,.45);
+  }
 }
 
-@keyframes pulse {
-  from { transform: scale(.985); }
-  to { transform: scale(1.025); }
-}
-
-/* CELULARES */
+/* IPHONE */
 
 @media (max-width: 480px) {
   .universe {
-    padding-top: 125px;
-    justify-content: flex-start;
+    padding-top: 175px;
   }
 
-  .brand {
-    top: 35px;
-  }
-
-  .brand h1 {
-    font-size: 25px;
-    letter-spacing: .1em;
+  .brand-logo {
+    width: 95vw;
+    height: 125px;
   }
 
   .brand p {
     font-size: 8px;
-    letter-spacing: .2em;
+    letter-spacing: .16em;
   }
 
   .solar-system {
@@ -449,30 +471,21 @@ button {
   }
 
   .sun {
-    width: 56vw;
+    width: 58vw;
   }
 
   .player {
     width: 90%;
-    padding: 10px;
+    padding: 9px;
     gap: 5px;
   }
 
-  .audio-title {
-    font-size: 9px;
-  }
+  .audio-title { font-size: 9px; }
+  .audio-subtitle { font-size: 7px; }
+  .track-title { font-size: 9px; }
+  .status { font-size: 8px; }
 
-  .audio-subtitle {
-    font-size: 7px;
-  }
-
-  .track-title {
-    font-size: 9px;
-  }
-
-  .controls {
-    gap: 8px;
-  }
+  .controls { gap: 7px; }
 
   .controls button {
     width: 30px;
@@ -481,669 +494,25 @@ button {
   }
 
   .controls .play-button {
-    width: 35px;
-    height: 35px;
+    width: 37px;
+    height: 37px;
+    font-size: 17px;
   }
+
+  .time-row { font-size: 9px; }
+
+  .mercury { width: 36px; height: 36px; }
+  .venus { width: 60px; height: 60px; }
+  .earth { width: 80px; height: 80px; }
+  .mars { width: 56px; height: 56px; }
+  .saturn { width: 110px; height: 110px; }
 
   .library {
     width: 94vw;
-  }
-
-  .footer {
-    font-size: 9px;
+    margin-top: 35px;
   }
 }
-
-
-
-
-/* AJUSTE DE TEXTOS RADIO JOCOQUI */
-
-/* Mantener el lema debajo del logotipo */
-.brand p {
-  position: relative;
-  margin: 8px auto 0;
-  font-size: 10px;
-  letter-spacing: 3px;
-  line-height: 1.5;
-  color: #a5b8cb;
-}
-
-/* Ordenar los textos dentro del Sol */
-.player {
-  gap: 10px;
-}
-
-.audio-title {
-  font-size: 11px;
-  line-height: 1.4;
-  letter-spacing: 2px;
-}
-
-.audio-subtitle {
-  font-size: 9px;
-  line-height: 1.4;
-  letter-spacing: 1px;
-}
-
-.track-title {
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-/* AJUSTES PARA IPHONE */
-
-@media (max-width: 480px) {
-
-  /* Separar el lema del sistema solar */
-  .brand p {
-    margin-top: 8px;
-    font-size: 8px;
-    letter-spacing: 2px;
-  }
-
-  /* Colocar los textos del reproductor
-     sin que se empalmen */
-  .player {
-    gap: 6px;
-    padding: 12px;
-  }
-
-  .audio-title {
-    font-size: 9px;
-    line-height: 1.3;
-  }
-
-  .audio-subtitle {
-    font-size: 7px;
-    line-height: 1.3;
-  }
-
-  .track-title {
-    font-size: 9px;
-    line-height: 1.3;
-  }
-}
-
-}
-
-/* CORRECCION DEL LOGOTIPO RADIO JOCOQUI */
-
-.brand {
-  position: absolute !important;
-  top: 20px !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  height: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  transform: none !important;
-  z-index: 20;
-  text-align: center;
-}
-
-.brand-logo {
-  display: block !important;
-  width: min(85vw, 600px) !important;
-  max-width: 100% !important;
-  height: 110px !important;
-  max-height: 110px !important;
-  object-fit: contain !important;
-  margin: 0 auto !important;
-  transform: none !important;
-}
-
-.brand p {
-  position: static !important;
-  margin: 8px auto 0 !important;
-  padding: 0 !important;
-  transform: none !important;
-  font-size: 9px !important;
-  letter-spacing: 2px !important;
-  line-height: 1.5 !important;
-}
-
-@media (max-width: 480px) {
-  .brand {
-    top: 20px !important;
-  }
-
-  .brand-logo {
-    width: 85vw !important;
-    height: 100px !important;
-    max-height: 100px !important;
-  }
-}
-
-/* RADIO JOCOQUI - BURBUJAS PLANETARIAS */
-
-/* Volumen y reflejos */
-.planet {
-  border-radius: 50%;
-  overflow: visible;
-  box-shadow:
-    inset -5px -5px 9px rgba(0,0,0,.65),
-    inset 3px 3px 6px rgba(255,255,255,.22),
-    0 0 15px rgba(180,210,255,.25);
-}
-
-/* Reflejo superficial */
-.planet::before {
-  content: "";
-  position: absolute;
-  inset: 8%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at 28% 20%,
-    rgba(255,255,255,.6),
-    rgba(255,255,255,.12) 22%,
-    transparent 55%
-  );
-  pointer-events: none;
-}
-
-/* MERCURIO */
-.mercury {
-  background: radial-gradient(
-    circle at 28% 25%,
-    #ddd3c7 0%,
-    #9b9187 40%,
-    #4b4745 75%,
-    #17191e 100%
-  );
-}
-
-/* VENUS */
-.venus {
-  background: radial-gradient(
-    circle at 28% 25%,
-    #fff3c9 0%,
-    #e8b978 35%,
-    #b16a46 70%,
-    #3a2227 100%
-  );
-}
-
-/* TIERRA */
-.earth {
-  background: radial-gradient(
-    circle at 30% 25%,
-    #e0faff 0%,
-    #3ca9d4 22%,
-    #267c9a 40%,
-    #276b58 53%,
-    #173b76 72%,
-    #07152c 100%
-  );
-  box-shadow:
-    inset -5px -5px 10px #07152c,
-    0 0 13px rgba(74,178,255,.75),
-    0 0 25px rgba(74,178,255,.25);
-}
-
-/* MARTE */
-.mars {
-  background: radial-gradient(
-    circle at 28% 25%,
-    #ffd0a3 0%,
-    #c66d4d 35%,
-    #853a31 70%,
-    #291b22 100%
-  );
-}
-
-/* SATURNO */
-.saturn {
-  background: radial-gradient(
-    circle at 28% 25%,
-    #fff1c5 0%,
-    #d6b780 35%,
-    #a07c59 70%,
-    #30252b 100%
-  );
-}
-
-/* Anillos */
-.saturn::after {
-  content: "";
-  position: absolute;
-  width: 160%;
-  height: 42%;
-  top: 29%;
-  left: -30%;
-  border: 3px solid rgba(239,210,160,.85);
-  border-radius: 50%;
-  transform: rotate(-25deg);
-  box-shadow: 0 0 9px rgba(255,205,140,.3);
-}
-
-/* Movimiento atmosférico suave */
-@media (prefers-reduced-motion: no-preference) {
-  .planet {
-    animation: planetBreath 7s ease-in-out infinite alternate;
-  }
-}
-
-@keyframes planetBreath {
-  from { filter: brightness(.9); }
-  to { filter: brightness(1.2); }
-}
-
-/* LOGOTIPO RADIO JOCOQUI - MAS GRANDE */
-
-.brand {
-  position: absolute !important;
-  top: 12px !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  z-index: 20;
-  text-align: center;
-  transform: none !important;
-}
-
-.brand-logo {
-  display: block !important;
-  width: min(95vw, 780px) !important;
-  max-width: 100% !important;
-  height: 145px !important;
-  max-height: 145px !important;
-  object-fit: contain !important;
-  margin: 0 auto !important;
-  transform: none !important;
-}
-
-@media (max-width: 480px) {
-  .brand-logo {
-    width: 95vw !important;
-    height: 130px !important;
-    max-height: 130px !important;
-  }
-}
-
-/* ==================================
-   RADIO JOCOQUI - PLANETAS 3D
-   ================================== */
-
-/* Volumen tridimensional */
-.planet {
-  border-radius: 50%;
-  position: absolute;
-  overflow: visible;
-  transform: translateZ(0);
-  box-shadow:
-    inset -8px -7px 12px rgba(0,0,0,.8),
-    inset 4px 4px 7px rgba(255,255,255,.35),
-    0 0 18px rgba(255,255,255,.12);
-}
-
-/* Reflejo esférico */
-.planet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      ellipse at 28% 22%,
-      rgba(255,255,255,.65) 0%,
-      rgba(255,255,255,.18) 20%,
-      transparent 52%
-    );
-  pointer-events: none;
-}
-
-/* MERCURIO */
-.mercury {
-  width: 15px;
-  height: 15px;
-  background: radial-gradient(
-    circle at 30% 25%,
-    #e0d5c8 0%,
-    #a39889 35%,
-    #62594f 65%,
-    #17191c 100%
-  );
-}
-
-/* VENUS */
-.venus {
-  width: 28px;
-  height: 28px;
-  background: radial-gradient(
-    circle at 30% 25%,
-    #fff1c7 0%,
-    #e8bc83 30%,
-    #b7774e 65%,
-    #35212a 100%
-  );
-}
-
-/* TIERRA */
-.earth {
-  width: 34px;
-  height: 34px;
-  background:
-    radial-gradient(
-      ellipse at 42% 55%,
-      rgba(46,125,90,.8) 0%,
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 30% 25%,
-      #c7faff 0%,
-      #46a7dc 24%,
-      #195c9b 55%,
-      #07172f 100%
-    );
-
-  box-shadow:
-    inset -9px -8px 14px rgba(0,0,0,.85),
-    0 0 16px rgba(57,166,255,.7),
-    0 0 30px rgba(57,166,255,.25);
-}
-
-/* MARTE */
-.mars {
-  width: 25px;
-  height: 25px;
-  background: radial-gradient(
-    circle at 30% 25%,
-    #ffd1a5 0%,
-    #d27b55 35%,
-    #963e32 70%,
-    #27191d 100%
-  );
-}
-
-/* SATURNO */
-.saturn {
-  width: 39px;
-  height: 39px;
-  background: radial-gradient(
-    circle at 30% 25%,
-    #fff3d3 0%,
-    #e1bd85 30%,
-    #aa8055 65%,
-    #30232a 100%
-  );
-}
-
-/* Anillos tridimensionales */
-.saturn::after {
-  content: "";
-  position: absolute;
-  width: 160%;
-  height: 42%;
-  top: 29%;
-  left: -30%;
-  border: 4px solid rgba(240,211,158,.9);
-  border-radius: 50%;
-  transform: rotate(-25deg);
-  box-shadow:
-    0 0 8px rgba(255,216,159,.4),
-    inset 0 0 6px rgba(255,216,159,.25);
-}
-
-/* Movimiento de luz */
-@media (prefers-reduced-motion: no-preference) {
-  .planet {
-    animation: planetGlow3D 6s ease-in-out
-      infinite alternate;
-  }
-}
-
-@keyframes planetGlow3D {
-  from {
-    filter: brightness(.85);
-  }
-  to {
-    filter: brightness(1.2);
-  }
-}
-
-/* =====================================
-   RADIO JOCOQUI - PLANETAS THREE.JS
-   ===================================== */
-
-/* Mantener posiciones originales */
-.planet {
-  overflow: visible !important;
-  border-radius: 50%;
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: none !important;
-  animation: none !important;
-  isolation: isolate;
-}
-
-/* Desactivar reflejos CSS anteriores */
-.planet::before,
-.planet::after {
-  content: none !important;
-  display: none !important;
-}
-
-/* Lienzo tridimensional */
-.planet canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 50%;
-  background: transparent;
-  pointer-events: none;
-}
-
-/* Tamaños de las esferas */
-.mercury {
-  width: 18px !important;
-  height: 18px !important;
-}
-
-.venus {
-  width: 30px !important;
-  height: 30px !important;
-}
-
-.earth {
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.mars {
-  width: 28px !important;
-  height: 28px !important;
-}
-
-.saturn {
-  width: 55px !important;
-  height: 55px !important;
-  overflow: visible !important;
-}
-
-.saturn canvas {
-  border-radius: 0;
-  overflow: visible;
-}
-/* SOL INTERACTIVO */
-
-.sun {
-  cursor: pointer;
-  transition: transform 0.5s ease;
-}
-
-.sun:hover {
-  transform: scale(1.035);
-}
-
-/* CONTROLES OCULTOS AL INICIO */
-
-.player {
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.85);
-  pointer-events: none;
-
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s ease,
-    visibility 0.6s ease;
-}
-
-/* CONTROLES VISIBLES AL TOCAR EL SOL */
-
-.sun.open .player {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1);
-  pointer-events: auto;
-}
-
-/* MENSAJE INICIAL */
-
-.sun-message {
-  position: absolute;
-  z-index: 7;
-  text-align: center;
-  color: #fff3d6;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.sun-message span {
-  display: block;
-  font-size: clamp(11px, 2vw, 17px);
-  letter-spacing: 0.2em;
-}
-
-.sun-message small {
-  display: block;
-  margin-top: 12px;
-  font-size: clamp(9px, 1.5vw, 12px);
-  letter-spacing: 0.1em;
-}
-
-/* OCULTAR MENSAJE AL ABRIR */
-
-.sun.open .sun-message {
-  opacity: 0;
-  visibility: hidden;
-}
-/* SOL Y REPRODUCTOR SIEMPRE VISIBLES */
-
-.sun {
-  cursor: default;
-}
-
-/* Mostrar controles permanentemente */
-
-.sun .player,
-.sun.open .player {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: scale(1) !important;
-}
-
-/* Ocultar mensaje de tocar el sol */
-
-.sun-message {
-  display: none !important;
-}
-
-/* Mantener controles sobre el sol */
-
-.player {
-  position: relative;
-  z-index: 10;
-}.sun .player,
-.sun.open .player {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: scale(1) !important;
-}
-
-.sun-message {
-  display: none !important;
-}
-/* ===== SOL CENTRAL RADIO JOCOQUI ===== */
-
-.solar-system .sun {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-
-  width: min(56vw, 300px) !important;
-  height: min(56vw, 300px) !important;
-
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  background: radial-gradient(
-    circle at 35% 30%,
-    #fff5ad 0%,
-    #ffd34d 16%,
-    #ff9a21 36%,
-    #ed5b16 65%,
-    #982509 88%,
-    #571407 100%
-  ) !important;
-
-  box-shadow:
-    0 0 25px rgba(255, 191, 68, .95),
-    0 0 65px rgba(255, 117, 22, .7),
-    0 0 120px rgba(255, 75, 0, .35) !important;
-
-  opacity: 1 !important;
-  visibility: visible !important;
-  z-index: 20 !important;
-  animation: none !important;
-}
-
-/* REPRODUCTOR SIEMPRE VISIBLE */
-
-.solar-system .sun .player {
-  position: relative !important;
-  z-index: 25 !important;
-
-  width: 88% !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  pointer-events: auto !important;
-  transform: none !important;
-
-  background: rgba(8, 15, 28, .9) !important;
-  border-radius: 50% !important;
-}
-
-/* OCULTAR INSTRUCCIÓN DE TOCAR EL SOL */
-
-.sun-message {
-  display: none !important;
-}
-
-/* AJUSTES PARA IPHONE */
-
-@media (max-width: 480px) {
-  .solar-system .sun {
-    width: 56vw !important;
-    height: 56vw !important;
-  }
-
-  .solar-system .sun .player {
-    width: 92% !important;
-  }
-}</style>
+</style>
 </head>
 
 <body>
@@ -1153,7 +522,12 @@ button {
   <div class="stars"></div>
 
   <header class="brand">
-    <h1><img src="logo.PNG" alt="Radio Jocoqui" class="brand-logo"></h1>
+    <h1>
+      <img
+        src="logo.PNG"
+        alt="Radio Jocoqui"
+        class="brand-logo">
+    </h1>
     <p>MÚSICA · CULTURA · CONCIENCIA</p>
   </header>
 
@@ -1169,28 +543,40 @@ button {
     <div class="planet mars"></div>
     <div class="planet saturn"></div>
 
-    <div class="sun-message">
-  <span>RADIO JOCOQUI</span>
-  <small>☀ TOCA EL SOL PARA ESCUCHAR</small>
-</div>
-      <section class="player" aria-label="Reproductor musical">
+    <div class="sun" id="sun">
 
-        <div class="audio-title">RADIO JOCOQUI</div>
-        <div class="audio-subtitle">UNIVERSO SONORO ∞</div>
+      <div class="sun-texture" id="sunTexture"></div>
+
+      <section class="player"
+        aria-label="Reproductor musical">
+
+        <div class="audio-title">
+          RADIO JOCOQUI
+        </div>
+
+        <div class="audio-subtitle">
+          UNIVERSO SONORO ∞
+        </div>
 
         <div class="track-title" id="trackTitle">
           Canción 01
         </div>
 
         <div class="controls">
-          <button id="previous" type="button"
+
+          <button id="previous"
+            type="button"
             aria-label="Canción anterior">⏮</button>
 
-          <button id="play" class="play-button"
-            type="button" aria-label="Reproducir">▶</button>
+          <button id="play"
+            class="play-button"
+            type="button"
+            aria-label="Reproducir">▶</button>
 
-          <button id="next" type="button"
+          <button id="next"
+            type="button"
             aria-label="Siguiente canción">⏭</button>
+
         </div>
 
         <input
@@ -1200,8 +586,7 @@ button {
           min="0"
           max="100"
           value="0"
-          aria-label="Progreso de la canción"
-        >
+          aria-label="Progreso de la canción">
 
         <div class="time-row">
           <span id="currentTime">0:00</span>
@@ -1215,13 +600,18 @@ button {
         <audio id="audio" preload="metadata"></audio>
 
       </section>
+
     </div>
 
   </main>
 
-  <section class="library" aria-label="Biblioteca musical">
+  <section class="library"
+    aria-label="Biblioteca musical">
+
     <h2>ARCHIVO SONORO</h2>
+
     <div id="playlist" class="playlist"></div>
+
   </section>
 
   <footer class="footer">
@@ -1232,13 +622,7 @@ button {
 </div>
 
 <script>
-/*
-  PLAYLIST RADIO JOCOQUI
-
-  Los archivos deben estar en la misma carpeta
-  que index.html dentro de GitHub.
-*/
-
+/* CANCIONES ORIGINALES */
 
 const tracks = [
   {
@@ -1254,7 +638,6 @@ const tracks = [
     file: "My Kind of Woman.mp3"
   }
 ];
-
 
 const audio = document.getElementById("audio");
 const playButton = document.getElementById("play");
@@ -1275,7 +658,8 @@ function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remaining = Math.floor(seconds % 60);
 
-  return minutes + ":" + String(remaining).padStart(2, "0");
+  return minutes + ":" +
+    String(remaining).padStart(2, "0");
 }
 
 function renderPlaylist() {
@@ -1285,19 +669,18 @@ function renderPlaylist() {
     const button = document.createElement("button");
 
     button.type = "button";
-    button.className = index === currentTrack
-      ? "track active"
-      : "track";
+    button.className =
+      index === currentTrack ? "track active" : "track";
 
     const name = document.createElement("span");
     name.textContent = track.title;
 
     const number = document.createElement("span");
     number.className = "track-number";
-    number.textContent = String(index + 1).padStart(2, "0");
+    number.textContent =
+      String(index + 1).padStart(2, "0");
 
-    button.appendChild(name);
-    button.appendChild(number);
+    button.append(name, number);
 
     button.addEventListener("click", () => {
       loadTrack(index, true);
@@ -1318,7 +701,8 @@ function updatePlayButton() {
 }
 
 function loadTrack(index, autoplay = false) {
-  currentTrack = (index + tracks.length) % tracks.length;
+  currentTrack =
+    (index + tracks.length) % tracks.length;
 
   audio.pause();
   audio.src = tracks[currentTrack].file;
@@ -1333,9 +717,7 @@ function loadTrack(index, autoplay = false) {
   renderPlaylist();
   updatePlayButton();
 
-  if (autoplay) {
-    playCurrent();
-  }
+  if (autoplay) playCurrent();
 }
 
 async function playCurrent() {
@@ -1345,7 +727,7 @@ async function playCurrent() {
     statusLabel.textContent = "Transmitiendo música";
   } catch (error) {
     statusLabel.textContent =
-      "Toca Play para iniciar o verifica el archivo";
+      "Toca Play o verifica el archivo MP3";
   }
 
   updatePlayButton();
@@ -1379,16 +761,21 @@ audio.addEventListener("loadedmetadata", () => {
 });
 
 audio.addEventListener("timeupdate", () => {
-  currentTimeLabel.textContent = formatTime(audio.currentTime);
+  currentTimeLabel.textContent =
+    formatTime(audio.currentTime);
 
-  if (Number.isFinite(audio.duration) && audio.duration > 0) {
-    progress.value = (audio.currentTime / audio.duration) * 100;
+  if (Number.isFinite(audio.duration) &&
+      audio.duration > 0) {
+    progress.value =
+      (audio.currentTime / audio.duration) * 100;
   }
 });
 
 progress.addEventListener("input", () => {
-  if (Number.isFinite(audio.duration) && audio.duration > 0) {
-    audio.currentTime = (progress.value / 100) * audio.duration;
+  if (Number.isFinite(audio.duration) &&
+      audio.duration > 0) {
+    audio.currentTime =
+      (progress.value / 100) * audio.duration;
   }
 });
 
@@ -1405,314 +792,342 @@ audio.addEventListener("error", () => {
 loadTrack(0);
 </script>
 
-
-<!-- RADIO JOCOQUI: PLANETAS 3D -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.1/three.min.js"></script>
+<!-- SOL CON TEXTURA DE PLASMA -->
 
 <script>
 (function () {
-  "use strict";
+  const holder = document.getElementById("sunTexture");
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
-  if (!window.THREE) {
-    console.warn("Three.js no pudo cargarse");
-    return;
+  if (!ctx) return;
+
+  canvas.width = 512;
+  canvas.height = 512;
+  holder.appendChild(canvas);
+
+  const size = 512;
+  const center = size / 2;
+  const radius = 250;
+
+  function noise(x, y, t) {
+    return (
+      Math.sin(x * 0.042 + t) *
+      Math.cos(y * 0.055 - t * 0.6) +
+      Math.sin((x + y) * 0.065 - t * 0.8) * 0.5 +
+      Math.cos((x - y) * 0.09 + t * 1.3) * 0.25
+    );
   }
 
-  const THREE = window.THREE;
+  function drawSun(time) {
+    const image = ctx.createImageData(size, size);
+    const data = image.data;
 
-  const planets = [
-    {
-      selector: ".mercury",
-      type: "rock",
-      base: "#91877b",
-      detail: "#4c4946",
-      speed: 0.003
-    },
-    {
-      selector: ".venus",
-      type: "cloud",
-      base: "#e5bc80",
-      detail: "#b4774b",
-      speed: 0.002
-    },
-    {
-      selector: ".earth",
-      type: "earth",
-      base: "#176db4",
-      detail: "#35865c",
-      speed: 0.004
-    },
-    {
-      selector: ".mars",
-      type: "rock",
-      base: "#b85d40",
-      detail: "#77382c",
-      speed: 0.003
-    },
-    {
-      selector: ".saturn",
-      type: "gas",
-      base: "#dbc18b",
-      detail: "#a27d59",
-      speed: 0.002
-    }
-  ];
+    const t = time * 0.00013;
 
-  const instances = [];
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const dx = x - center;
+        const dy = y - center;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // Texturas generadas sin archivos externos
-  function makeTexture(planet) {
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 256;
+        const i = (y * size + x) * 4;
 
-    const ctx = canvas.getContext("2d");
-    const w = canvas.width;
-    const h = canvas.height;
+        if (dist > radius) {
+          data[i + 3] = 0;
+          continue;
+        }
 
-    ctx.fillStyle = planet.base;
-    ctx.fillRect(0, 0, w, h);
+        const n = noise(x, y, t);
+        const n2 = noise(x * 1.8, y * 1.8, -t * 1.5);
 
-    const base = new THREE.Color(planet.base);
-    const detail = new THREE.Color(planet.detail);
+        const turbulence = n * 0.65 + n2 * 0.35;
+        const edge = Math.pow(dist / radius, 1.7);
 
-    // Patrón de superficie
-    for (let i = 0; i < 1600; i++) {
-      const x = Math.random() * w;
-      const y = Math.random() * h;
+        let heat = 0.62 + turbulence * 0.15 - edge * 0.2;
+        heat = Math.max(0, Math.min(1, heat));
 
-      let size = Math.random() * 18 + 2;
+        const spot = turbulence < -0.7 ? 0.5 : 1;
 
-      if (planet.type === "gas" ||
-          planet.type === "cloud") {
-        size = Math.random() * 35 + 10;
-      }
-
-      const mix = Math.random();
-      const color = base.clone().lerp(detail, mix);
-
-      ctx.fillStyle = "#" + color.getHexString();
-      ctx.globalAlpha = 0.15 + Math.random() * 0.45;
-
-      ctx.beginPath();
-
-      if (planet.type === "gas" ||
-          planet.type === "cloud") {
-        ctx.ellipse(
-          x, y,
-          size * 2,
-          size * 0.18,
-          0, 0, Math.PI * 2
+        data[i] = Math.min(255, 245 * spot);
+        data[i + 1] = Math.min(
+          255, (65 + heat * 165) * spot
         );
-      } else {
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-      }
-
-      ctx.fill();
-    }
-
-    ctx.globalAlpha = 1;
-
-    if (planet.type === "earth") {
-      // Bandas de nubes semitransparentes
-      for (let i = 0; i < 55; i++) {
-        const x = Math.random() * w;
-        const y = Math.random() * h;
-
-        ctx.fillStyle = "rgba(235,245,255,0.22)";
-        ctx.beginPath();
-        ctx.ellipse(
-          x, y,
-          15 + Math.random() * 30,
-          2 + Math.random() * 5,
-          Math.random() * 0.4,
-          0, Math.PI * 2
+        data[i + 2] = Math.min(
+          255, (5 + heat * 70) * spot
         );
-        ctx.fill();
+        data[i + 3] = 225;
       }
     }
 
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return texture;
+    ctx.putImageData(image, 0, 0);
   }
-
-  function createPlanet(config) {
-    const element = document.querySelector(config.selector);
-    if (!element) return;
-
-    // Evitar crear dos renders sobre el mismo planeta
-    if (element.querySelector("canvas")) return;
-
-    let renderer;
-
-    try {
-      renderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: true,
-        powerPreference: "low-power"
-      });
-    } catch (error) {
-      console.warn("WebGL no disponible", error);
-      return;
-    }
-
-    const width = element.clientWidth;
-    const height = element.clientHeight;
-
-    renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio || 1, 2)
-    );
-
-    renderer.setSize(width, height);
-    renderer.setClearColor(0x000000, 0);
-
-    element.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(
-      40,
-      width / height,
-      0.1,
-      100
-    );
-
-    camera.position.z = 3.8;
-
-    const geometry = new THREE.SphereGeometry(
-      1, 48, 32
-    );
-
-    const texture = makeTexture(config);
-
-    const material = new THREE.MeshStandardMaterial({
-      map: texture,
-      roughness: 0.9,
-      metalness: 0.0
-    });
-
-    const sphere = new THREE.Mesh(geometry, material);
-
-    sphere.rotation.z = 0.15;
-    scene.add(sphere);
-
-    // Luz suave ambiental
-    scene.add(
-      new THREE.AmbientLight(0xffffff, 0.55)
-    );
-
-    // Luz principal del Sol
-    const sunlight = new THREE.DirectionalLight(
-      0xffe2bd, 2.4
-    );
-
-    sunlight.position.set(-3, 3, 5);
-    scene.add(sunlight);
-
-    // Saturno: anillos 3D
-    if (config.type === "gas") {
-      const ringGeometry = new THREE.RingGeometry(
-        1.25, 1.9, 96
-      );
-
-      const ringMaterial = new THREE.MeshBasicMaterial({
-        color: 0xd9bd88,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.78,
-        depthWrite: false
-      });
-
-      const rings = new THREE.Mesh(
-        ringGeometry,
-        ringMaterial
-      );
-
-      rings.rotation.x = 1.1;
-      rings.rotation.z = -0.35;
-
-      sphere.add(rings);
-
-      // Alejar cámara para mostrar los anillos
-      camera.position.z = 5.5;
-    }
-
-    instances.push({
-      renderer,
-      scene,
-      camera,
-      sphere,
-      speed: config.speed
-    });
-  }
-
-  planets.forEach(createPlanet);
 
   const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
 
-  let lastTime = 0;
+  let last = 0;
 
   function animate(time) {
-    requestAnimationFrame(animate);
-
-    // Limitar actualización a ~30 FPS
-    if (time - lastTime < 33) return;
-
-    lastTime = time;
-
-    instances.forEach(item => {
-      if (!reducedMotion &&
-          document.visibilityState === "visible") {
-        item.sphere.rotation.y += item.speed;
+    if (time - last >= 100) {
+      last = time;
+      if (document.visibilityState === "visible") {
+        drawSun(time);
       }
+    }
 
-      item.renderer.render(
-        item.scene,
-        item.camera
-      );
-    });
+    requestAnimationFrame(animate);
   }
 
-  if (instances.length) {
+  drawSun(0);
+
+  if (!reducedMotion) {
     requestAnimationFrame(animate);
   }
 })();
 </script>
-<script>
-const sun = document.getElementById("sun");
 
-function toggleSunPlayer() {
-  const isOpen = sun.classList.toggle("open");
+<!-- PLANETAS 3D THREE.JS -->
 
-  sun.setAttribute("aria-expanded", String(isOpen));
-  sun.setAttribute(
-    "aria-label",
-    isOpen
-      ? "Cerrar reproductor de Radio Jocoqui"
-      : "Abrir reproductor de Radio Jocoqui"
-  );
+<script type="module">
+import * as THREE from
+  "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
+
+const planets = [
+  {
+    selector: ".mercury",
+    type: "rock",
+    base: "#91877b",
+    detail: "#4c4946",
+    speed: 0.003
+  },
+  {
+    selector: ".venus",
+    type: "cloud",
+    base: "#e5bc80",
+    detail: "#b4774b",
+    speed: 0.002
+  },
+  {
+    selector: ".earth",
+    type: "earth",
+    base: "#176db4",
+    detail: "#35865c",
+    speed: 0.004
+  },
+  {
+    selector: ".mars",
+    type: "rock",
+    base: "#b85d40",
+    detail: "#77382c",
+    speed: 0.003
+  },
+  {
+    selector: ".saturn",
+    type: "gas",
+    base: "#dbc18b",
+    detail: "#a27d59",
+    speed: 0.002
+  }
+];
+
+const instances = [];
+
+function makeTexture(planet) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 256;
+
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+
+  ctx.fillStyle = planet.base;
+  ctx.fillRect(0, 0, w, h);
+
+  const base = new THREE.Color(planet.base);
+  const detail = new THREE.Color(planet.detail);
+
+  for (let i = 0; i < 2200; i++) {
+    const x = Math.random() * w;
+    const y = Math.random() * h;
+
+    let size = Math.random() * 18 + 2;
+
+    if (planet.type === "gas" ||
+        planet.type === "cloud") {
+      size = Math.random() * 35 + 10;
+    }
+
+    const mix = Math.random();
+    const color = base.clone().lerp(detail, mix);
+
+    ctx.fillStyle = "#" + color.getHexString();
+    ctx.globalAlpha = 0.15 + Math.random() * 0.45;
+
+    ctx.beginPath();
+
+    if (planet.type === "gas" ||
+        planet.type === "cloud") {
+      ctx.ellipse(
+        x, y, size * 2, size * 0.18,
+        0, 0, Math.PI * 2
+      );
+    } else {
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+    }
+
+    ctx.fill();
+  }
+
+  ctx.globalAlpha = 1;
+
+  if (planet.type === "earth") {
+    for (let i = 0; i < 70; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+
+      ctx.fillStyle = "rgba(235,245,255,0.22)";
+      ctx.beginPath();
+      ctx.ellipse(
+        x, y,
+        15 + Math.random() * 30,
+        2 + Math.random() * 5,
+        Math.random() * 0.4,
+        0, Math.PI * 2
+      );
+      ctx.fill();
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
 }
 
-sun.addEventListener("click", (event) => {
-  if (event.target.closest("button, input")) {
+function createPlanet(config) {
+  const element = document.querySelector(config.selector);
+  if (!element) return;
+
+  let renderer;
+
+  try {
+    renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: "low-power"
+    });
+  } catch (error) {
+    console.warn("WebGL no disponible", error);
     return;
   }
 
-  toggleSunPlayer();
-});
+  const width = element.clientWidth;
+  const height = element.clientHeight;
 
-sun.addEventListener("keydown", (event) => {
-  if (event.target !== sun) return;
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, 2)
+  );
 
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    toggleSunPlayer();
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(
+    40, width / height, 0.1, 100
+  );
+
+  camera.position.z = 3.8;
+
+  const geometry = new THREE.SphereGeometry(
+    1, 64, 48
+  );
+
+  const material = new THREE.MeshStandardMaterial({
+    map: makeTexture(config),
+    roughness: 0.9,
+    metalness: 0
+  });
+
+  const sphere = new THREE.Mesh(geometry, material);
+  sphere.rotation.z = 0.15;
+  scene.add(sphere);
+
+  scene.add(
+    new THREE.AmbientLight(0xffffff, 0.65)
+  );
+
+  const sunlight = new THREE.DirectionalLight(
+    0xffe2bd, 2.5
+  );
+  sunlight.position.set(-3, 3, 5);
+  scene.add(sunlight);
+
+  if (config.type === "gas") {
+    const ringGeometry = new THREE.RingGeometry(
+      1.25, 1.9, 96
+    );
+
+    const ringMaterial = new THREE.MeshBasicMaterial({
+      color: 0xd9bd88,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false
+    });
+
+    const rings = new THREE.Mesh(
+      ringGeometry, ringMaterial
+    );
+
+    rings.rotation.x = 1.1;
+    rings.rotation.z = -0.35;
+    sphere.add(rings);
+
+    camera.position.z = 5.5;
   }
-});
-</script></body>
-</html>
 
+  element.style.background = "transparent";
+  element.style.boxShadow = "none";
+  element.appendChild(renderer.domElement);
+
+  instances.push({
+    renderer, scene, camera, sphere,
+    speed: config.speed
+  });
+}
+
+planets.forEach(createPlanet);
+
+const reducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
+let lastTime = 0;
+
+function animate(time) {
+  requestAnimationFrame(animate);
+
+  if (time - lastTime < 33) return;
+  lastTime = time;
+
+  if (document.visibilityState !== "visible") return;
+
+  instances.forEach(item => {
+    if (!reducedMotion) {
+      item.sphere.rotation.y += item.speed;
+    }
+
+    item.renderer.render(item.scene, item.camera);
+  });
+}
+
+if (instances.length) {
+  requestAnimationFrame(animate);
+}
+</script>
+
+</body>
+</html>
