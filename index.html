@@ -729,6 +729,38 @@ button {
   from { filter: brightness(.9); }
   to { filter: brightness(1.2); }
 }
+
+/* LOGOTIPO RADIO JOCOQUI - MAS GRANDE */
+
+.brand {
+  position: absolute !important;
+  top: 12px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 20;
+  text-align: center;
+  transform: none !important;
+}
+
+.brand-logo {
+  display: block !important;
+  width: min(95vw, 780px) !important;
+  max-width: 100% !important;
+  height: 145px !important;
+  max-height: 145px !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+  transform: none !important;
+}
+
+@media (max-width: 480px) {
+  .brand-logo {
+    width: 95vw !important;
+    height: 130px !important;
+    max-height: 130px !important;
+  }
+}
 </style>
 </head>
 
