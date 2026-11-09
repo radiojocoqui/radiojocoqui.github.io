@@ -714,6 +714,29 @@ button { font: inherit; }
   .universe { padding-top: 205px; }
   .dashboard-extra .jocoqui-registro { font-size: 10px; padding: 12px 18px; }
 }
+
+
+/* EVENTOS · CARTEL DENTRO DEL ZOOM DE VENUS */
+.venus-poster-action{position:absolute;z-index:5;right:clamp(12px,4vw,48px);top:50%;transform:translateY(-50%);width:clamp(92px,20vw,210px);padding:7px;border:1px solid rgba(219,234,252,.65);border-radius:6px;background:rgba(8,17,32,.92);box-shadow:0 14px 40px #0009;cursor:pointer;color:#eaf4ff;text-align:center;display:none;}
+.venus-poster-action.is-visible{display:block;}
+.venus-poster-action img{display:block;width:100%;max-height:36vh;object-fit:contain;}
+.venus-poster-action span{display:block;font-size:10px;letter-spacing:.13em;padding:7px 0 2px;}
+.venus-poster-action:focus-visible{outline:2px solid #f4c38d;}
+.venus-flyer-lightbox{position:fixed;inset:0;z-index:450;background:rgba(1,5,12,.96);display:none;align-items:center;justify-content:center;padding:65px 18px 85px;}
+.venus-flyer-lightbox.is-open{display:flex;}
+.venus-flyer-lightbox img{display:block;max-width:100%;max-height:100%;object-fit:contain;}
+.venus-flyer-close{position:absolute;right:18px;top:max(15px,env(safe-area-inset-top));padding:12px 16px;border:1px solid #a9bed5;border-radius:8px;background:#101e31;color:white;cursor:pointer;}
+@media(max-width:600px){.venus-poster-action{top:auto;bottom:125px;right:12px;transform:none;width:105px;padding:5px;}.venus-poster-action img{max-height:20vh;}.venus-poster-action span{font-size:8px;letter-spacing:.04em;}}
+
+/* Acceso a Eventos: verificación de sesión y rol en Supabase */
+.event-access-gate{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,7,16,.94);backdrop-filter:blur(12px)}
+.event-access-gate.is-open{display:flex}
+.event-access-panel{width:min(100%,440px);padding:32px 24px;text-align:center;border:1px solid rgba(178,211,248,.35);border-radius:16px;background:#101d30;box-shadow:0 25px 90px #0009}
+.event-access-panel h2{font-size:24px;font-weight:400;margin:0 0 12px;color:#fff}
+.event-access-panel p{font-size:14px;line-height:1.65;color:#c2d0e0;margin:0 0 24px}
+.event-access-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.event-access-actions a,.event-access-actions button{display:inline-block;border:1px solid #a9c6e5;border-radius:9px;padding:12px 16px;background:#d5e9fc;color:#071527;text-decoration:none;font:600 12px Arial;cursor:pointer}
+.event-access-actions button{background:transparent;color:#e5effa}
 </style>
 </head>
 
@@ -1341,6 +1364,54 @@ if (instances.length) {
 }
 </script>
 
+
+<!-- El flyer permanece público como archivo, pero Eventos requiere sesión y aprobación. -->
+<div id="eventAccessGate" class="event-access-gate" role="dialog" aria-modal="true" aria-labelledby="eventAccessTitle" aria-hidden="true">
+  <div class="event-access-panel">
+    <h2 id="eventAccessTitle">EVENTOS · RADIO JOCOQUI</h2>
+    <p id="eventAccessMessage">Para consultar los eventos, crea tu cuenta e inicia sesión.</p>
+    <div class="event-access-actions">
+      <a href="/registro.html">REGISTRARME / INICIAR SESIÓN</a>
+      <button type="button" id="eventAccessClose">VOLVER</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const gate=document.getElementById('eventAccessGate');
+  const message=document.getElementById('eventAccessMessage');
+  const close=document.getElementById('eventAccessClose');
+  let previousFocus=null;
+  window.jocoquiEventGate=function(text){
+    previousFocus=document.activeElement;
+    message.textContent=text;
+    gate.classList.add('is-open');gate.setAttribute('aria-hidden','false');
+    close.focus();
+  };
+  function dismiss(){gate.classList.remove('is-open');gate.setAttribute('aria-hidden','true');if(previousFocus?.isConnected)previousFocus.focus();}
+  close.addEventListener('click',dismiss);
+  gate.addEventListener('click',e=>{if(e.target===gate)dismiss();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&gate.classList.contains('is-open')){e.stopImmediatePropagation();dismiss();}},true);
+  window.jocoquiEventAccessReady=import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm')
+    .then(({createClient})=>createClient('https://grjqqhmzyfozrxrkvmyn.supabase.co','sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}))
+    .catch(()=>null);
+  window.jocoquiCheckEventAccess=async function(){
+    const client=await window.jocoquiEventAccessReady;
+    if(!client){window.jocoquiEventGate('No pudimos conectar con el registro. Revisa tu conexión e inténtalo de nuevo.');return false;}
+    try{
+      const {data:{user},error}=await client.auth.getUser();
+      if(error||!user){window.jocoquiEventGate('Para ver los eventos necesitas crear tu cuenta e iniciar sesión.');return false;}
+      const {data:profile,error:profileError}=await client.from('profiles').select('role').eq('id',user.id).single();
+      if(profileError||!profile){window.jocoquiEventGate('No pudimos verificar tu perfil. Inténtalo de nuevo más tarde.');return false;}
+      if(!['basic','moderator','admin'].includes(profile.role)){
+        window.jocoquiEventGate('Tu cuenta está registrada, pero todavía está pendiente de aprobación por un administrador.');return false;
+      }
+      return true;
+    }catch(err){window.jocoquiEventGate('No pudimos verificar tu sesión. Inténtalo de nuevo.');return false;}
+  };
+})();
+</script>
+
 <!-- VISOR ESPACIAL: no modifica el reproductor -->
 <section class="explorer" id="explorer" role="dialog" aria-modal="true" aria-label="Exploración de planetas" aria-hidden="true">
   <canvas id="explorerCanvas" aria-label="Planeta tridimensional interactivo"></canvas>
@@ -1349,6 +1420,10 @@ if (instances.length) {
     <button type="button" id="explorerClose" aria-label="Regresar al sistema solar">✕ Regresar</button>
   </div>
   <div class="explorer-help">Arrastra para girar · Pellizca o usa la rueda para hacer zoom</div>
+  <button class="venus-poster-action" id="venusPosterAction" type="button" aria-label="Ampliar cartel del evento Radio Jocoqui">
+    <img src="flyer-evento.png" alt="Flyer Radio Jocoqui: XIII, XIV, XV y XVI de noviembre de 2026" loading="lazy">
+    <span>VER CARTEL</span>
+  </button>
   <div class="explorer-bottom">
     <button type="button" id="explorerPrev">← Anterior</button>
     <span class="explorer-counter" id="explorerCounter">01 / 05</span>
@@ -1357,6 +1432,11 @@ if (instances.length) {
     <button type="button" id="enterSection" class="enter-section">Entrar a la sección →</button>
   </div>
 </section>
+
+<div id="venusFlyerLightbox" class="venus-flyer-lightbox" role="dialog" aria-modal="true" aria-label="Cartel del evento Radio Jocoqui" aria-hidden="true">
+  <button type="button" id="venusFlyerClose" class="venus-flyer-close">✕ Cerrar cartel</button>
+  <img src="flyer-evento.png" alt="Radio Jocoqui, XIII, XIV, XV y XVI de noviembre de 2026">
+</div>
 
 <script type="module">
 /* VISOR 3D: cámara orbital y viaje suave entre planetas. Audio intacto. */
@@ -1373,6 +1453,15 @@ const canvas=document.getElementById('explorerCanvas');
 const label=document.getElementById('explorerName');
 const counter=document.getElementById('explorerCounter');
 const closeBtn=document.getElementById('explorerClose');
+const posterButton=document.getElementById('venusPosterAction');
+const flyerLightbox=document.getElementById('venusFlyerLightbox');
+const flyerClose=document.getElementById('venusFlyerClose');
+let flyerFocus=null;
+function closeFlyer(){flyerLightbox.classList.remove('is-open');flyerLightbox.setAttribute('aria-hidden','true');if(flyerFocus?.isConnected)flyerFocus.focus();}
+posterButton.addEventListener('click',()=>{flyerFocus=document.activeElement;flyerLightbox.classList.add('is-open');flyerLightbox.setAttribute('aria-hidden','false');flyerClose.focus();});
+flyerClose.addEventListener('click',closeFlyer);
+flyerLightbox.addEventListener('click',e=>{if(e.target===flyerLightbox)closeFlyer();});
+
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'low-power'});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 renderer.setClearColor(0x000000,0);
@@ -1423,10 +1512,13 @@ function resize(){
  renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
 }
 function disposeGroup(group){if(!group)return;group.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(o.material.map)o.material.map.dispose();o.material.dispose();}});scene.remove(group);}
-function select(index){
- current=(index+configs.length)%configs.length;
+async function select(index){
+ const target=(index+configs.length)%configs.length;
+ if(target===1 && !(await window.jocoquiCheckEventAccess()))return;
+ current=target;
  label.textContent=configs[current].name;
  counter.textContent=String(current+1).padStart(2,'0')+' / 05';
+ posterButton.classList.toggle('is-visible',current===1);
  if(previousGroup){disposeGroup(previousGroup);previousGroup=null;}
  previousGroup=planetGroup;
  planetGroup=makePlanet(configs[current]);
@@ -1436,12 +1528,14 @@ function select(index){
  yaw=.25;pitch=.12;targetDistance=configs[current].type==='gas'?6:4.6;
  if(!active)distance=targetDistance;
 }
-function open(index){
+async function open(index){
+ if(index===1 && !(await window.jocoquiCheckEventAccess()))return;
  lastFocus=document.activeElement;
  active=true;modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');
  document.body.style.overflow='hidden';resize();select(index);closeBtn.focus();
 }
 function close(){
+ closeFlyer();posterButton.classList.remove('is-visible');
  active=false;modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');
  document.body.style.overflow='';pointerMap.clear();previousPinch=0;
  if(lastFocus&&lastFocus.focus)lastFocus.focus();
@@ -1456,7 +1550,7 @@ closeBtn.addEventListener('click',close);
 document.getElementById('explorerPrev').addEventListener('click',()=>select(current-1));
 document.getElementById('explorerNext').addEventListener('click',()=>select(current+1));
 document.getElementById('explorerReset').addEventListener('click',()=>{yaw=.25;pitch=.12;targetDistance=configs[current].type==='gas'?6:4.6;});
-document.addEventListener('keydown',e=>{if(!active)return;if(e.key==='Escape')close();if(e.key==='ArrowRight')select(current+1);if(e.key==='ArrowLeft')select(current-1);});
+document.addEventListener('keydown',e=>{if(flyerLightbox.classList.contains('is-open')){if(e.key==='Escape')closeFlyer();return;}if(!active)return;if(e.key==='Escape')close();if(e.key==='ArrowRight')select(current+1);if(e.key==='ArrowLeft')select(current-1);});
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointerMap.set(e.pointerId,{x:e.clientX,y:e.clientY});});
 canvas.addEventListener('pointermove',e=>{
  if(!pointerMap.has(e.pointerId))return;
@@ -1515,9 +1609,9 @@ const sectionData={
  },
  'Eventos':{
   lead:'Una agenda de encuentros, música y experiencias para conectar a nuestra comunidad.',
-  hero:['AGENDA CULTURAL','Próximos encuentros','Aquí aparecerán los eventos publicados, sus artistas, horarios y detalles de acceso.'],
-  tiles:[['01','Agenda','Próximos eventos y encuentros organizados por fecha.'],['02','Artistas y sesiones','Presentaciones, DJ sets y propuestas musicales de la comunidad.'],['03','Acceso y registro','La información es pública. Registrarse o pagar un evento requerirá una cuenta Básica aprobada.']],
-  note:'Todavía no hay eventos cargados ni sistema de registro o pago. No se muestran fechas ficticias.'
+  hero:['RADIO JOCOQUI · NOVIEMBRE 2026','XIII · XIV · XV · XVI','Consulta el cartel del evento en el zoom de Venus. Próximamente publicaremos horarios y detalles de acceso.'],
+  tiles:[['01','Agenda','Próximos eventos y encuentros organizados por fecha.'],['02','Artistas y sesiones','Presentaciones, DJ sets y propuestas musicales de la comunidad.'],['03','Acceso y registro','Solo los usuarios registrados y aprobados pueden consultar los eventos.']],
+  note:'Cartel del evento disponible en el zoom de Venus. Los detalles de acceso y reservación se anunciarán próximamente.'
  },
  'Blogs':{
   lead:'Un archivo editorial de ideas, sonidos, lecturas y conversaciones.',
@@ -1542,7 +1636,8 @@ const sectionDescription=document.getElementById('sectionDescription');
 const sectionCard=document.getElementById('sectionCard');
 let lastFocus=null;
 function element(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text)el.textContent=text;return el;}
-function showSection(name){
+async function showSection(name){
+ if(name==='Eventos' && !(await window.jocoquiCheckEventAccess()))return;
  const data=sectionData[name];if(!data)return;
  lastFocus=document.activeElement;
  sectionHeading.textContent=name;
