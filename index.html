@@ -687,10 +687,38 @@ button { font: inherit; }
 .controls .play-button svg {width:25px;height:25px;}
 .mini-player button {border-radius:10px;}
 @media(max-width:480px){.controls button svg,.mini-player button svg{width:18px;height:18px}.controls .play-button svg{width:21px;height:21px}}
+
+/* AJUSTES FINALES · LOGO Y REGISTRO EN DASHBOARD */
+.brand-logo { height: 155px !important; }
+.universe { padding-top: 225px; }
+.brand p { margin-top: 0; }
+.dashboard-break { flex-basis: 100%; height: 0; }
+.dashboard-extra .jocoqui-registro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 20px;
+  border: 1px solid rgba(190,215,242,.55);
+  border-radius: 6px;
+  background: rgba(10,21,39,.7);
+  color: #f5eee3;
+  font: 600 11px/1.3 Arial, Helvetica, sans-serif;
+  letter-spacing: .1em;
+  text-decoration: none;
+  transition: background .2s, border-color .2s;
+}
+.dashboard-extra .jocoqui-registro:hover { background: rgba(44,81,127,.5); border-color: #f4c38d; }
+.dashboard-extra .jocoqui-registro:focus-visible { outline: 2px solid #f4c38d; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .brand-logo { height: 145px !important; }
+  .universe { padding-top: 205px; }
+  .dashboard-extra .jocoqui-registro { font-size: 10px; padding: 12px 18px; }
+}
 </style>
 </head>
 
 <body>
+
 
 <div class="universe">
 
@@ -788,7 +816,7 @@ button { font: inherit; }
 
   </main>
 
-<nav class="dashboard-extra" aria-label="Más secciones"><button data-go="Chatroom">Chatroom · Acceso Básico</button><button data-go="Perfil">Perfil · Acceso Básico</button><button data-go="Términos y Condiciones">Términos y Condiciones</button></nav>
+<nav class="dashboard-extra" aria-label="Más secciones"><button data-go="Chatroom">Chatroom · Acceso Básico</button><button data-go="Perfil">Perfil · Acceso Básico</button><button data-go="Términos y Condiciones">Términos y Condiciones</button><span class="dashboard-break" aria-hidden="true"></span><a href="/registro.html" class="jocoqui-registro" aria-label="Crear cuenta en Radio Jocoqui">CREAR CUENTA</a></nav>
   <section class="library"
     aria-label="Biblioteca musical">
 
@@ -1568,69 +1596,5 @@ miniProgress.addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&a
 setTimeout(syncMini,0);
 </script>
 
-
-<!-- RADIO JOCOQUI · REGISTRO PUBLICO -->
-
-<style>
-  .jocoqui-registro {
-    position: fixed;
-    top: 22px;
-    right: 22px;
-    z-index: 9999;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 13px 22px;
-    border: 1px solid rgba(190, 218, 250, 0.5);
-    border-radius: 8px;
-
-    background: rgba(8, 19, 36, 0.88);
-    color: #ffffff;
-
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-decoration: none;
-
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
-    transition: background 0.3s, color 0.3s;
-  }
-
-  .jocoqui-registro:hover {
-    background: #dcefff;
-    color: #081324;
-  }
-
-  .jocoqui-registro:focus-visible {
-    outline: 2px solid #f4c38d;
-    outline-offset: 3px;
-  }
-
-  @media (max-width: 600px) {
-    .jocoqui-registro {
-      top: 12px;
-      right: 12px;
-      padding: 10px 13px;
-      font-size: 9px;
-      letter-spacing: 1px;
-    }
-  }
-</style>
-
-<a
-  href="/registro.html"
-  class="jocoqui-registro"
-  aria-label="Crear cuenta en Radio Jocoqui"
->
-  CREAR CUENTA
-</a>
-
-<!-- FIN REGISTRO PUBLICO -->
 </body>
 </html>
