@@ -8,6 +8,7 @@ let selectedId = '';
 let busy = false;
 let invitations = [];
 let loadSequence = 0;
+let registeredUsers = [];
 const csvCell = value => {
   let s = String(value ?? '');
   if (/^[=+@\-\t\r]/.test(s)) s = "'" + s;
@@ -64,8 +65,30 @@ function showInvitations(event) {
   for (const inv of invitations) {
     const row = body.insertRow();
     const total = inv.seats * Number(event.price_per_person);
-    const values = [inv.folio, inv.guest_name, inv.seats, money(total), money(inv.deposit_amount), inv.deposit_verified ? 'Anticipo verificado' : 'Pendiente · sin acceso', 'Validación de pagos: próxima etapa'];
+    const values = [inv.folio, inv.guest_name, inv.seats, money(total), money(inv.deposit_amount), inv.deposit_verified ? 'Anticipo verificado' : 'Pendiente · sin acceso'];
     for (const value of values) row.insertCell().textContent = String(value);
+    const actions = row.insertCell();
+    const link = new URL('ver-invitacion.html', window.location.href);
+    link.searchParams.set('folio', inv.folio);
+    const url = link.href;
+    const email = String(inv.guest_contact || '').trim();
+    const subject = `Invitación pendiente · ${event.title} · Radio Jocoqui`;
+    const bodyText = `Hola ${inv.guest_name},\\n\\nTe compartimos una invitación pendiente para ${event.title} (${event.event_date}), para ${inv.seats} persona(s).\\n\\nConsulta los detalles aquí: ${url}\\n\\nEsta invitación NO garantiza entrada ni reserva lugares. Para confirmar es necesario que Radio Jocoqui verifique el anticipo del 50%. El 50% restante se paga antes de ingresar.\\n\\nRadio Jocoqui`;
+    const mail = document.createElement('button');
+    mail.type = 'button'; mail.textContent = 'Correo';
+    mail.disabled = !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+    mail.title = mail.disabled ? 'Esta invitación no tiene correo válido' : 'Abrir correo para enviarlo manualmente';
+    mail.addEventListener('click', () => {
+      window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+      status('Se abrió tu aplicación de correo. Revisa el mensaje y pulsa Enviar allí; no se ha enviado automáticamente.');
+    });
+    const copy = document.createElement('button');
+    copy.type = 'button'; copy.textContent = 'Copiar enlace';
+    copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(url); status('Enlace copiado. Compártelo solo con el destinatario; todavía no es un acceso confirmado.'); }
+      catch { window.prompt('Copia este enlace:', url); }
+    });
+    actions.append(mail, document.createTextNode(' '), copy);
   }
 }
 async function loadInvitations(id) {
@@ -99,6 +122,7 @@ async function refresh(preferredId = selectedId) {
   }
   $('adminArea').hidden = false;
   $('loginPanel').hidden = true;
+  await loadRegisteredUsers();
   const {data,error} = await sb.from('rj_events').select('id,title,event_date,capacity,price_per_person,created_at').order('created_at',{ascending:false}).limit(200);
   if (error) { status('Error al consultar eventos: ' + error.message); return; }
   events = data || [];
@@ -127,6 +151,44 @@ async function refresh(preferredId = selectedId) {
   else showEvent(events.some(x => x.id === preferredId) ? preferredId : (events[0]?.id || ''));
   status('Sesión administrativa activa · Eventos e invitaciones conectados a Supabase. Los depósitos aún no se validan desde este panel.');
 }
+
+async function loadRegisteredUsers() {
+  const {data,error} = await sb.rpc('rj_admin_registered_users');
+  const select = $('registeredUser');
+  select.replaceChildren();
+  const placeholder = document.createElement('option');
+  placeholder.value = ''; placeholder.textContent = 'Selecciona un usuario';
+  select.append(placeholder);
+  if (error) {
+    registeredUsers = [];
+    const opt = document.createElement('option');
+    opt.textContent = 'Directorio no disponible: ejecuta primero el SQL de instalación';
+    opt.disabled = true; select.append(opt);
+    return;
+  }
+  registeredUsers = data || [];
+  for (const user of registeredUsers) {
+    const opt = document.createElement('option');
+    opt.value = user.id;
+    opt.textContent = `${user.display_name || 'Usuario'} · ${user.email}`;
+    select.append(opt);
+  }
+}
+$('recipientMode').addEventListener('change', () => {
+  const registered = $('recipientMode').value === 'registered';
+  $('registeredBox').hidden = !registered;
+  $('registeredUser').required = registered;
+  $('guestName').readOnly = registered;
+  $('contact').readOnly = registered;
+  $('guestName').value = '';
+  $('contact').value = '';
+});
+$('registeredUser').addEventListener('change', () => {
+  const user = registeredUsers.find(x => x.id === $('registeredUser').value);
+  $('guestName').value = user ? (user.display_name || user.email.split('@')[0]) : ''; 
+  $('contact').value = user?.email || '';
+});
+
 $('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   status('Iniciando sesión…');
@@ -179,8 +241,13 @@ $('guestForm').addEventListener('submit', async e => {
   if (busy) return;
   const event = events.find(x => x.id === selectedId);
   if (!event) { status('Selecciona un evento guardado antes de crear la invitación.'); return; }
+  if ($('recipientMode').value === 'registered' && !registeredUsers.some(x => x.id === $('registeredUser').value)) {
+    status('Selecciona un usuario registrado válido.'); return;
+  }
+  const recipient_user_id = $('recipientMode').value === 'registered' ? $('registeredUser').value : null;
   const guest_name = $('guestName').value.trim();
-  const guest_contact = $('contact').value.trim() || null;
+  const guest_contact = $('contact').value.trim();
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(guest_contact)) { status('Escribe un correo electrónico válido.'); return; }
   const seats = Number($('seats').value);
   if (!guest_name || !Number.isInteger(seats) || seats < 1 || seats > 50) {
     status('Revisa el nombre y la cantidad de personas (1 a 50).'); return;
@@ -194,14 +261,17 @@ $('guestForm').addEventListener('submit', async e => {
   status('Guardando invitación pendiente…');
   try {
     const {error} = await sb.from('rj_invitations').insert({
-      event_id:event.id, folio, guest_name, guest_contact, seats,
+      event_id:event.id, folio, guest_name, guest_contact, recipient_user_id, seats,
       deposit_verified:false, deposit_amount:0, final_payment_amount:0
     });
     if (error) { status('No se pudo crear la invitación: ' + error.message); return; }
     $('guestForm').reset();
+    $('registeredBox').hidden = true;
+    $('guestName').readOnly = false;
+    $('contact').readOnly = false;
     $('seats').value = '1';
     await loadInvitations(event.id);
-    status('Invitación pendiente creada. Folio: ' + folio + '. No reserva lugares ni permite acceso.');
+    status('Invitación pendiente creada. Usa Correo o Copiar enlace en la lista para compartirla. No se envía automáticamente ni reserva lugares.');
   } catch (error) {
     status('Error de conexión al crear la invitación: ' + (error?.message || 'intenta de nuevo'));
   } finally {

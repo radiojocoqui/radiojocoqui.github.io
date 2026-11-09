@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invitación · Radio Jocoqui</title><link rel="stylesheet" href="estilos.css"></head>
+<body><main class="wrap"><header><div><div class="brand">RADIO JOCOQUI / INVITACIONES</div>
+<h1>Tu invitación</h1><p>Consulta el estado de tu invitación al evento.</p></div></header>
+<section class="card" style="margin-top:20px"><div class="note" id="message">Consultando invitación…</div>
+<div id="details" hidden>
+<h2 id="eventTitle"></h2><p id="eventDate"></p><p id="seats"></p><p id="total"></p>
+<p id="deposit"></p><p id="state" style="font-weight:bold"></p>
+<p>El acceso NO se confirma por recibir este enlace. Radio Jocoqui debe verificar el anticipo del 50%.
+El 50% restante se paga antes de entrar. Presentar el enlace no sustituye la validación en caseta.</p>
+</div></section><p class="foot">Radio Jocoqui · Invitación personal · No compartas este enlace públicamente.</p></main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const sb=createClient('https://grjqqhmzyfozrxrkvmyn.supabase.co','sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe');
+const $=id=>document.getElementById(id);
+const folio=new URLSearchParams(location.search).get('folio')||'';
+if(!/^RJ-[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(folio)){
+ $('message').textContent='Enlace de invitación inválido.';
+}else{
+ try{
+  const {data,error}=await sb.rpc('rj_public_invitation',{p_folio:folio});
+  if(error) throw error;
+  const invitation=data?.[0];
+  if(!invitation){$('message').textContent='Invitación no encontrada.';}
+  else{
+   const money=n=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(n);
+   const total=Number(invitation.seats)*Number(invitation.price_per_person);
+   $('eventTitle').textContent=invitation.event_title;
+   $('eventDate').textContent='Fecha: '+invitation.event_date;
+   $('seats').textContent='Personas: '+invitation.seats;
+   $('total').textContent='Total: '+money(total);
+   $('deposit').textContent='Anticipo del 50%: '+money(total/2);
+   $('state').textContent=invitation.deposit_verified?'Anticipo registrado como verificado. La caseta aún requiere validación.':'Pendiente de anticipo verificado · Sin acceso confirmado';
+   $('message').textContent='Invitación localizada.';
+   $('details').hidden=false;
+  }
+ }catch(e){$('message').textContent='No se pudo consultar la invitación. Verifica que se ejecutó el SQL de instalación.';}
+}
+</script></body></html>
