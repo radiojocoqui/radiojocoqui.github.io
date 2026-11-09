@@ -646,6 +646,29 @@ button { font: inherit; }
  .sun .status {font-size:9px;}
 }
 
+
+/* SECCIONES EDITORIALES · PRUEBA V3 */
+.section-screen{overflow-y:auto;overscroll-behavior:contain;padding:clamp(22px,5vw,58px) 18px 115px;background:radial-gradient(ellipse at 65% 0%,#172d49 0%,#07101f 48%,#030813 100%)}
+.section-content{max-width:1080px;margin:0 auto}
+.section-content h2{margin:10px 0 12px;font-size:clamp(34px,6vw,70px);letter-spacing:.025em;line-height:1.08}
+.section-eyebrow{font-size:11px;letter-spacing:.24em;color:#e5bd8c}
+.section-lead{max-width:720px;font-size:clamp(16px,2vw,20px);color:#d1ddeb;line-height:1.6}
+.section-action{cursor:pointer;border:1px solid #66809e;background:rgba(13,29,50,.8);color:#f4e5d3;border-radius:12px;padding:12px 17px}
+.section-action:focus-visible,.section-link:focus-visible{outline:2px solid #f4c38d;outline-offset:3px}
+.section-hero{margin:26px 0 30px;padding:clamp(22px,5vw,46px);border:1px solid rgba(164,195,225,.25);border-radius:24px;min-height:230px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(circle at 85% 10%,rgba(230,150,73,.23),transparent 40%),linear-gradient(135deg,#18304a,#081324 72%)}
+.section-hero small{letter-spacing:.2em;color:#e9c293}
+.section-hero h3{font-size:clamp(24px,4vw,40px);font-weight:400;margin:14px 0 8px}
+.section-hero p{margin:0;max-width:650px;color:#c5d4e5}
+.section-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0 28px}
+.section-tile{border:1px solid rgba(154,187,221,.25);border-radius:18px;background:rgba(18,33,53,.68);padding:23px;min-height:170px}
+.section-tile .tile-index{color:#e3b98b;letter-spacing:.17em;font-size:11px}
+.section-tile h3{font-weight:500;font-size:20px;margin:20px 0 9px;color:#fff}
+.section-tile p{font-size:14px;line-height:1.55;color:#bccddd;margin:0}
+.section-note{padding:18px 22px;border-left:2px solid #d8a46c;background:rgba(215,168,102,.08);color:#d5dce8;line-height:1.6;border-radius:0 12px 12px 0}
+.section-subtitle{margin:38px 0 12px;font-size:13px;letter-spacing:.18em;color:#f4c38d;font-weight:500}
+.section-link{display:inline-block;margin-top:20px;color:#07101d;background:#f4c38d;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:600}
+@media(max-width:640px){.section-grid{grid-template-columns:1fr}.section-tile{min-height:125px}.section-hero{min-height:210px}.section-screen{padding-top:22px}.section-content h2{font-size:38px}}
+
 </style>
 </head>
 
@@ -1417,14 +1440,14 @@ requestAnimationFrame(frame);
 </script>
 
 
-<!-- Secciones: vistas internas sin recargar la página -->
-<section id="sectionScreen" class="section-screen" aria-hidden="true">
+<!-- Secciones públicas: contenido editorial inicial, sin recarga -->
+<section id="sectionScreen" class="section-screen" aria-hidden="true" aria-label="Sección de Radio Jocoqui">
  <div class="section-content">
-  <button class="section-action" id="backDashboard">← Regresar al Dashboard</button>
-  <p class="section-eyebrow" style="margin-top:35px">RADIO JOCOQUI · COMUNIDAD</p>
-  <h2 id="sectionHeading"></h2>
-  <p id="sectionDescription"></p>
-  <div class="section-card" id="sectionCard"></div>
+  <button class="section-action" id="backDashboard" type="button">← Regresar al Dashboard</button>
+  <p class="section-eyebrow" style="margin-top:32px">RADIO JOCOQUI / COMUNIDAD</p>
+  <h2 id="sectionHeading" tabindex="-1"></h2>
+  <p class="section-lead" id="sectionDescription"></p>
+  <div id="sectionCard"></div>
  </div>
 </section>
 <!-- Mini-player global: usa el MISMO audio del Sol; nunca crea otro audio -->
@@ -1436,39 +1459,74 @@ requestAnimationFrame(frame);
  <input id="miniProgress" type="range" min="0" max="100" value="0" aria-label="Progreso de audio">
 </div>
 <script>
-/* PROTOTIPO: navegación y permisos ilustrativos; no hay login ni backend real. */
+/* V3: secciones editoriales públicas; los accesos privados siguen siendo demostrativos. */
 const sectionData={
- 'Casa Jocoqui':['Un espacio para encontrarnos.','Hospedaje, actividades y galería de Casa Jocoqui. Próximamente: contenido administrable.','public'],
- 'Eventos':['Experiencias que nos reúnen.','Explora eventos públicamente. Para registrarse o pagar se requerirá una cuenta Básica aprobada.','public'],
- 'Blogs':['Ideas, historias y cultura.','Lecturas y publicaciones de la comunidad. La edición estará limitada a moderadores autorizados por blog.','public'],
- 'Colección de música':['El archivo de nuestra curaduría.','Colecciones y descubrimientos musicales de Radio Jocoqui.','public'],
- 'Misiones':['Participa y suma Puntos.','Acceso mediante lista curada. Los Puntos serán un balance global por usuario.','curated'],
- 'Chatroom':['Conversación en comunidad.','Para participar necesitarás una cuenta Básica aprobada.','basic'],
- 'Perfil':['Tu identidad en la comunidad.','Los perfiles de otros usuarios estarán disponibles para cuentas Básicas aprobadas.','basic'],
- 'Términos y Condiciones':['Reglas de convivencia.','Sección pública. El texto legal definitivo deberá agregarse antes de lanzar el registro.','public']
+ 'Casa Jocoqui':{
+  lead:'Un espacio para encontrarnos, crear y compartir junto a la Presa Jocoqui.',
+  hero:['EL ESPACIO','Casa Jocoqui','Hospedaje, convivencia y experiencias alrededor de la música y la comunidad.'],
+  tiles:[['01','Hospedaje','Conoce los espacios de Casa Jocoqui. Próximamente: fotografías, disponibilidad y solicitudes de estancia.'],['02','Experiencias','Encuentros culturales, sesiones musicales y actividades para compartir el espacio.'],['03','Galería de Casa Jocoqui','Un recorrido visual por la casa, su entorno y los momentos que suceden aquí.']],
+  note:'Vista de presentación. No hay disponibilidad de habitaciones ni reservaciones conectadas todavía.'
+ },
+ 'Eventos':{
+  lead:'Una agenda de encuentros, música y experiencias para conectar a nuestra comunidad.',
+  hero:['AGENDA CULTURAL','Próximos encuentros','Aquí aparecerán los eventos publicados, sus artistas, horarios y detalles de acceso.'],
+  tiles:[['01','Agenda','Próximos eventos y encuentros organizados por fecha.'],['02','Artistas y sesiones','Presentaciones, DJ sets y propuestas musicales de la comunidad.'],['03','Acceso y registro','La información es pública. Registrarse o pagar un evento requerirá una cuenta Básica aprobada.']],
+  note:'Todavía no hay eventos cargados ni sistema de registro o pago. No se muestran fechas ficticias.'
+ },
+ 'Blogs':{
+  lead:'Un archivo editorial de ideas, sonidos, lecturas y conversaciones.',
+  hero:['ARCHIVO EDITORIAL','Historias de nuestro universo','Textos sobre música, cultura, creación y vida en comunidad.'],
+  tiles:[['01','Música y escucha','Crónicas, selecciones musicales y reflexiones sobre el sonido.'],['02','Arte y cultura','Ideas y colaboraciones que nacen alrededor de Radio Jocoqui.'],['03','Comunidad','Historias, entrevistas y conversaciones entre colaboradores.']],
+  note:'Los artículos aún no están publicados. La escritura futura se autorizará por Blog o Sección, no de forma global.'
+ },
+ 'Colección de música':{
+  lead:'La curaduría musical de Radio Jocoqui, reunida en un solo lugar.',
+  hero:['ARCHIVO SONORO','Colección de música','Explora nuestra selección sonora y vuelve al Dashboard para escuchar las pistas disponibles.'],
+  tiles:[['01','Selecciones','Colecciones musicales organizadas por temática.'],['02','Archivo','Sesiones y piezas compartidas por Radio Jocoqui.'],['03','Escucha continua','El mini-player permanece disponible mientras navegas.']],
+  note:'La colección ampliada está en preparación; las canciones actuales siguen en el reproductor global.'
+ },
+ 'Misiones':{lead:'Participación por invitación y Puntos acumulados en comunidad.',access:'curated'},
+ 'Chatroom':{lead:'Conversaciones de la comunidad Radio Jocoqui.',access:'basic'},
+ 'Perfil':{lead:'Identidad y participación dentro de la comunidad.',access:'basic'},
+ 'Términos y Condiciones':{lead:'Información sobre las reglas de uso y convivencia.',access:'public',note:'El texto legal definitivo está pendiente. Esta pantalla no constituye términos y condiciones publicados.'}
 };
 const sectionScreen=document.getElementById('sectionScreen');
 const sectionHeading=document.getElementById('sectionHeading');
 const sectionDescription=document.getElementById('sectionDescription');
 const sectionCard=document.getElementById('sectionCard');
+let lastFocus=null;
+function element(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text)el.textContent=text;return el;}
 function showSection(name){
  const data=sectionData[name];if(!data)return;
+ lastFocus=document.activeElement;
  sectionHeading.textContent=name;
- sectionDescription.textContent=data[0];
+ sectionDescription.textContent=data.lead;
  sectionCard.replaceChildren();
- const p=document.createElement('p');p.textContent=data[1];sectionCard.append(p);
- const access=document.createElement('p');
- access.style.color='#f4c38d';
- access.textContent=data[2]==='public'?'● Sección pública (vista de prueba)':data[2]==='basic'?'🔒 Requiere Usuario Básico aprobado':'🔒 Acceso por lista curada';
- sectionCard.append(access);
- if(data[2]!=='public'){
-  const info=document.createElement('p');info.textContent='Esta prueba no habilita cuentas ni acceso a datos privados. La autorización se implementará en el servidor.';sectionCard.append(info);
+ if(data.hero){
+  const hero=element('div','section-hero');
+  hero.append(element('small','',data.hero[0]),element('h3','',data.hero[1]),element('p','',data.hero[2]));
+  sectionCard.append(hero);
+  sectionCard.append(element('h3','section-subtitle','EXPLORA LA SECCIÓN'));
+  const grid=element('div','section-grid');
+  data.tiles.forEach(tile=>{const card=element('article','section-tile');card.append(element('span','tile-index',tile[0]),element('h3','',tile[1]),element('p','',tile[2]));grid.append(card);});
+  sectionCard.append(grid);
+ } else if(data.access==='basic'||data.access==='curated'){
+  const message=data.access==='basic'?'Sección reservada a usuarios Básicos aprobados.':'Acceso por lista curada: un moderador o administrador deberá autorizar al usuario expresamente.';
+  sectionCard.append(element('div','section-note',message+' Esta demostración no incluye autenticación ni datos privados.'));
  }
+ if(data.note)sectionCard.append(element('p','section-note',data.note));
  sectionScreen.classList.add('active');sectionScreen.setAttribute('aria-hidden','false');
+ sectionScreen.scrollTop=0;
  document.body.style.overflow='hidden';
  history.replaceState(null,'','#'+encodeURIComponent(name.toLowerCase().replaceAll(' ','-')));
+ sectionHeading.focus({preventScroll:true});
 }
-function returnDashboard(){sectionScreen.classList.remove('active');sectionScreen.setAttribute('aria-hidden','true');document.body.style.overflow='';history.replaceState(null,'',location.pathname+location.search);}
+function returnDashboard(){
+ sectionScreen.classList.remove('active');sectionScreen.setAttribute('aria-hidden','true');
+ document.body.style.overflow='';
+ history.replaceState(null,'',location.pathname+location.search);
+ if(lastFocus&&lastFocus.isConnected)lastFocus.focus({preventScroll:true});
+}
 document.getElementById('backDashboard').addEventListener('click',returnDashboard);
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.go)));
 const names=['Casa Jocoqui','Eventos','Blogs','Colección de música','Misiones'];
@@ -1479,6 +1537,7 @@ document.getElementById('enterSection').addEventListener('click',()=>{
  document.getElementById('explorerClose').click();
  if(idx>=0)showSection(names[idx]);
 });
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sectionScreen.classList.contains('active'))returnDashboard();});
 const miniPlay=document.getElementById('miniPlay');
 const miniTrack=document.getElementById('miniTrack');
 const miniProgress=document.getElementById('miniProgress');
