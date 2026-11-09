@@ -1,1133 +1,1152 @@
-
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radio Jocoqui — Universo Sonoro</title>
-
-<style>
-:root {
-  color-scheme: dark;
-  --text: #f5eee3;
-  --gold: #f4c38d;
-}
-
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  min-height: 100%;
-}
-
-body {
-  background: #02050c;
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-button { font: inherit; }
-
-.universe {
-  position: relative;
-  isolation: isolate;
-  min-height: 100svh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 185px 15px 40px;
-  background:
-    radial-gradient(ellipse at 50% 39%,
-      #1b3049 0%,
-      #091626 43%,
-      #02050c 85%);
-}
-
-/* ESTRELLAS */
-
-.stars {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .75;
-  background-image:
-    radial-gradient(2px 2px at 15% 20%, #fff, transparent),
-    radial-gradient(2px 2px at 80% 15%, #fff, transparent),
-    radial-gradient(1px 1px at 70% 80%, #fff, transparent),
-    radial-gradient(2px 2px at 25% 75%, #fff, transparent),
-    radial-gradient(1px 1px at 90% 55%, #fff, transparent),
-    radial-gradient(2px 2px at 45% 10%, #fff, transparent);
-  background-size: 230px 210px;
-}
-
-/* LOGOTIPO */
-
-.brand {
-  position: absolute;
-  top: 18px;
-  left: 0;
-  width: 100%;
-  z-index: 30;
-  text-align: center;
-}
-
-.brand h1 { margin: 0; }
-
-.brand-logo {
-  display: block;
-  width: min(95vw, 780px);
-  height: 145px;
-  object-fit: contain;
-  margin: 0 auto;
-}
-
-.brand p {
-  margin: 7px auto 0;
-  color: #b4c5d7;
-  font-size: 10px;
-  letter-spacing: .25em;
-  line-height: 1.5;
-}
-
-/* SISTEMA SOLAR */
-
-.solar-system {
-  position: relative;
-  width: min(94vw, 740px);
-  aspect-ratio: 1;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-}
-
-.orbit {
-  position: absolute;
-  border: 1px solid rgba(153, 196, 231, .22);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.orbit.one { width: 52%; height: 52%; }
-.orbit.two { width: 75%; height: 75%; }
-.orbit.three { width: 98%; height: 98%; }
-
-/* PLANETAS AL DOBLE */
-
-.planet {
-  position: absolute;
-  z-index: 4;
-  border-radius: 50%;
-  overflow: visible;
-  background: radial-gradient(circle at 28% 23%,
-    #fff0d0, #8a7567 45%, #1b1720 100%);
-  box-shadow:
-    inset -9px -8px 14px rgba(0,0,0,.65),
-    0 0 18px rgba(255,255,255,.1);
-}
-
-.planet canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  background: transparent;
-  pointer-events: none;
-}
-
-/* Posiciones originales */
-
-.mercury {
-  width: 36px;
-  height: 36px;
-  top: 24%;
-  left: 27%;
-}
-
-.venus {
-  width: 60px;
-  height: 60px;
-  top: 15%;
-  right: 23%;
-}
-
-.earth {
-  width: 80px;
-  height: 80px;
-  bottom: 16%;
-  left: 15%;
-  background: radial-gradient(circle at 30% 25%,
-    #b3f7ff, #287db1 40%, #173b75 70%, #06101f);
-}
-
-.mars {
-  width: 56px;
-  height: 56px;
-  right: 10%;
-  bottom: 32%;
-  background: radial-gradient(circle at 30% 25%,
-    #ffd0a0, #b95b3e 45%, #401b1c);
-}
-
-.saturn {
-  width: 110px;
-  height: 110px;
-  top: 48%;
-  right: 1%;
-  background: radial-gradient(circle at 30% 25%,
-    #fff0c2, #bc9767 50%, #40312d);
-}
-
-/* Respaldo si no carga Three.js */
-
-.saturn:not(:has(canvas))::after {
-  content: "";
-  position: absolute;
-  width: 150%;
-  height: 40%;
-  top: 30%;
-  left: -25%;
-  border: 7px solid rgba(232,199,143,.85);
-  border-radius: 50%;
-  transform: rotate(-25deg);
-}
-
-/* SOL REALISTA */
-
-.sun {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  width: min(58vw, 330px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-
-  background:
-    radial-gradient(circle at 34% 26%,
-      rgba(255,252,210,.95) 0%,
-      rgba(255,203,78,.9) 18%,
-      rgba(255,112,20,.9) 45%,
-      rgba(189,43,9,.95) 78%,
-      #591507 100%);
-
-  box-shadow:
-    0 0 20px rgba(255,210,103,.95),
-    0 0 60px rgba(255,124,28,.65),
-    0 0 115px rgba(255,78,11,.35),
-    0 0 190px rgba(255,75,0,.12);
-}
-
-/* Textura de plasma */
-
-.sun-texture {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.sun-texture canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-.sun::before {
-  content: "";
-  position: absolute;
-  inset: -5%;
-  border-radius: 50%;
-  border: 2px solid rgba(255,196,80,.3);
-  box-shadow:
-    0 0 28px rgba(255,149,33,.55),
-    inset 0 0 25px rgba(255,196,80,.25);
-  pointer-events: none;
-}
-
-.sun::after {
-  content: "";
-  position: absolute;
-  inset: -13%;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    transparent 51%,
-    rgba(255,141,23,.18) 63%,
-    transparent 74%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* REPRODUCTOR SIEMPRE VISIBLE */
-
-.player {
-  position: relative;
-  z-index: 12;
-  width: 86%;
-  aspect-ratio: 1;
-  padding: 18px;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  text-align: center;
-  background: rgba(8,15,27,.91);
-  border: 1px solid rgba(255,214,157,.75);
-  box-shadow:
-    0 0 22px rgba(255,177,75,.5),
-    inset 0 0 24px rgba(255,134,37,.1);
-}
-
-.audio-title {
-  font-size: 12px;
-  letter-spacing: .16em;
-  color: #ffe0ad;
-}
-
-.audio-subtitle {
-  font-size: 9px;
-  letter-spacing: .12em;
-  color: #b6c9db;
-}
-
-.track-title {
-  width: 100%;
-  font-size: 11px;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-}
-
-.controls button {
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(255,220,177,.55);
-  border-radius: 50%;
-  background: rgba(255,255,255,.09);
-  color: white;
-  cursor: pointer;
-  font-size: 17px;
-  touch-action: manipulation;
-}
-
-.controls .play-button {
-  width: 49px;
-  height: 49px;
-  background: rgba(244,195,141,.22);
-  font-size: 21px;
-}
-
-.controls button:focus-visible {
-  outline: 2px solid #fff;
-}
-
-.progress {
-  width: 100%;
-  accent-color: var(--gold);
-  cursor: pointer;
-}
-
-.time-row {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #c6d1dc;
-}
-
-.status {
-  font-size: 10px;
-  color: #ffcc9a;
-  line-height: 1.3;
-}
-
-/* ARCHIVO SONORO */
-
-.library {
-  position: relative;
-  z-index: 20;
-  width: min(92vw, 500px);
-  margin: 45px auto 30px;
-  padding: 22px;
-  border: 1px solid rgba(165,184,203,.28);
-  border-radius: 20px;
-  background: rgba(5,12,24,.88);
-  backdrop-filter: blur(12px);
-}
-
-.library h2 {
-  margin: 0 0 17px;
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: .22em;
-  color: var(--gold);
-}
-
-.playlist {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.track {
-  width: 100%;
-  padding: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  text-align: left;
-  border: 1px solid rgba(165,184,203,.2);
-  border-radius: 10px;
-  background: rgba(255,255,255,.04);
-  color: #dce4ed;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.track.active {
-  color: #ffdda9;
-  border-color: rgba(244,195,141,.7);
-  background: rgba(244,195,141,.1);
-}
-
-.track-number {
-  color: #a9b8ca;
-  font-size: 11px;
-}
-
-.footer {
-  position: relative;
-  z-index: 20;
-  padding: 10px 20px 30px;
-  text-align: center;
-  color: #a5b8cb;
-  font-size: 10px;
-  line-height: 1.8;
-  letter-spacing: .17em;
-}
-
-/* ANIMACIÓN SUAVE */
-
-@media (prefers-reduced-motion: no-preference) {
-  .sun {
-    animation: sunPulse 6s ease-in-out infinite alternate;
-  }
-}
-
-@keyframes sunPulse {
-  from {
-    box-shadow:
-      0 0 20px rgba(255,210,103,.9),
-      0 0 60px rgba(255,124,28,.6),
-      0 0 115px rgba(255,78,11,.3);
-  }
-  to {
-    box-shadow:
-      0 0 30px rgba(255,220,130,1),
-      0 0 85px rgba(255,124,28,.8),
-      0 0 150px rgba(255,78,11,.45);
-  }
-}
-
-/* IPHONE */
-
-@media (max-width: 480px) {
-  .universe {
-    padding-top: 175px;
-  }
-
-  .brand-logo {
-    width: 95vw;
-    height: 125px;
-  }
-
-  .brand p {
-    font-size: 8px;
-    letter-spacing: .16em;
-  }
-
-  .solar-system {
-    width: 96vw;
-  }
-
-  .sun {
-    width: 58vw;
-  }
-
-  .player {
-    width: 90%;
-    padding: 9px;
-    gap: 5px;
-  }
-
-  .audio-title { font-size: 9px; }
-  .audio-subtitle { font-size: 7px; }
-  .track-title { font-size: 9px; }
-  .status { font-size: 8px; }
-
-  .controls { gap: 7px; }
-
-  .controls button {
-    width: 30px;
-    height: 30px;
-    font-size: 13px;
-  }
-
-  .controls .play-button {
-    width: 37px;
-    height: 37px;
-    font-size: 17px;
-  }
-
-  .time-row { font-size: 9px; }
-
-  .mercury { width: 36px; height: 36px; }
-  .venus { width: 60px; height: 60px; }
-  .earth { width: 80px; height: 80px; }
-  .mars { width: 56px; height: 56px; }
-  .saturn { width: 110px; height: 110px; }
-
-  .library {
-    width: 94vw;
-    margin-top: 35px;
-  }
-}
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.65">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    span.s1 {font: 12.0px 'Apple Color Emoji'}
+    span.s2 {font: 12.0px 'Lucida Grande'}
+    span.s3 {font: 12.0px 'Zapf Dingbats'}
+  </style>
 </head>
-
 <body>
-
-<div class="universe">
-
-  <div class="stars"></div>
-
-  <header class="brand">
-    <h1>
-      <img
-        src="logo.PNG"
-        alt="Radio Jocoqui"
-        class="brand-logo">
-    </h1>
-    <p>MÚSICA · CULTURA · CONCIENCIA</p>
-  </header>
-
-  <main class="solar-system">
-
-    <div class="orbit one"></div>
-    <div class="orbit two"></div>
-    <div class="orbit three"></div>
-
-    <div class="planet mercury"></div>
-    <div class="planet venus"></div>
-    <div class="planet earth"></div>
-    <div class="planet mars"></div>
-    <div class="planet saturn"></div>
-
-    <div class="sun" id="sun">
-
-      <div class="sun-texture" id="sunTexture"></div>
-
-      <section class="player"
-        aria-label="Reproductor musical">
-
-        <div class="audio-title">
-          RADIO JOCOQUI
-        </div>
-
-        <div class="audio-subtitle">
-          UNIVERSO SONORO ∞
-        </div>
-
-        <div class="track-title" id="trackTitle">
-          Canción 01
-        </div>
-
-        <div class="controls">
-
-          <button id="previous"
-            type="button"
-            aria-label="Canción anterior">⏮</button>
-
-          <button id="play"
-            class="play-button"
-            type="button"
-            aria-label="Reproducir">▶</button>
-
-          <button id="next"
-            type="button"
-            aria-label="Siguiente canción">⏭</button>
-
-        </div>
-
-        <input
-          id="progress"
-          class="progress"
-          type="range"
-          min="0"
-          max="100"
-          value="0"
-          aria-label="Progreso de la canción">
-
-        <div class="time-row">
-          <span id="currentTime">0:00</span>
-          <span id="duration">0:00</span>
-        </div>
-
-        <div class="status" id="status">
-          Selecciona una canción
-        </div>
-
-        <audio id="audio" preload="metadata"></audio>
-
-      </section>
-
-    </div>
-
-  </main>
-
-  <section class="library"
-    aria-label="Biblioteca musical">
-
-    <h2>ARCHIVO SONORO</h2>
-
-    <div id="playlist" class="playlist"></div>
-
-  </section>
-
-  <footer class="footer">
-    UN UNIVERSO SONORO · MÚSICA PARA TODO EL MUNDO
-    / PARA TODO MOMENTO
-  </footer>
-
-</div>
-
-<script>
-/* CANCIONES ORIGINALES */
-
-const tracks = [
-  {
-    title: "Fache De Con (Kesakocon)",
-    file: "Fache De Con (Kesakocon).mp3"
-  },
-  {
-    title: "Johannes Klingebiel - 808 Square",
-    file: "Johannes Klingebiel - 808 Square.mp3"
-  },
-  {
-    title: "My Kind of Woman",
-    file: "My Kind of Woman.mp3"
-  }
-];
-
-const audio = document.getElementById("audio");
-const playButton = document.getElementById("play");
-const previousButton = document.getElementById("previous");
-const nextButton = document.getElementById("next");
-const trackTitle = document.getElementById("trackTitle");
-const playlist = document.getElementById("playlist");
-const progress = document.getElementById("progress");
-const currentTimeLabel = document.getElementById("currentTime");
-const durationLabel = document.getElementById("duration");
-const statusLabel = document.getElementById("status");
-
-let currentTrack = 0;
-
-function formatTime(seconds) {
-  if (!Number.isFinite(seconds)) return "0:00";
-
-  const minutes = Math.floor(seconds / 60);
-  const remaining = Math.floor(seconds % 60);
-
-  return minutes + ":" +
-    String(remaining).padStart(2, "0");
-}
-
-function renderPlaylist() {
-  playlist.innerHTML = "";
-
-  tracks.forEach((track, index) => {
-    const button = document.createElement("button");
-
-    button.type = "button";
-    button.className =
-      index === currentTrack ? "track active" : "track";
-
-    const name = document.createElement("span");
-    name.textContent = track.title;
-
-    const number = document.createElement("span");
-    number.className = "track-number";
-    number.textContent =
-      String(index + 1).padStart(2, "0");
-
-    button.append(name, number);
-
-    button.addEventListener("click", () => {
-      loadTrack(index, true);
-    });
-
-    playlist.appendChild(button);
-  });
-}
-
-function updatePlayButton() {
-  const playing = !audio.paused && !audio.ended;
-
-  playButton.textContent = playing ? "❚❚" : "▶";
-  playButton.setAttribute(
-    "aria-label",
-    playing ? "Pausar" : "Reproducir"
-  );
-}
-
-function loadTrack(index, autoplay = false) {
-  currentTrack =
-    (index + tracks.length) % tracks.length;
-
-  audio.pause();
-  audio.src = tracks[currentTrack].file;
-  audio.load();
-
-  trackTitle.textContent = tracks[currentTrack].title;
-  progress.value = 0;
-  currentTimeLabel.textContent = "0:00";
-  durationLabel.textContent = "0:00";
-  statusLabel.textContent = "Lista para reproducir";
-
-  renderPlaylist();
-  updatePlayButton();
-
-  if (autoplay) playCurrent();
-}
-
-async function playCurrent() {
-  try {
-    statusLabel.textContent = "Cargando audio...";
-    await audio.play();
-    statusLabel.textContent = "Transmitiendo música";
-  } catch (error) {
-    statusLabel.textContent =
-      "Toca Play o verifica el archivo MP3";
-  }
-
-  updatePlayButton();
-}
-
-playButton.addEventListener("click", () => {
-  if (audio.paused) {
-    playCurrent();
-  } else {
-    audio.pause();
-  }
-});
-
-previousButton.addEventListener("click", () => {
-  loadTrack(currentTrack - 1, true);
-});
-
-nextButton.addEventListener("click", () => {
-  loadTrack(currentTrack + 1, true);
-});
-
-audio.addEventListener("play", () => {
-  statusLabel.textContent = "Transmitiendo música";
-  updatePlayButton();
-});
-
-audio.addEventListener("pause", updatePlayButton);
-
-audio.addEventListener("loadedmetadata", () => {
-  durationLabel.textContent = formatTime(audio.duration);
-});
-
-audio.addEventListener("timeupdate", () => {
-  currentTimeLabel.textContent =
-    formatTime(audio.currentTime);
-
-  if (Number.isFinite(audio.duration) &&
-      audio.duration > 0) {
-    progress.value =
-      (audio.currentTime / audio.duration) * 100;
-  }
-});
-
-progress.addEventListener("input", () => {
-  if (Number.isFinite(audio.duration) &&
-      audio.duration > 0) {
-    audio.currentTime =
-      (progress.value / 100) * audio.duration;
-  }
-});
-
-audio.addEventListener("ended", () => {
-  loadTrack(currentTrack + 1, true);
-});
-
-audio.addEventListener("error", () => {
-  statusLabel.textContent =
-    "No se pudo cargar el MP3";
-  updatePlayButton();
-});
-
-loadTrack(0);
-</script>
-
-<!-- SOL CON TEXTURA DE PLASMA -->
-
-<script>
-(function () {
-  const holder = document.getElementById("sunTexture");
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) return;
-
-  canvas.width = 512;
-  canvas.height = 512;
-  holder.appendChild(canvas);
-
-  const size = 512;
-  const center = size / 2;
-  const radius = 250;
-
-  function noise(x, y, t) {
-    return (
-      Math.sin(x * 0.042 + t) *
-      Math.cos(y * 0.055 - t * 0.6) +
-      Math.sin((x + y) * 0.065 - t * 0.8) * 0.5 +
-      Math.cos((x - y) * 0.09 + t * 1.3) * 0.25
-    );
-  }
-
-  function drawSun(time) {
-    const image = ctx.createImageData(size, size);
-    const data = image.data;
-
-    const t = time * 0.00013;
-
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const dx = x - center;
-        const dy = y - center;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        const i = (y * size + x) * 4;
-
-        if (dist > radius) {
-          data[i + 3] = 0;
-          continue;
-        }
-
-        const n = noise(x, y, t);
-        const n2 = noise(x * 1.8, y * 1.8, -t * 1.5);
-
-        const turbulence = n * 0.65 + n2 * 0.35;
-        const edge = Math.pow(dist / radius, 1.7);
-
-        let heat = 0.62 + turbulence * 0.15 - edge * 0.2;
-        heat = Math.max(0, Math.min(1, heat));
-
-        const spot = turbulence < -0.7 ? 0.5 : 1;
-
-        data[i] = Math.min(255, 245 * spot);
-        data[i + 1] = Math.min(
-          255, (65 + heat * 165) * spot
-        );
-        data[i + 2] = Math.min(
-          255, (5 + heat * 70) * spot
-        );
-        data[i + 3] = 225;
-      }
-    }
-
-    ctx.putImageData(image, 0, 0);
-  }
-
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-  let last = 0;
-
-  function animate(time) {
-    if (time - last >= 100) {
-      last = time;
-      if (document.visibilityState === "visible") {
-        drawSun(time);
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  drawSun(0);
-
-  if (!reducedMotion) {
-    requestAnimationFrame(animate);
-  }
-})();
-</script>
-
-<!-- PLANETAS 3D THREE.JS -->
-
-<script type="module">
-import * as THREE from
-  "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
-
-const planets = [
-  {
-    selector: ".mercury",
-    type: "rock",
-    base: "#91877b",
-    detail: "#4c4946",
-    speed: 0.003
-  },
-  {
-    selector: ".venus",
-    type: "cloud",
-    base: "#e5bc80",
-    detail: "#b4774b",
-    speed: 0.002
-  },
-  {
-    selector: ".earth",
-    type: "earth",
-    base: "#176db4",
-    detail: "#35865c",
-    speed: 0.004
-  },
-  {
-    selector: ".mars",
-    type: "rock",
-    base: "#b85d40",
-    detail: "#77382c",
-    speed: 0.003
-  },
-  {
-    selector: ".saturn",
-    type: "gas",
-    base: "#dbc18b",
-    detail: "#a27d59",
-    speed: 0.002
-  }
-];
-
-const instances = [];
-
-function makeTexture(planet) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 256;
-
-  const ctx = canvas.getContext("2d");
-  const w = canvas.width;
-  const h = canvas.height;
-
-  ctx.fillStyle = planet.base;
-  ctx.fillRect(0, 0, w, h);
-
-  const base = new THREE.Color(planet.base);
-  const detail = new THREE.Color(planet.detail);
-
-  for (let i = 0; i < 2200; i++) {
-    const x = Math.random() * w;
-    const y = Math.random() * h;
-
-    let size = Math.random() * 18 + 2;
-
-    if (planet.type === "gas" ||
-        planet.type === "cloud") {
-      size = Math.random() * 35 + 10;
-    }
-
-    const mix = Math.random();
-    const color = base.clone().lerp(detail, mix);
-
-    ctx.fillStyle = "#" + color.getHexString();
-    ctx.globalAlpha = 0.15 + Math.random() * 0.45;
-
-    ctx.beginPath();
-
-    if (planet.type === "gas" ||
-        planet.type === "cloud") {
-      ctx.ellipse(
-        x, y, size * 2, size * 0.18,
-        0, 0, Math.PI * 2
-      );
-    } else {
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-    }
-
-    ctx.fill();
-  }
-
-  ctx.globalAlpha = 1;
-
-  if (planet.type === "earth") {
-    for (let i = 0; i < 70; i++) {
-      const x = Math.random() * w;
-      const y = Math.random() * h;
-
-      ctx.fillStyle = "rgba(235,245,255,0.22)";
-      ctx.beginPath();
-      ctx.ellipse(
-        x, y,
-        15 + Math.random() * 30,
-        2 + Math.random() * 5,
-        Math.random() * 0.4,
-        0, Math.PI * 2
-      );
-      ctx.fill();
-    }
-  }
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
-
-function createPlanet(config) {
-  const element = document.querySelector(config.selector);
-  if (!element) return;
-
-  let renderer;
-
-  try {
-    renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: "low-power"
-    });
-  } catch (error) {
-    console.warn("WebGL no disponible", error);
-    return;
-  }
-
-  const width = element.clientWidth;
-  const height = element.clientHeight;
-
-  renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio || 1, 2)
-  );
-
-  renderer.setSize(width, height);
-  renderer.setClearColor(0x000000, 0);
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(
-    40, width / height, 0.1, 100
-  );
-
-  camera.position.z = 3.8;
-
-  const geometry = new THREE.SphereGeometry(
-    1, 64, 48
-  );
-
-  const material = new THREE.MeshStandardMaterial({
-    map: makeTexture(config),
-    roughness: 0.9,
-    metalness: 0
-  });
-
-  const sphere = new THREE.Mesh(geometry, material);
-  sphere.rotation.z = 0.15;
-  scene.add(sphere);
-
-  scene.add(
-    new THREE.AmbientLight(0xffffff, 0.65)
-  );
-
-  const sunlight = new THREE.DirectionalLight(
-    0xffe2bd, 2.5
-  );
-  sunlight.position.set(-3, 3, 5);
-  scene.add(sunlight);
-
-  if (config.type === "gas") {
-    const ringGeometry = new THREE.RingGeometry(
-      1.25, 1.9, 96
-    );
-
-    const ringMaterial = new THREE.MeshBasicMaterial({
-      color: 0xd9bd88,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.8,
-      depthWrite: false
-    });
-
-    const rings = new THREE.Mesh(
-      ringGeometry, ringMaterial
-    );
-
-    rings.rotation.x = 1.1;
-    rings.rotation.z = -0.35;
-    sphere.add(rings);
-
-    camera.position.z = 5.5;
-  }
-
-  element.style.background = "transparent";
-  element.style.boxShadow = "none";
-  element.appendChild(renderer.domElement);
-
-  instances.push({
-    renderer, scene, camera, sphere,
-    speed: config.speed
-  });
-}
-
-planets.forEach(createPlanet);
-
-const reducedMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)"
-).matches;
-
-let lastTime = 0;
-
-function animate(time) {
-  requestAnimationFrame(animate);
-
-  if (time - lastTime < 33) return;
-  lastTime = time;
-
-  if (document.visibilityState !== "visible") return;
-
-  instances.forEach(item => {
-    if (!reducedMotion) {
-      item.sphere.rotation.y += item.speed;
-    }
-
-    item.renderer.render(item.scene, item.camera);
-  });
-}
-
-if (instances.length) {
-  requestAnimationFrame(animate);
-}
-</script>
-
+<p class="p1"><br></p>
+<p class="p2">&lt;!DOCTYPE html&gt;</p>
+<p class="p2">&lt;html lang="es"&gt;</p>
+<p class="p2">&lt;head&gt;</p>
+<p class="p2">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p2">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
+<p class="p2">&lt;title&gt;Radio Jocoqui — Universo Sonoro&lt;/title&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;style&gt;</p>
+<p class="p2">:root {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color-scheme: dark;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--text: #f5eee3;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>--gold: #f4c38d;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">* { box-sizing: border-box; }</p>
+<p class="p1"><br></p>
+<p class="p2">html, body {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin: 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>min-height: 100%;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">body {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: #02050c;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: var(--text);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-family: Arial, Helvetica, sans-serif;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">button { font: inherit; }</p>
+<p class="p1"><br></p>
+<p class="p2">.universe {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: relative;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>isolation: isolate;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>min-height: 100svh;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>overflow: hidden;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>flex-direction: column;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>align-items: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding: 185px 15px 40px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(ellipse at 50% 39%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>#1b3049 0%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>#091626 43%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>#02050c 85%);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* ESTRELLAS */</p>
+<p class="p1"><br></p>
+<p class="p2">.stars {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>inset: 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: -1;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>pointer-events: none;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>opacity: .75;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background-image:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(2px 2px at 15% 20%, #fff, transparent),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(2px 2px at 80% 15%, #fff, transparent),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(1px 1px at 70% 80%, #fff, transparent),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(2px 2px at 25% 75%, #fff, transparent),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(1px 1px at 90% 55%, #fff, transparent),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(2px 2px at 45% 10%, #fff, transparent);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background-size: 230px 210px;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* LOGOTIPO */</p>
+<p class="p1"><br></p>
+<p class="p2">.brand {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>top: 18px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>left: 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 30;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.brand h1 { margin: 0; }</p>
+<p class="p1"><br></p>
+<p class="p2">.brand-logo {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: block;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: min(95vw, 780px);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 145px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>object-fit: contain;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin: 0 auto;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.brand p {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin: 7px auto 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #b4c5d7;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>letter-spacing: .25em;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>line-height: 1.5;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* SISTEMA SOLAR */</p>
+<p class="p1"><br></p>
+<p class="p2">.solar-system {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: relative;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: min(94vw, 740px);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>aspect-ratio: 1;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>flex-shrink: 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: grid;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>place-items: center;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.orbit {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 1px solid rgba(153, 196, 231, .22);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>pointer-events: none;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.orbit.one { width: 52%; height: 52%; }</p>
+<p class="p2">.orbit.two { width: 75%; height: 75%; }</p>
+<p class="p2">.orbit.three { width: 98%; height: 98%; }</p>
+<p class="p1"><br></p>
+<p class="p2">/* PLANETAS AL DOBLE */</p>
+<p class="p1"><br></p>
+<p class="p2">.planet {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 4;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>overflow: visible;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: radial-gradient(circle at 28% 23%,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>#fff0d0, #8a7567 45%, #1b1720 100%);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>box-shadow:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>inset -9px -8px 14px rgba(0,0,0,.65),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 18px rgba(255,255,255,.1);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.planet canvas {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: block;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100% !important;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 100% !important;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: transparent;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>pointer-events: none;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* Posiciones originales */</p>
+<p class="p1"><br></p>
+<p class="p2">.mercury {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 36px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 36px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>top: 24%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>left: 27%;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.venus {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 60px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 60px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>top: 15%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>right: 23%;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.earth {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 80px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 80px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>bottom: 16%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>left: 15%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: radial-gradient(circle at 30% 25%,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>#b3f7ff, #287db1 40%, #173b75 70%, #06101f);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.mars {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 56px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 56px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>right: 10%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>bottom: 32%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: radial-gradient(circle at 30% 25%,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>#ffd0a0, #b95b3e 45%, #401b1c);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.saturn {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 110px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 110px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>top: 48%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>right: 1%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: radial-gradient(circle at 30% 25%,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>#fff0c2, #bc9767 50%, #40312d);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* Respaldo si no carga Three.js */</p>
+<p class="p1"><br></p>
+<p class="p2">.saturn:not(:has(canvas))::after {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>content: "";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 150%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 40%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>top: 30%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>left: -25%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 7px solid rgba(232,199,143,.85);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>transform: rotate(-25deg);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* SOL REALISTA */</p>
+<p class="p1"><br></p>
+<p class="p2">.sun {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>top: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>left: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>transform: translate(-50%, -50%);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 10;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: min(58vw, 330px);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>aspect-ratio: 1;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: grid;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>place-items: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>isolation: isolate;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>background:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>radial-gradient(circle at 34% 26%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>rgba(255,252,210,.95) 0%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>rgba(255,203,78,.9) 18%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>rgba(255,112,20,.9) 45%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>rgba(189,43,9,.95) 78%,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>#591507 100%);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>box-shadow:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 20px rgba(255,210,103,.95),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 60px rgba(255,124,28,.65),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 115px rgba(255,78,11,.35),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 190px rgba(255,75,0,.12);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* Textura de plasma */</p>
+<p class="p1"><br></p>
+<p class="p2">.sun-texture {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>inset: 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>overflow: hidden;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>pointer-events: none;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 0;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.sun-texture canvas {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: block;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.sun::before {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>content: "";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>inset: -5%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 2px solid rgba(255,196,80,.3);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>box-shadow:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 28px rgba(255,149,33,.55),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>inset 0 0 25px rgba(255,196,80,.25);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>pointer-events: none;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.sun::after {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>content: "";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: absolute;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>inset: -13%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: radial-gradient(circle,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>transparent 51%,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>rgba(255,141,23,.18) 63%,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>transparent 74%);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>pointer-events: none;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: -1;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* REPRODUCTOR SIEMPRE VISIBLE */</p>
+<p class="p1"><br></p>
+<p class="p2">.player {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: relative;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 12;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 86%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>aspect-ratio: 1;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding: 18px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>flex-direction: column;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>align-items: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>justify-content: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>gap: 9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: rgba(8,15,27,.91);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 1px solid rgba(255,214,157,.75);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>box-shadow:</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0 0 22px rgba(255,177,75,.5),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>inset 0 0 24px rgba(255,134,37,.1);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.audio-title {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 12px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>letter-spacing: .16em;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #ffe0ad;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.audio-subtitle {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 9px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>letter-spacing: .12em;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #b6c9db;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.track-title {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 11px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>line-height: 1.4;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>overflow-wrap: anywhere;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: -webkit-box;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>-webkit-box-orient: vertical;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>-webkit-line-clamp: 2;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>overflow: hidden;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.controls {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>align-items: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>justify-content: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>gap: 13px;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.controls button {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 38px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 38px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 1px solid rgba(255,220,177,.55);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 50%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: rgba(255,255,255,.09);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: white;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>cursor: pointer;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 17px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>touch-action: manipulation;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.controls .play-button {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 49px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>height: 49px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: rgba(244,195,141,.22);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 21px;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.controls button:focus-visible {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>outline: 2px solid #fff;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.progress {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>accent-color: var(--gold);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>cursor: pointer;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.time-row {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>justify-content: space-between;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #c6d1dc;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.status {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #ffcc9a;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>line-height: 1.3;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* ARCHIVO SONORO */</p>
+<p class="p1"><br></p>
+<p class="p2">.library {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: relative;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 20;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: min(92vw, 500px);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin: 45px auto 30px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding: 22px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 1px solid rgba(165,184,203,.28);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 20px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: rgba(5,12,24,.88);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>backdrop-filter: blur(12px);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.library h2 {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>margin: 0 0 17px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 14px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-weight: 400;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>letter-spacing: .22em;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: var(--gold);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.playlist {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>flex-direction: column;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>gap: 9px;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.track {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding: 14px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>justify-content: space-between;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>align-items: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>gap: 12px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-align: left;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border: 1px solid rgba(165,184,203,.2);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-radius: 10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: rgba(255,255,255,.04);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #dce4ed;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>cursor: pointer;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 13px;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.track.active {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #ffdda9;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>border-color: rgba(244,195,141,.7);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>background: rgba(244,195,141,.1);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.track-number {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #a9b8ca;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 11px;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">.footer {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>position: relative;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>z-index: 20;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>padding: 10px 20px 30px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>color: #a5b8cb;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>font-size: 10px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>line-height: 1.8;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>letter-spacing: .17em;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* ANIMACIÓN SUAVE */</p>
+<p class="p1"><br></p>
+<p class="p2">@media (prefers-reduced-motion: no-preference) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.sun {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>animation: sunPulse 6s ease-in-out infinite alternate;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">@keyframes sunPulse {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>from {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>box-shadow:</p>
+<p class="p2"><span class="Apple-converted-space">      </span>0 0 20px rgba(255,210,103,.9),</p>
+<p class="p2"><span class="Apple-converted-space">      </span>0 0 60px rgba(255,124,28,.6),</p>
+<p class="p2"><span class="Apple-converted-space">      </span>0 0 115px rgba(255,78,11,.3);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>to {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>box-shadow:</p>
+<p class="p2"><span class="Apple-converted-space">      </span>0 0 30px rgba(255,220,130,1),</p>
+<p class="p2"><span class="Apple-converted-space">      </span>0 0 85px rgba(255,124,28,.8),</p>
+<p class="p2"><span class="Apple-converted-space">      </span>0 0 150px rgba(255,78,11,.45);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">/* IPHONE */</p>
+<p class="p1"><br></p>
+<p class="p2">@media (max-width: 480px) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.universe {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>padding-top: 175px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.brand-logo {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 95vw;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>height: 125px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.brand p {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>font-size: 8px;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>letter-spacing: .16em;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.solar-system {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 96vw;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.sun {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 58vw;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.player {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 90%;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>padding: 9px;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>gap: 5px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.audio-title { font-size: 9px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.audio-subtitle { font-size: 7px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.track-title { font-size: 9px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.status { font-size: 8px; }</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.controls { gap: 7px; }</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.controls button {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 30px;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>height: 30px;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>font-size: 13px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.controls .play-button {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 37px;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>height: 37px;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>font-size: 17px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.time-row { font-size: 9px; }</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.mercury { width: 36px; height: 36px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.venus { width: 60px; height: 60px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.earth { width: 80px; height: 80px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.mars { width: 56px; height: 56px; }</p>
+<p class="p2"><span class="Apple-converted-space">  </span>.saturn { width: 110px; height: 110px; }</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>.library {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>width: 94vw;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>margin-top: 35px;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">}</p>
+<p class="p2">&lt;/style&gt;</p>
+<p class="p2">&lt;/head&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;body&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;div class="universe"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;div class="stars"&gt;&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;header class="brand"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;h1&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;img</p>
+<p class="p2"><span class="Apple-converted-space">        </span>src="logo.PNG"</p>
+<p class="p2"><span class="Apple-converted-space">        </span>alt="Radio Jocoqui"</p>
+<p class="p2"><span class="Apple-converted-space">        </span>class="brand-logo"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/h1&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;p&gt;MÚSICA · CULTURA · CONCIENCIA&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/header&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;main class="solar-system"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="orbit one"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="orbit two"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="orbit three"&gt;&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="planet mercury"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="planet venus"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="planet earth"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="planet mars"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="planet saturn"&gt;&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div class="sun" id="sun"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;div class="sun-texture" id="sunTexture"&gt;&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;section class="player"</p>
+<p class="p2"><span class="Apple-converted-space">        </span>aria-label="Reproductor musical"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="audio-title"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>RADIO JOCOQUI</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="audio-subtitle"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>UNIVERSO SONORO ∞</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="track-title" id="trackTitle"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>Canción 01</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="controls"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;button id="previous"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>type="button"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>aria-label="Canción anterior"&gt;<span class="s1">⏮</span>&lt;/button&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;button id="play"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>class="play-button"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>type="button"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>aria-label="Reproducir"&gt;<span class="s2">▶</span>&lt;/button&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;button id="next"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>type="button"</p>
+<p class="p2"><span class="Apple-converted-space">            </span>aria-label="Siguiente canción"&gt;<span class="s1">⏭</span>&lt;/button&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;input</p>
+<p class="p2"><span class="Apple-converted-space">          </span>id="progress"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>class="progress"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>type="range"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>min="0"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>max="100"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>value="0"</p>
+<p class="p2"><span class="Apple-converted-space">          </span>aria-label="Progreso de la canción"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="time-row"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;span id="currentTime"&gt;0:00&lt;/span&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>&lt;span id="duration"&gt;0:00&lt;/span&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;div class="status" id="status"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>Selecciona una canción</p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>&lt;audio id="audio" preload="metadata"&gt;&lt;/audio&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/main&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;section class="library"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>aria-label="Biblioteca musical"&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;h2&gt;ARCHIVO SONORO&lt;/h2&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>&lt;div id="playlist" class="playlist"&gt;&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/section&gt;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;footer class="footer"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>UN UNIVERSO SONORO · MÚSICA PARA TODO EL MUNDO</p>
+<p class="p2"><span class="Apple-converted-space">    </span>/ PARA TODO MOMENTO</p>
+<p class="p2"><span class="Apple-converted-space">  </span>&lt;/footer&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;/div&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;script&gt;</p>
+<p class="p2">/* CANCIONES ORIGINALES */</p>
+<p class="p1"><br></p>
+<p class="p2">const tracks = [</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>title: "Fache De Con (Kesakocon)",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>file: "Fache De Con (Kesakocon).mp3"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>title: "Johannes Klingebiel - 808 Square",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>file: "Johannes Klingebiel - 808 Square.mp3"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>title: "My Kind of Woman",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>file: "My Kind of Woman.mp3"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">];</p>
+<p class="p1"><br></p>
+<p class="p2">const audio = document.getElementById("audio");</p>
+<p class="p2">const playButton = document.getElementById("play");</p>
+<p class="p2">const previousButton = document.getElementById("previous");</p>
+<p class="p2">const nextButton = document.getElementById("next");</p>
+<p class="p2">const trackTitle = document.getElementById("trackTitle");</p>
+<p class="p2">const playlist = document.getElementById("playlist");</p>
+<p class="p2">const progress = document.getElementById("progress");</p>
+<p class="p2">const currentTimeLabel = document.getElementById("currentTime");</p>
+<p class="p2">const durationLabel = document.getElementById("duration");</p>
+<p class="p2">const statusLabel = document.getElementById("status");</p>
+<p class="p1"><br></p>
+<p class="p2">let currentTrack = 0;</p>
+<p class="p1"><br></p>
+<p class="p2">function formatTime(seconds) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (!Number.isFinite(seconds)) return "0:00";</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const minutes = Math.floor(seconds / 60);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const remaining = Math.floor(seconds % 60);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>return minutes + ":" +</p>
+<p class="p2"><span class="Apple-converted-space">    </span>String(remaining).padStart(2, "0");</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function renderPlaylist() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>playlist.innerHTML = "";</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>tracks.forEach((track, index) =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const button = document.createElement("button");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>button.type = "button";</p>
+<p class="p2"><span class="Apple-converted-space">    </span>button.className =</p>
+<p class="p2"><span class="Apple-converted-space">      </span>index === currentTrack ? "track active" : "track";</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const name = document.createElement("span");</p>
+<p class="p2"><span class="Apple-converted-space">    </span>name.textContent = track.title;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const number = document.createElement("span");</p>
+<p class="p2"><span class="Apple-converted-space">    </span>number.className = "track-number";</p>
+<p class="p2"><span class="Apple-converted-space">    </span>number.textContent =</p>
+<p class="p2"><span class="Apple-converted-space">      </span>String(index + 1).padStart(2, "0");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>button.append(name, number);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>button.addEventListener("click", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>loadTrack(index, true);</p>
+<p class="p2"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>playlist.appendChild(button);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function updatePlayButton() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const playing = !audio.paused &amp;&amp; !audio.ended;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>playButton.textContent = playing ? "<span class="s3">❚❚</span>" : "<span class="s2">▶</span>";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>playButton.setAttribute(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"aria-label",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>playing ? "Pausar" : "Reproducir"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function loadTrack(index, autoplay = false) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>currentTrack =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>(index + tracks.length) % tracks.length;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>audio.pause();</p>
+<p class="p2"><span class="Apple-converted-space">  </span>audio.src = tracks[currentTrack].file;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>audio.load();</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>trackTitle.textContent = tracks[currentTrack].title;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>progress.value = 0;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>currentTimeLabel.textContent = "0:00";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>durationLabel.textContent = "0:00";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>statusLabel.textContent = "Lista para reproducir";</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>renderPlaylist();</p>
+<p class="p2"><span class="Apple-converted-space">  </span>updatePlayButton();</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (autoplay) playCurrent();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">async function playCurrent() {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>try {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>statusLabel.textContent = "Cargando audio...";</p>
+<p class="p2"><span class="Apple-converted-space">    </span>await audio.play();</p>
+<p class="p2"><span class="Apple-converted-space">    </span>statusLabel.textContent = "Transmitiendo música";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>} catch (error) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>statusLabel.textContent =</p>
+<p class="p2"><span class="Apple-converted-space">      </span>"Toca Play o verifica el archivo MP3";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>updatePlayButton();</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">playButton.addEventListener("click", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (audio.paused) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>playCurrent();</p>
+<p class="p2"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>audio.pause();</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">previousButton.addEventListener("click", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>loadTrack(currentTrack - 1, true);</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">nextButton.addEventListener("click", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>loadTrack(currentTrack + 1, true);</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">audio.addEventListener("play", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>statusLabel.textContent = "Transmitiendo música";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>updatePlayButton();</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">audio.addEventListener("pause", updatePlayButton);</p>
+<p class="p1"><br></p>
+<p class="p2">audio.addEventListener("loadedmetadata", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>durationLabel.textContent = formatTime(audio.duration);</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">audio.addEventListener("timeupdate", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>currentTimeLabel.textContent =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>formatTime(audio.currentTime);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (Number.isFinite(audio.duration) &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>audio.duration &gt; 0) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>progress.value =</p>
+<p class="p2"><span class="Apple-converted-space">      </span>(audio.currentTime / audio.duration) * 100;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">progress.addEventListener("input", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (Number.isFinite(audio.duration) &amp;&amp;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>audio.duration &gt; 0) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>audio.currentTime =</p>
+<p class="p2"><span class="Apple-converted-space">      </span>(progress.value / 100) * audio.duration;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">audio.addEventListener("ended", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>loadTrack(currentTrack + 1, true);</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">audio.addEventListener("error", () =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>statusLabel.textContent =</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"No se pudo cargar el MP3";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>updatePlayButton();</p>
+<p class="p2">});</p>
+<p class="p1"><br></p>
+<p class="p2">loadTrack(0);</p>
+<p class="p2">&lt;/script&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;!-- SOL CON TEXTURA DE PLASMA --&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;script&gt;</p>
+<p class="p2">(function () {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const holder = document.getElementById("sunTexture");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const canvas = document.createElement("canvas");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const ctx = canvas.getContext("2d");</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (!ctx) return;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>canvas.width = 512;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>canvas.height = 512;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>holder.appendChild(canvas);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const size = 512;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const center = size / 2;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const radius = 250;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>function noise(x, y, t) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>return (</p>
+<p class="p2"><span class="Apple-converted-space">      </span>Math.sin(x * 0.042 + t) *</p>
+<p class="p2"><span class="Apple-converted-space">      </span>Math.cos(y * 0.055 - t * 0.6) +</p>
+<p class="p2"><span class="Apple-converted-space">      </span>Math.sin((x + y) * 0.065 - t * 0.8) * 0.5 +</p>
+<p class="p2"><span class="Apple-converted-space">      </span>Math.cos((x - y) * 0.09 + t * 1.3) * 0.25</p>
+<p class="p2"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>function drawSun(time) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const image = ctx.createImageData(size, size);</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const data = image.data;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const t = time * 0.00013;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>for (let y = 0; y &lt; size; y++) {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>for (let x = 0; x &lt; size; x++) {</p>
+<p class="p2"><span class="Apple-converted-space">        </span>const dx = x - center;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>const dy = y - center;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>const dist = Math.sqrt(dx * dx + dy * dy);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>const i = (y * size + x) * 4;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>if (dist &gt; radius) {</p>
+<p class="p2"><span class="Apple-converted-space">          </span>data[i + 3] = 0;</p>
+<p class="p2"><span class="Apple-converted-space">          </span>continue;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>const n = noise(x, y, t);</p>
+<p class="p2"><span class="Apple-converted-space">        </span>const n2 = noise(x * 1.8, y * 1.8, -t * 1.5);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>const turbulence = n * 0.65 + n2 * 0.35;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>const edge = Math.pow(dist / radius, 1.7);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>let heat = 0.62 + turbulence * 0.15 - edge * 0.2;</p>
+<p class="p2"><span class="Apple-converted-space">        </span>heat = Math.max(0, Math.min(1, heat));</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>const spot = turbulence &lt; -0.7 ? 0.5 : 1;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">        </span>data[i] = Math.min(255, 245 * spot);</p>
+<p class="p2"><span class="Apple-converted-space">        </span>data[i + 1] = Math.min(</p>
+<p class="p2"><span class="Apple-converted-space">          </span>255, (65 + heat * 165) * spot</p>
+<p class="p2"><span class="Apple-converted-space">        </span>);</p>
+<p class="p2"><span class="Apple-converted-space">        </span>data[i + 2] = Math.min(</p>
+<p class="p2"><span class="Apple-converted-space">          </span>255, (5 + heat * 70) * spot</p>
+<p class="p2"><span class="Apple-converted-space">        </span>);</p>
+<p class="p2"><span class="Apple-converted-space">        </span>data[i + 3] = 225;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>ctx.putImageData(image, 0, 0);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const reducedMotion = window.matchMedia(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>"(prefers-reduced-motion: reduce)"</p>
+<p class="p2"><span class="Apple-converted-space">  </span>).matches;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>let last = 0;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>function animate(time) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>if (time - last &gt;= 100) {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>last = time;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>if (document.visibilityState === "visible") {</p>
+<p class="p2"><span class="Apple-converted-space">        </span>drawSun(time);</p>
+<p class="p2"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>requestAnimationFrame(animate);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>drawSun(0);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (!reducedMotion) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>requestAnimationFrame(animate);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">})();</p>
+<p class="p2">&lt;/script&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;!-- PLANETAS 3D THREE.JS --&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;script type="module"&gt;</p>
+<p class="p2">import * as THREE from</p>
+<p class="p2"><span class="Apple-converted-space">  </span>"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";</p>
+<p class="p1"><br></p>
+<p class="p2">const planets = [</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>selector: ".mercury",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>type: "rock",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>base: "#91877b",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>detail: "#4c4946",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>speed: 0.003</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>selector: ".venus",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>type: "cloud",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>base: "#e5bc80",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>detail: "#b4774b",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>speed: 0.002</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>selector: ".earth",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>type: "earth",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>base: "#176db4",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>detail: "#35865c",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>speed: 0.004</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>selector: ".mars",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>type: "rock",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>base: "#b85d40",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>detail: "#77382c",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>speed: 0.003</p>
+<p class="p2"><span class="Apple-converted-space">  </span>},</p>
+<p class="p2"><span class="Apple-converted-space">  </span>{</p>
+<p class="p2"><span class="Apple-converted-space">    </span>selector: ".saturn",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>type: "gas",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>base: "#dbc18b",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>detail: "#a27d59",</p>
+<p class="p2"><span class="Apple-converted-space">    </span>speed: 0.002</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2">];</p>
+<p class="p1"><br></p>
+<p class="p2">const instances = [];</p>
+<p class="p1"><br></p>
+<p class="p2">function makeTexture(planet) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const canvas = document.createElement("canvas");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>canvas.width = 512;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>canvas.height = 256;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const ctx = canvas.getContext("2d");</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const w = canvas.width;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const h = canvas.height;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>ctx.fillStyle = planet.base;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>ctx.fillRect(0, 0, w, h);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const base = new THREE.Color(planet.base);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const detail = new THREE.Color(planet.detail);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>for (let i = 0; i &lt; 2200; i++) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const x = Math.random() * w;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const y = Math.random() * h;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>let size = Math.random() * 18 + 2;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>if (planet.type === "gas" ||</p>
+<p class="p2"><span class="Apple-converted-space">        </span>planet.type === "cloud") {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>size = Math.random() * 35 + 10;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const mix = Math.random();</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const color = base.clone().lerp(detail, mix);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>ctx.fillStyle = "#" + color.getHexString();</p>
+<p class="p2"><span class="Apple-converted-space">    </span>ctx.globalAlpha = 0.15 + Math.random() * 0.45;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>ctx.beginPath();</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>if (planet.type === "gas" ||</p>
+<p class="p2"><span class="Apple-converted-space">        </span>planet.type === "cloud") {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>ctx.ellipse(</p>
+<p class="p2"><span class="Apple-converted-space">        </span>x, y, size * 2, size * 0.18,</p>
+<p class="p2"><span class="Apple-converted-space">        </span>0, 0, Math.PI * 2</p>
+<p class="p2"><span class="Apple-converted-space">      </span>);</p>
+<p class="p2"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>ctx.arc(x, y, size, 0, Math.PI * 2);</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>ctx.fill();</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>ctx.globalAlpha = 1;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (planet.type === "earth") {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>for (let i = 0; i &lt; 70; i++) {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>const x = Math.random() * w;</p>
+<p class="p2"><span class="Apple-converted-space">      </span>const y = Math.random() * h;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">      </span>ctx.fillStyle = "rgba(235,245,255,0.22)";</p>
+<p class="p2"><span class="Apple-converted-space">      </span>ctx.beginPath();</p>
+<p class="p2"><span class="Apple-converted-space">      </span>ctx.ellipse(</p>
+<p class="p2"><span class="Apple-converted-space">        </span>x, y,</p>
+<p class="p2"><span class="Apple-converted-space">        </span>15 + Math.random() * 30,</p>
+<p class="p2"><span class="Apple-converted-space">        </span>2 + Math.random() * 5,</p>
+<p class="p2"><span class="Apple-converted-space">        </span>Math.random() * 0.4,</p>
+<p class="p2"><span class="Apple-converted-space">        </span>0, Math.PI * 2</p>
+<p class="p2"><span class="Apple-converted-space">      </span>);</p>
+<p class="p2"><span class="Apple-converted-space">      </span>ctx.fill();</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const texture = new THREE.CanvasTexture(canvas);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>texture.colorSpace = THREE.SRGBColorSpace;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>return texture;</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">function createPlanet(config) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const element = document.querySelector(config.selector);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (!element) return;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>let renderer;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>try {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>renderer = new THREE.WebGLRenderer({</p>
+<p class="p2"><span class="Apple-converted-space">      </span>alpha: true,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>antialias: true,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>powerPreference: "low-power"</p>
+<p class="p2"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><span class="Apple-converted-space">  </span>} catch (error) {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>console.warn("WebGL no disponible", error);</p>
+<p class="p2"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const width = element.clientWidth;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>const height = element.clientHeight;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>renderer.setPixelRatio(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>Math.min(window.devicePixelRatio || 1, 2)</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>renderer.setSize(width, height);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>renderer.setClearColor(0x000000, 0);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const scene = new THREE.Scene();</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const camera = new THREE.PerspectiveCamera(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>40, width / height, 0.1, 100</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>camera.position.z = 3.8;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const geometry = new THREE.SphereGeometry(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>1, 64, 48</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const material = new THREE.MeshStandardMaterial({</p>
+<p class="p2"><span class="Apple-converted-space">    </span>map: makeTexture(config),</p>
+<p class="p2"><span class="Apple-converted-space">    </span>roughness: 0.9,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>metalness: 0</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const sphere = new THREE.Mesh(geometry, material);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>sphere.rotation.z = 0.15;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>scene.add(sphere);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>scene.add(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>new THREE.AmbientLight(0xffffff, 0.65)</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>const sunlight = new THREE.DirectionalLight(</p>
+<p class="p2"><span class="Apple-converted-space">    </span>0xffe2bd, 2.5</p>
+<p class="p2"><span class="Apple-converted-space">  </span>);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>sunlight.position.set(-3, 3, 5);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>scene.add(sunlight);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (config.type === "gas") {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>const ringGeometry = new THREE.RingGeometry(</p>
+<p class="p2"><span class="Apple-converted-space">      </span>1.25, 1.9, 96</p>
+<p class="p2"><span class="Apple-converted-space">    </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const ringMaterial = new THREE.MeshBasicMaterial({</p>
+<p class="p2"><span class="Apple-converted-space">      </span>color: 0xd9bd88,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>side: THREE.DoubleSide,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>transparent: true,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>opacity: 0.8,</p>
+<p class="p2"><span class="Apple-converted-space">      </span>depthWrite: false</p>
+<p class="p2"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>const rings = new THREE.Mesh(</p>
+<p class="p2"><span class="Apple-converted-space">      </span>ringGeometry, ringMaterial</p>
+<p class="p2"><span class="Apple-converted-space">    </span>);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>rings.rotation.x = 1.1;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>rings.rotation.z = -0.35;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>sphere.add(rings);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>camera.position.z = 5.5;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>element.style.background = "transparent";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>element.style.boxShadow = "none";</p>
+<p class="p2"><span class="Apple-converted-space">  </span>element.appendChild(renderer.domElement);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>instances.push({</p>
+<p class="p2"><span class="Apple-converted-space">    </span>renderer, scene, camera, sphere,</p>
+<p class="p2"><span class="Apple-converted-space">    </span>speed: config.speed</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">planets.forEach(createPlanet);</p>
+<p class="p1"><br></p>
+<p class="p2">const reducedMotion = window.matchMedia(</p>
+<p class="p2"><span class="Apple-converted-space">  </span>"(prefers-reduced-motion: reduce)"</p>
+<p class="p2">).matches;</p>
+<p class="p1"><br></p>
+<p class="p2">let lastTime = 0;</p>
+<p class="p1"><br></p>
+<p class="p2">function animate(time) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>requestAnimationFrame(animate);</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (time - lastTime &lt; 33) return;</p>
+<p class="p2"><span class="Apple-converted-space">  </span>lastTime = time;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>if (document.visibilityState !== "visible") return;</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">  </span>instances.forEach(item =&gt; {</p>
+<p class="p2"><span class="Apple-converted-space">    </span>if (!reducedMotion) {</p>
+<p class="p2"><span class="Apple-converted-space">      </span>item.sphere.rotation.y += item.speed;</p>
+<p class="p2"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><br></p>
+<p class="p2"><span class="Apple-converted-space">    </span>item.renderer.render(item.scene, item.camera);</p>
+<p class="p2"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2">}</p>
+<p class="p1"><br></p>
+<p class="p2">if (instances.length) {</p>
+<p class="p2"><span class="Apple-converted-space">  </span>requestAnimationFrame(animate);</p>
+<p class="p2">}</p>
+<p class="p2">&lt;/script&gt;</p>
+<p class="p1"><br></p>
+<p class="p2">&lt;/body&gt;</p>
+<p class="p2">&lt;/html&gt;</p>
 </body>
 </html>
