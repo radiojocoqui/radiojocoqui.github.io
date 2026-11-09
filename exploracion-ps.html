@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radio Jocoqui — Universo Sonoro</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --text: #f5eee3;
+  --gold: #f4c38d;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #02050c;
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button { font: inherit; }
+
+.universe {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 185px 15px 40px;
+  background:
+    radial-gradient(ellipse at 50% 39%,
+      #1b3049 0%,
+      #091626 43%,
+      #02050c 85%);
+}
+
+/* ESTRELLAS */
+
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .75;
+  background-image:
+    radial-gradient(2px 2px at 15% 20%, #fff, transparent),
+    radial-gradient(2px 2px at 80% 15%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 80%, #fff, transparent),
+    radial-gradient(2px 2px at 25% 75%, #fff, transparent),
+    radial-gradient(1px 1px at 90% 55%, #fff, transparent),
+    radial-gradient(2px 2px at 45% 10%, #fff, transparent);
+  background-size: 230px 210px;
+}
+
+/* LOGOTIPO */
+
+.brand {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  width: 100%;
+  z-index: 30;
+  text-align: center;
+}
+
+.brand h1 { margin: 0; }
+
+.brand-logo {
+  display: block;
+  width: min(95vw, 780px);
+  height: 145px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.brand p {
+  margin: 7px auto 0;
+  color: #b4c5d7;
+  font-size: 10px;
+  letter-spacing: .25em;
+  line-height: 1.5;
+}
+
+/* SISTEMA SOLAR */
+
+.solar-system {
+  position: relative;
+  width: min(94vw, 740px);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(153, 196, 231, .22);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orbit.one { width: 52%; height: 52%; }
+.orbit.two { width: 75%; height: 75%; }
+.orbit.three { width: 98%; height: 98%; }
+
+/* PLANETAS AL DOBLE */
+
+.planet {
+  position: absolute;
+  z-index: 4;
+  border-radius: 50%;
+  overflow: visible;
+  background: radial-gradient(circle at 28% 23%,
+    #fff0d0, #8a7567 45%, #1b1720 100%);
+  box-shadow:
+    inset -9px -8px 14px rgba(0,0,0,.65),
+    0 0 18px rgba(255,255,255,.1);
+}
+
+.planet canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Posiciones originales */
+
+.mercury {
+  width: 36px;
+  height: 36px;
+  top: 24%;
+  left: 27%;
+}
+
+.venus {
+  width: 60px;
+  height: 60px;
+  top: 15%;
+  right: 23%;
+}
+
+.earth {
+  width: 80px;
+  height: 80px;
+  bottom: 16%;
+  left: 15%;
+  background: radial-gradient(circle at 30% 25%,
+    #b3f7ff, #287db1 40%, #173b75 70%, #06101f);
+}
+
+.mars {
+  width: 56px;
+  height: 56px;
+  right: 10%;
+  bottom: 32%;
+  background: radial-gradient(circle at 30% 25%,
+    #ffd0a0, #b95b3e 45%, #401b1c);
+}
+
+.saturn {
+  width: 110px;
+  height: 110px;
+  top: 48%;
+  right: 1%;
+  background: radial-gradient(circle at 30% 25%,
+    #fff0c2, #bc9767 50%, #40312d);
+}
+
+/* Respaldo si no carga Three.js */
+
+.saturn:not(:has(canvas))::after {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 40%;
+  top: 30%;
+  left: -25%;
+  border: 7px solid rgba(232,199,143,.85);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+
+/* SOL REALISTA */
+
+.sun {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: min(58vw, 330px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+
+  background:
+    radial-gradient(circle at 34% 26%,
+      rgba(255,252,210,.95) 0%,
+      rgba(255,203,78,.9) 18%,
+      rgba(255,112,20,.9) 45%,
+      rgba(189,43,9,.95) 78%,
+      #591507 100%);
+
+  box-shadow:
+    0 0 20px rgba(255,210,103,.95),
+    0 0 60px rgba(255,124,28,.65),
+    0 0 115px rgba(255,78,11,.35),
+    0 0 190px rgba(255,75,0,.12);
+}
+
+/* Textura de plasma */
+
+.sun-texture {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sun-texture canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.sun::before {
+  content: "";
+  position: absolute;
+  inset: -5%;
+  border-radius: 50%;
+  border: 2px solid rgba(255,196,80,.3);
+  box-shadow:
+    0 0 28px rgba(255,149,33,.55),
+    inset 0 0 25px rgba(255,196,80,.25);
+  pointer-events: none;
+}
+
+.sun::after {
+  content: "";
+  position: absolute;
+  inset: -13%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    transparent 51%,
+    rgba(255,141,23,.18) 63%,
+    transparent 74%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* REPRODUCTOR SIEMPRE VISIBLE */
+
+.player {
+  position: relative;
+  z-index: 12;
+  width: 86%;
+  aspect-ratio: 1;
+  padding: 18px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  text-align: center;
+  background: rgba(8,15,27,.91);
+  border: 1px solid rgba(255,214,157,.75);
+  box-shadow:
+    0 0 22px rgba(255,177,75,.5),
+    inset 0 0 24px rgba(255,134,37,.1);
+}
+
+.audio-title {
+  font-size: 12px;
+  letter-spacing: .16em;
+  color: #ffe0ad;
+}
+
+.audio-subtitle {
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: #b6c9db;
+}
+
+.track-title {
+  width: 100%;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+}
+
+.controls button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255,220,177,.55);
+  border-radius: 50%;
+  background: rgba(255,255,255,.09);
+  color: white;
+  cursor: pointer;
+  font-size: 17px;
+  touch-action: manipulation;
+}
+
+.controls .play-button {
+  width: 49px;
+  height: 49px;
+  background: rgba(244,195,141,.22);
+  font-size: 21px;
+}
+
+.controls button:focus-visible {
+  outline: 2px solid #fff;
+}
+
+.progress {
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.time-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #c6d1dc;
+}
+
+.status {
+  font-size: 10px;
+  color: #ffcc9a;
+  line-height: 1.3;
+}
+
+/* ARCHIVO SONORO */
+
+.library {
+  position: relative;
+  z-index: 20;
+  width: min(92vw, 500px);
+  margin: 45px auto 30px;
+  padding: 22px;
+  border: 1px solid rgba(165,184,203,.28);
+  border-radius: 20px;
+  background: rgba(5,12,24,.88);
+  backdrop-filter: blur(12px);
+}
+
+.library h2 {
+  margin: 0 0 17px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .22em;
+  color: var(--gold);
+}
+
+.playlist {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.track {
+  width: 100%;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border: 1px solid rgba(165,184,203,.2);
+  border-radius: 10px;
+  background: rgba(255,255,255,.04);
+  color: #dce4ed;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.track.active {
+  color: #ffdda9;
+  border-color: rgba(244,195,141,.7);
+  background: rgba(244,195,141,.1);
+}
+
+.track-number {
+  color: #a9b8ca;
+  font-size: 11px;
+}
+
+.footer {
+  position: relative;
+  z-index: 20;
+  padding: 10px 20px 30px;
+  text-align: center;
+  color: #a5b8cb;
+  font-size: 10px;
+  line-height: 1.8;
+  letter-spacing: .17em;
+}
+
+/* ANIMACIÓN SUAVE */
+
+@media (prefers-reduced-motion: no-preference) {
+  .sun {
+    animation: sunPulse 6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes sunPulse {
+  from {
+    box-shadow:
+      0 0 20px rgba(255,210,103,.9),
+      0 0 60px rgba(255,124,28,.6),
+      0 0 115px rgba(255,78,11,.3);
+  }
+  to {
+    box-shadow:
+      0 0 30px rgba(255,220,130,1),
+      0 0 85px rgba(255,124,28,.8),
+      0 0 150px rgba(255,78,11,.45);
+  }
+}
+
+/* IPHONE */
+
+@media (max-width: 480px) {
+  .universe {
+    padding-top: 175px;
+  }
+
+  .brand-logo {
+    width: 95vw;
+    height: 125px;
+  }
+
+  .brand p {
+    font-size: 8px;
+    letter-spacing: .16em;
+  }
+
+  .solar-system {
+    width: 96vw;
+  }
+
+  .sun {
+    width: 58vw;
+  }
+
+  .player {
+    width: 90%;
+    padding: 9px;
+    gap: 5px;
+  }
+
+  .audio-title { font-size: 9px; }
+  .audio-subtitle { font-size: 7px; }
+  .track-title { font-size: 9px; }
+  .status { font-size: 8px; }
+
+  .controls { gap: 7px; }
+
+  .controls button {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .controls .play-button {
+    width: 37px;
+    height: 37px;
+    font-size: 17px;
+  }
+
+  .time-row { font-size: 9px; }
+
+  .mercury { width: 36px; height: 36px; }
+  .venus { width: 60px; height: 60px; }
+  .earth { width: 80px; height: 80px; }
+  .mars { width: 56px; height: 56px; }
+  .saturn { width: 110px; height: 110px; }
+
+  .library {
+    width: 94vw;
+    margin-top: 35px;
+  }
+}
+
+/* EXPLORACION ESPACIAL: CAPA INDEPENDIENTE */
+.planet { cursor: zoom-in; touch-action: manipulation; }
+.planet:focus-visible { outline: 2px solid #ffd19b; outline-offset: 8px; }
+.explorer { position: fixed; inset: 0; z-index: 100; display: none; background: radial-gradient(ellipse at center,#15263d 0%,#030812 75%); color: #f5eee3; }
+.explorer.is-open { display: flex; flex-direction: column; }
+.explorer-top { position: absolute; z-index: 3; top: max(18px, env(safe-area-inset-top)); left: 18px; right: 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.explorer-heading { font-size: clamp(18px,4vw,27px); font-weight: 400; letter-spacing: .17em; margin: 0; }
+.explorer-kicker { font-size: 10px; letter-spacing: .18em; color: #b4c5d7; margin: 0 0 7px; }
+.explorer button { color: #fff3e3; background: rgba(15,26,43,.85); border: 1px solid rgba(244,195,141,.55); border-radius: 100px; cursor: pointer; padding: 12px 16px; }
+.explorer button:focus-visible { outline: 2px solid #fff; }
+#explorerCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#explorerCanvas:active { cursor: grabbing; }
+.explorer-bottom { position: absolute; z-index: 3; bottom: max(22px, env(safe-area-inset-bottom)); left: 12px; right: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.explorer-help { position: absolute; z-index: 3; top: 88px; left: 16px; right: 16px; color: #c1cbd6; font-size: 12px; text-align: center; pointer-events: none; }
+.explorer-counter { font-size: 11px; color: #f4c38d; letter-spacing: .12em; }
+@media (max-width: 480px) { .explorer-bottom button { padding: 11px 13px; font-size: 12px; } .explorer-heading { font-size: 20px; } }
+
+/* RADIO JOCOQUI · DASHBOARD DEMO */
+.planet{cursor:pointer}
+.planet::after{content:attr(data-section);position:absolute;left:50%;top:105%;transform:translateX(-50%);font-size:10px;letter-spacing:.09em;color:#f2e9dd;text-shadow:0 2px 6px #000;white-space:nowrap;pointer-events:none}
+.dashboard-extra{position:relative;z-index:22;width:min(94vw,740px);display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:5px}
+.dashboard-extra button,.section-action{border:1px solid #6f849a;border-radius:999px;background:#101d31;color:#f5eee3;padding:12px 17px;cursor:pointer}
+.section-action:disabled{opacity:.45;cursor:not-allowed}
+.section-screen{display:none;position:fixed;inset:0;z-index:110;overflow:auto;background:radial-gradient(ellipse at 45% 20%,#172b42,#030710 75%);padding:clamp(20px,5vw,65px) 20px 130px}
+.section-screen.active{display:block}
+.section-content{max-width:760px;margin:0 auto}
+.section-content h2{font-size:clamp(32px,6vw,60px);font-weight:400;letter-spacing:.08em;margin:45px 0 14px}
+.section-content p{color:#c4d1df;line-height:1.7}
+.section-eyebrow{letter-spacing:.2em;color:#f4c38d;font-size:11px}
+.section-card{margin-top:28px;padding:24px;border:1px solid #3e526b;border-radius:20px;background:#101b2c}
+.mini-player{position:fixed;bottom:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:center;gap:12px;padding:11px max(14px,env(safe-area-inset-left)) calc(11px + env(safe-area-inset-bottom));background:rgba(3,9,19,.96);border-top:1px solid #685c4b;backdrop-filter:blur(12px)}
+.mini-player button{background:#26354a;border:1px solid #ab916f;border-radius:50%;color:white;width:39px;height:39px;cursor:pointer;flex-shrink:0}
+.mini-player .mini-title{max-width:260px;min-width:0;flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-player .mini-title strong{display:block;color:#f4c38d;font-size:10px;letter-spacing:.14em;margin-bottom:3px}
+.mini-player input{width:min(18vw,160px);accent-color:#f4c38d}
+.explorer{z-index:100}.explorer-bottom{bottom:90px}
+.explorer .enter-section{background:#d9a56a;color:#10131a;border-color:#f2c999;font-weight:bold}
+.universe{padding-bottom:110px}
+@media(max-width:480px){.planet::after{font-size:8px}.mini-player{gap:7px}.mini-player button{width:34px;height:34px}.mini-player input{width:52px}.explorer-bottom{bottom:95px}.explorer-help{top:110px}}
+
+
+/* DASHBOARD / INTERFAZ EDITORIAL INSPIRADA EN CONSOLAS */
+:root { --ui-ice:#dcefff; --ui-line:rgba(180,217,250,.19); }
+.universe { background: radial-gradient(ellipse 80% 58% at 50% 38%,#13233b 0%,#070e1b 55%,#02040b 100%); }
+.universe::before { content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(110deg,transparent 32%,rgba(100,163,232,.055) 49%,transparent 67%); }
+.brand { top:22px; }
+.brand-logo { height:110px;filter:drop-shadow(0 0 18px rgba(160,205,255,.15)); }
+.brand p {letter-spacing:.42em;color:#9ab3d2;}
+.dashboard-intro {z-index:24;position:relative;text-align:center;margin:0 auto 5px;max-width:640px;pointer-events:none;}
+.dashboard-intro .eyebrow {font-size:10px;letter-spacing:.38em;color:#81a5cb;margin:0 0 9px;}
+.dashboard-intro h2 {font-size:clamp(19px,3.2vw,30px);font-weight:300;letter-spacing:.19em;margin:0;color:#eaf4ff;}
+.dashboard-intro .hint {font-size:11px;color:#95a8c0;letter-spacing:.08em;margin:10px 0 0;}
+.solar-system {width:min(91vw,730px);filter:drop-shadow(0 0 24px rgba(51,105,176,.08));}
+.orbit {border:1px solid rgba(130,173,224,.2);box-shadow:0 0 12px rgba(70,125,203,.055),inset 0 0 12px rgba(70,125,203,.04);}
+.orbit.one {border-style:dashed;border-color:rgba(166,198,232,.16);}
+.planet {transition:filter .3s ease,transform .3s ease;}
+.planet:hover,.planet:focus-visible {filter:brightness(1.18) drop-shadow(0 0 16px rgba(150,204,255,.52));transform:scale(1.09);}
+.planet::after {top:calc(100% + 12px);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#dbe9f8;background:rgba(3,10,22,.72);border:1px solid rgba(164,201,244,.23);padding:6px 9px;border-radius:4px;backdrop-filter:blur(9px);}
+.dashboard-extra {gap:8px;margin-top:10px;}
+.dashboard-extra button {font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:rgba(10,21,39,.7);border:1px solid var(--ui-line);border-radius:6px;padding:13px 17px;transition:background .2s,border-color .2s;}
+.dashboard-extra button:hover {background:rgba(44,81,127,.35);border-color:rgba(171,214,255,.6);}
+.library {background:linear-gradient(135deg,rgba(14,26,44,.9),rgba(5,11,23,.92));border-color:var(--ui-line);border-radius:9px;box-shadow:0 16px 55px rgba(0,0,0,.2);}
+.library h2 {font-size:11px;letter-spacing:.32em;color:#b7d6f7;}
+.track {border-radius:5px;background:rgba(144,185,231,.035);}
+.track.active {background:rgba(86,146,214,.14);border-color:rgba(153,207,255,.65);color:#e9f5ff;}
+.mini-player {background:rgba(3,9,19,.88);border-top:1px solid rgba(146,196,246,.25);box-shadow:0 -8px 35px rgba(0,0,0,.2);}
+.mini-player button {background:rgba(65,102,146,.2);border-color:rgba(166,207,250,.4);}
+.section-screen {background:radial-gradient(ellipse at 50% 18%,#19304e 0%,#070d19 65%,#02040b 100%);}
+.section-card {border-radius:9px;background:rgba(16,30,50,.7);border-color:var(--ui-line);}
+.explorer {background:radial-gradient(ellipse at 50% 50%,#172e4b,#020611 78%);}
+.explorer button {background:rgba(9,22,42,.82);border-color:rgba(167,204,246,.38);}
+.explorer .enter-section {background:#b8d8f4;color:#08111f;border-color:#d7eafa;}
+@media(max-width:600px){
+ .universe{padding-top:168px;}
+ .brand-logo{height:105px;}
+ .brand p{letter-spacing:.16em;}
+ .dashboard-intro h2{font-size:17px;letter-spacing:.12em;}
+ .dashboard-intro .eyebrow{font-size:8px;}
+ .dashboard-intro .hint{font-size:10px;}
+ .solar-system{width:96vw;margin:14px 0 8px;}
+ .planet::after{font-size:7px;letter-spacing:.04em;padding:4px 5px;top:calc(100% + 6px);max-width:100px;white-space:normal;text-align:center;}
+ .dashboard-extra button{font-size:9px;padding:11px 9px;}
+ .library{margin-top:25px;}
+}
+@media(prefers-reduced-motion:reduce){.planet{transition:none;}}
+
+</style>
+</head>
+
+<body>
+
+<div class="universe">
+
+  <div class="stars"></div>
+
+  <header class="brand">
+    <h1>
+      <img
+        src="logo.PNG"
+        alt="Radio Jocoqui"
+        class="brand-logo">
+    </h1>
+    <p>MÚSICA · CULTURA · CONCIENCIA</p>
+  </header>
+
+  <div class="dashboard-intro" aria-label="Dashboard de navegación">
+    <p class="eyebrow">RADIO JOCOQUI / DASHBOARD</p>
+    <h2>EXPLORA NUESTRO UNIVERSO</h2>
+    <p class="hint">Selecciona un planeta para explorar su Sección</p>
+  </div>
+
+  <main class="solar-system">
+
+    <div class="orbit one"></div>
+    <div class="orbit two"></div>
+    <div class="orbit three"></div>
+
+    <div class="planet mercury" data-section="Casa Jocoqui" role="button" tabindex="0" aria-label="Explorar Casa Jocoqui"></div>
+    <div class="planet venus" data-section="Eventos" role="button" tabindex="0" aria-label="Explorar Eventos"></div>
+    <div class="planet earth" data-section="Blogs" role="button" tabindex="0" aria-label="Explorar Blogs"></div>
+    <div class="planet mars" data-section="Colección de música" role="button" tabindex="0" aria-label="Explorar Colección de música"></div>
+    <div class="planet saturn" data-section="Misiones" role="button" tabindex="0" aria-label="Explorar Misiones"></div>
+
+    <div class="sun" id="sun">
+
+      <div class="sun-texture" id="sunTexture"></div>
+
+      <section class="player"
+        aria-label="Reproductor musical">
+
+        <div class="audio-title">
+          RADIO JOCOQUI
+        </div>
+
+        <div class="audio-subtitle">
+          UNIVERSO SONORO ∞
+        </div>
+
+        <div class="track-title" id="trackTitle">
+          Canción 01
+        </div>
+
+        <div class="controls">
+
+          <button id="previous"
+            type="button"
+            aria-label="Canción anterior">⏮</button>
+
+          <button id="play"
+            class="play-button"
+            type="button"
+            aria-label="Reproducir">▶</button>
+
+          <button id="next"
+            type="button"
+            aria-label="Siguiente canción">⏭</button>
+
+        </div>
+
+        <input
+          id="progress"
+          class="progress"
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          aria-label="Progreso de la canción">
+
+        <div class="time-row">
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+
+        <div class="status" id="status">
+          Selecciona una canción
+        </div>
+
+        <audio id="audio" preload="metadata"></audio>
+
+      </section>
+
+    </div>
+
+  </main>
+
+<nav class="dashboard-extra" aria-label="Más secciones"><button data-go="Chatroom">Chatroom · Acceso Básico</button><button data-go="Perfil">Perfil · Acceso Básico</button><button data-go="Términos y Condiciones">Términos y Condiciones</button></nav>
+  <section class="library"
+    aria-label="Biblioteca musical">
+
+    <h2>ARCHIVO SONORO</h2>
+
+    <div id="playlist" class="playlist"></div>
+
+  </section>
+
+  <footer class="footer">
+    UN UNIVERSO SONORO · MÚSICA PARA TODO EL MUNDO
+    / PARA TODO MOMENTO
+  </footer>
+
+</div>
+
+<script>
+/* CANCIONES ORIGINALES */
+
+const tracks = [
+  {
+    title: "Fache De Con (Kesakocon)",
+    file: "Fache De Con (Kesakocon).mp3"
+  },
+  {
+    title: "Johannes Klingebiel - 808 Square",
+    file: "Johannes Klingebiel - 808 Square.mp3"
+  },
+  {
+    title: "My Kind of Woman",
+    file: "My Kind of Woman.mp3"
+  }
+];
+
+const audio = document.getElementById("audio");
+const playButton = document.getElementById("play");
+const previousButton = document.getElementById("previous");
+const nextButton = document.getElementById("next");
+const trackTitle = document.getElementById("trackTitle");
+const playlist = document.getElementById("playlist");
+const progress = document.getElementById("progress");
+const currentTimeLabel = document.getElementById("currentTime");
+const durationLabel = document.getElementById("duration");
+const statusLabel = document.getElementById("status");
+
+let currentTrack = 0;
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+
+  const minutes = Math.floor(seconds / 60);
+  const remaining = Math.floor(seconds % 60);
+
+  return minutes + ":" +
+    String(remaining).padStart(2, "0");
+}
+
+function renderPlaylist() {
+  playlist.innerHTML = "";
+
+  tracks.forEach((track, index) => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className =
+      index === currentTrack ? "track active" : "track";
+
+    const name = document.createElement("span");
+    name.textContent = track.title;
+
+    const number = document.createElement("span");
+    number.className = "track-number";
+    number.textContent =
+      String(index + 1).padStart(2, "0");
+
+    button.append(name, number);
+
+    button.addEventListener("click", () => {
+      loadTrack(index, true);
+    });
+
+    playlist.appendChild(button);
+  });
+}
+
+function updatePlayButton() {
+  const playing = !audio.paused && !audio.ended;
+
+  playButton.textContent = playing ? "❚❚" : "▶";
+  playButton.setAttribute(
+    "aria-label",
+    playing ? "Pausar" : "Reproducir"
+  );
+}
+
+function loadTrack(index, autoplay = false) {
+  currentTrack =
+    (index + tracks.length) % tracks.length;
+
+  audio.pause();
+  audio.src = tracks[currentTrack].file;
+  audio.load();
+
+  trackTitle.textContent = tracks[currentTrack].title;
+  progress.value = 0;
+  currentTimeLabel.textContent = "0:00";
+  durationLabel.textContent = "0:00";
+  statusLabel.textContent = "Lista para reproducir";
+
+  renderPlaylist();
+  updatePlayButton();
+
+  if (autoplay) playCurrent();
+}
+
+async function playCurrent() {
+  try {
+    statusLabel.textContent = "Cargando audio...";
+    await audio.play();
+    statusLabel.textContent = "Transmitiendo música";
+  } catch (error) {
+    statusLabel.textContent =
+      "Toca Play o verifica el archivo MP3";
+  }
+
+  updatePlayButton();
+}
+
+playButton.addEventListener("click", () => {
+  if (audio.paused) {
+    playCurrent();
+  } else {
+    audio.pause();
+  }
+});
+
+previousButton.addEventListener("click", () => {
+  loadTrack(currentTrack - 1, true);
+});
+
+nextButton.addEventListener("click", () => {
+  loadTrack(currentTrack + 1, true);
+});
+
+audio.addEventListener("play", () => {
+  statusLabel.textContent = "Transmitiendo música";
+  updatePlayButton();
+});
+
+audio.addEventListener("pause", updatePlayButton);
+
+audio.addEventListener("loadedmetadata", () => {
+  durationLabel.textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener("timeupdate", () => {
+  currentTimeLabel.textContent =
+    formatTime(audio.currentTime);
+
+  if (Number.isFinite(audio.duration) &&
+      audio.duration > 0) {
+    progress.value =
+      (audio.currentTime / audio.duration) * 100;
+  }
+});
+
+progress.addEventListener("input", () => {
+  if (Number.isFinite(audio.duration) &&
+      audio.duration > 0) {
+    audio.currentTime =
+      (progress.value / 100) * audio.duration;
+  }
+});
+
+audio.addEventListener("ended", () => {
+  loadTrack(currentTrack + 1, true);
+});
+
+audio.addEventListener("error", () => {
+  statusLabel.textContent =
+    "No se pudo cargar el MP3";
+  updatePlayButton();
+});
+
+loadTrack(0);
+</script>
+
+<!-- SOL CON TEXTURA DE PLASMA -->
+
+<script>
+(function () {
+  const holder = document.getElementById("sunTexture");
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return;
+
+  canvas.width = 512;
+  canvas.height = 512;
+  holder.appendChild(canvas);
+
+  const size = 512;
+  const center = size / 2;
+  const radius = 250;
+
+  function noise(x, y, t) {
+    return (
+      Math.sin(x * 0.042 + t) *
+      Math.cos(y * 0.055 - t * 0.6) +
+      Math.sin((x + y) * 0.065 - t * 0.8) * 0.5 +
+      Math.cos((x - y) * 0.09 + t * 1.3) * 0.25
+    );
+  }
+
+  function drawSun(time) {
+    const image = ctx.createImageData(size, size);
+    const data = image.data;
+
+    const t = time * 0.00013;
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const dx = x - center;
+        const dy = y - center;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const i = (y * size + x) * 4;
+
+        if (dist > radius) {
+          data[i + 3] = 0;
+          continue;
+        }
+
+        const n = noise(x, y, t);
+        const n2 = noise(x * 1.8, y * 1.8, -t * 1.5);
+
+        const turbulence = n * 0.65 + n2 * 0.35;
+        const edge = Math.pow(dist / radius, 1.7);
+
+        let heat = 0.62 + turbulence * 0.15 - edge * 0.2;
+        heat = Math.max(0, Math.min(1, heat));
+
+        const spot = turbulence < -0.7 ? 0.5 : 1;
+
+        data[i] = Math.min(255, 245 * spot);
+        data[i + 1] = Math.min(
+          255, (65 + heat * 165) * spot
+        );
+        data[i + 2] = Math.min(
+          255, (5 + heat * 70) * spot
+        );
+        data[i + 3] = 225;
+      }
+    }
+
+    ctx.putImageData(image, 0, 0);
+  }
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  let last = 0;
+
+  function animate(time) {
+    if (time - last >= 100) {
+      last = time;
+      if (document.visibilityState === "visible") {
+        drawSun(time);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  drawSun(0);
+
+  if (!reducedMotion) {
+    requestAnimationFrame(animate);
+  }
+})();
+</script>
+
+<!-- PLANETAS 3D THREE.JS -->
+
+<script type="module">
+import * as THREE from
+  "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
+
+const planets = [
+  {
+    selector: ".mercury",
+    type: "rock",
+    base: "#91877b",
+    detail: "#4c4946",
+    speed: 0.003
+  },
+  {
+    selector: ".venus",
+    type: "cloud",
+    base: "#e5bc80",
+    detail: "#b4774b",
+    speed: 0.002
+  },
+  {
+    selector: ".earth",
+    type: "earth",
+    base: "#176db4",
+    detail: "#35865c",
+    speed: 0.004
+  },
+  {
+    selector: ".mars",
+    type: "rock",
+    base: "#b85d40",
+    detail: "#77382c",
+    speed: 0.003
+  },
+  {
+    selector: ".saturn",
+    type: "gas",
+    base: "#dbc18b",
+    detail: "#a27d59",
+    speed: 0.002
+  }
+];
+
+const instances = [];
+
+function makeTexture(planet) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 256;
+
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+
+  ctx.fillStyle = planet.base;
+  ctx.fillRect(0, 0, w, h);
+
+  const base = new THREE.Color(planet.base);
+  const detail = new THREE.Color(planet.detail);
+
+  for (let i = 0; i < 2200; i++) {
+    const x = Math.random() * w;
+    const y = Math.random() * h;
+
+    let size = Math.random() * 18 + 2;
+
+    if (planet.type === "gas" ||
+        planet.type === "cloud") {
+      size = Math.random() * 35 + 10;
+    }
+
+    const mix = Math.random();
+    const color = base.clone().lerp(detail, mix);
+
+    ctx.fillStyle = "#" + color.getHexString();
+    ctx.globalAlpha = 0.15 + Math.random() * 0.45;
+
+    ctx.beginPath();
+
+    if (planet.type === "gas" ||
+        planet.type === "cloud") {
+      ctx.ellipse(
+        x, y, size * 2, size * 0.18,
+        0, 0, Math.PI * 2
+      );
+    } else {
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+    }
+
+    ctx.fill();
+  }
+
+  ctx.globalAlpha = 1;
+
+  if (planet.type === "earth") {
+    for (let i = 0; i < 70; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+
+      ctx.fillStyle = "rgba(235,245,255,0.22)";
+      ctx.beginPath();
+      ctx.ellipse(
+        x, y,
+        15 + Math.random() * 30,
+        2 + Math.random() * 5,
+        Math.random() * 0.4,
+        0, Math.PI * 2
+      );
+      ctx.fill();
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+function createPlanet(config) {
+  const element = document.querySelector(config.selector);
+  if (!element) return;
+
+  let renderer;
+
+  try {
+    renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: "low-power"
+    });
+  } catch (error) {
+    console.warn("WebGL no disponible", error);
+    return;
+  }
+
+  const width = element.clientWidth;
+  const height = element.clientHeight;
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, 2)
+  );
+
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(
+    40, width / height, 0.1, 100
+  );
+
+  camera.position.z = 3.8;
+
+  const geometry = new THREE.SphereGeometry(
+    1, 64, 48
+  );
+
+  const material = new THREE.MeshStandardMaterial({
+    map: makeTexture(config),
+    roughness: 0.9,
+    metalness: 0
+  });
+
+  const sphere = new THREE.Mesh(geometry, material);
+  sphere.rotation.z = 0.15;
+  scene.add(sphere);
+
+  scene.add(
+    new THREE.AmbientLight(0xffffff, 0.65)
+  );
+
+  const sunlight = new THREE.DirectionalLight(
+    0xffe2bd, 2.5
+  );
+  sunlight.position.set(-3, 3, 5);
+  scene.add(sunlight);
+
+  if (config.type === "gas") {
+    const ringGeometry = new THREE.RingGeometry(
+      1.25, 1.9, 96
+    );
+
+    const ringMaterial = new THREE.MeshBasicMaterial({
+      color: 0xd9bd88,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false
+    });
+
+    const rings = new THREE.Mesh(
+      ringGeometry, ringMaterial
+    );
+
+    rings.rotation.x = 1.1;
+    rings.rotation.z = -0.35;
+    sphere.add(rings);
+
+    camera.position.z = 5.5;
+  }
+
+  element.style.background = "transparent";
+  element.style.boxShadow = "none";
+  element.appendChild(renderer.domElement);
+
+  instances.push({
+    renderer, scene, camera, sphere,
+    speed: config.speed
+  });
+}
+
+planets.forEach(createPlanet);
+
+const reducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
+let lastTime = 0;
+
+function animate(time) {
+  requestAnimationFrame(animate);
+
+  if (time - lastTime < 33) return;
+  lastTime = time;
+
+  if (document.visibilityState !== "visible") return;
+
+  instances.forEach(item => {
+    if (!reducedMotion) {
+      item.sphere.rotation.y += item.speed;
+    }
+
+    item.renderer.render(item.scene, item.camera);
+  });
+}
+
+if (instances.length) {
+  requestAnimationFrame(animate);
+}
+</script>
+
+<!-- VISOR ESPACIAL: no modifica el reproductor -->
+<section class="explorer" id="explorer" role="dialog" aria-modal="true" aria-label="Exploración de planetas" aria-hidden="true">
+  <canvas id="explorerCanvas" aria-label="Planeta tridimensional interactivo"></canvas>
+  <div class="explorer-top">
+    <div><p class="explorer-kicker">RADIO JOCOQUI · EXPLORACIÓN</p><h2 class="explorer-heading" id="explorerName">TIERRA</h2></div>
+    <button type="button" id="explorerClose" aria-label="Regresar al sistema solar">✕ Regresar</button>
+  </div>
+  <div class="explorer-help">Arrastra para girar · Pellizca o usa la rueda para hacer zoom</div>
+  <div class="explorer-bottom">
+    <button type="button" id="explorerPrev">← Anterior</button>
+    <span class="explorer-counter" id="explorerCounter">01 / 05</span>
+    <button type="button" id="explorerNext">Siguiente →</button>
+    <button type="button" id="explorerReset">Restablecer vista</button>
+    <button type="button" id="enterSection" class="enter-section">Entrar a la sección →</button>
+  </div>
+</section>
+
+<script type="module">
+/* VISOR 3D: cámara orbital y viaje suave entre planetas. Audio intacto. */
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js";
+const configs = [
+  {selector:'.mercury',name:'MERCURIO',type:'rock',base:'#91877b',detail:'#4c4946'},
+  {selector:'.venus',name:'VENUS',type:'cloud',base:'#e5bc80',detail:'#b4774b'},
+  {selector:'.earth',name:'TIERRA',type:'earth',base:'#176db4',detail:'#35865c'},
+  {selector:'.mars',name:'MARTE',type:'rock',base:'#b85d40',detail:'#77382c'},
+  {selector:'.saturn',name:'SATURNO',type:'gas',base:'#dbc18b',detail:'#a27d59'}
+];
+const modal=document.getElementById('explorer');
+const canvas=document.getElementById('explorerCanvas');
+const label=document.getElementById('explorerName');
+const counter=document.getElementById('explorerCounter');
+const closeBtn=document.getElementById('explorerClose');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'low-power'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+renderer.setClearColor(0x000000,0);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,1,.1,100);
+scene.add(new THREE.AmbientLight(0xffffff,.55));
+const light=new THREE.DirectionalLight(0xffe4bd,2.8); light.position.set(-3,4,6); scene.add(light);
+const fill=new THREE.DirectionalLight(0x6297ff,.5); fill.position.set(4,-2,-4); scene.add(fill);
+let current=0, planetGroup=null, yaw=.25, pitch=.12, distance=4.8, targetDistance=4.8;
+let active=false, lastFocus=null, transition=1, previousGroup=null;
+let pointerMap=new Map(), previousPinch=0, lastFrame=0;
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function textureFor(c){
+ const cv=document.createElement('canvas'); cv.width=1024;cv.height=512;
+ const ctx=cv.getContext('2d');ctx.fillStyle=c.base;ctx.fillRect(0,0,1024,512);
+ const base=new THREE.Color(c.base),detail=new THREE.Color(c.detail);
+ let seed=13+configs.indexOf(c)*127;
+ const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<5200;i++){
+   const x=rnd()*1024,y=rnd()*512,z=3+rnd()*25;
+   const col=base.clone().lerp(detail,rnd());ctx.fillStyle='#'+col.getHexString();ctx.globalAlpha=.12+rnd()*.55;
+   ctx.beginPath();
+   if(c.type==='gas'||c.type==='cloud')ctx.ellipse(x,y,z*2.5,z*.18,0,0,Math.PI*2);
+   else ctx.ellipse(x,y,z,z*(.4+rnd()),rnd()*Math.PI,0,Math.PI*2);
+   ctx.fill();
+ }
+ if(c.type==='earth'){
+   ctx.globalAlpha=.75;
+   for(let i=0;i<90;i++){
+     const x=rnd()*1024,y=rnd()*512;ctx.fillStyle='rgba(232,248,255,.24)';ctx.beginPath();ctx.ellipse(x,y,15+rnd()*65,2+rnd()*8,rnd()*.3,0,Math.PI*2);ctx.fill();
+   }
+ }
+ ctx.globalAlpha=1;
+ const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;return tex;
+}
+function makePlanet(c){
+ const group=new THREE.Group();
+ const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,72,48),new THREE.MeshStandardMaterial({map:textureFor(c),roughness:.92}));
+ mesh.rotation.z=.16;group.add(mesh);
+ if(c.type==='gas'){
+   const ring=new THREE.Mesh(new THREE.RingGeometry(1.3,2,128),new THREE.MeshBasicMaterial({color:0xd8bd89,side:THREE.DoubleSide,transparent:true,opacity:.83,depthWrite:false}));
+   ring.rotation.x=1.14;ring.rotation.z=-.28;group.add(ring);
+ }
+ return group;
+}
+function resize(){
+ const w=innerWidth,h=innerHeight;
+ renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+}
+function disposeGroup(group){if(!group)return;group.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(o.material.map)o.material.map.dispose();o.material.dispose();}});scene.remove(group);}
+function select(index){
+ current=(index+configs.length)%configs.length;
+ label.textContent=configs[current].name;
+ counter.textContent=String(current+1).padStart(2,'0')+' / 05';
+ if(previousGroup){disposeGroup(previousGroup);previousGroup=null;}
+ previousGroup=planetGroup;
+ planetGroup=makePlanet(configs[current]);
+ planetGroup.scale.setScalar(.12);scene.add(planetGroup);
+ transition=reducedMotion?1:0;
+ if(reducedMotion){planetGroup.scale.setScalar(1);disposeGroup(previousGroup);previousGroup=null;}
+ yaw=.25;pitch=.12;targetDistance=configs[current].type==='gas'?6:4.6;
+ if(!active)distance=targetDistance;
+}
+function open(index){
+ lastFocus=document.activeElement;
+ active=true;modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');
+ document.body.style.overflow='hidden';resize();select(index);closeBtn.focus();
+}
+function close(){
+ active=false;modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');
+ document.body.style.overflow='';pointerMap.clear();previousPinch=0;
+ if(lastFocus&&lastFocus.focus)lastFocus.focus();
+}
+configs.forEach((c,i)=>{
+ const el=document.querySelector(c.selector);if(!el)return;
+ el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','Explorar '+c.name);
+ el.addEventListener('click',()=>open(i));
+ el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(i);}});
+});
+closeBtn.addEventListener('click',close);
+document.getElementById('explorerPrev').addEventListener('click',()=>select(current-1));
+document.getElementById('explorerNext').addEventListener('click',()=>select(current+1));
+document.getElementById('explorerReset').addEventListener('click',()=>{yaw=.25;pitch=.12;targetDistance=configs[current].type==='gas'?6:4.6;});
+document.addEventListener('keydown',e=>{if(!active)return;if(e.key==='Escape')close();if(e.key==='ArrowRight')select(current+1);if(e.key==='ArrowLeft')select(current-1);});
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointerMap.set(e.pointerId,{x:e.clientX,y:e.clientY});});
+canvas.addEventListener('pointermove',e=>{
+ if(!pointerMap.has(e.pointerId))return;
+ const p=pointerMap.get(e.pointerId),dx=e.clientX-p.x,dy=e.clientY-p.y;
+ pointerMap.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pointerMap.size===1){yaw+=dx*.008;pitch=Math.max(-1.3,Math.min(1.3,pitch+dy*.008));}
+ if(pointerMap.size===2){
+   const pts=[...pointerMap.values()],d=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+   if(previousPinch)targetDistance=Math.max(2.2,Math.min(12,targetDistance*previousPinch/d));
+   previousPinch=d;
+ }
+});
+function endPointer(e){pointerMap.delete(e.pointerId);previousPinch=0;}
+canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',endPointer);
+canvas.addEventListener('wheel',e=>{if(!active)return;e.preventDefault();targetDistance=Math.max(2.2,Math.min(12,targetDistance*Math.exp(e.deltaY*.001)));},{passive:false});
+addEventListener('resize',()=>{if(active)resize();});
+function frame(t){requestAnimationFrame(frame);if(!active||document.visibilityState!=='visible'||t-lastFrame<32)return;lastFrame=t;
+ distance+=(targetDistance-distance)*.13;
+ camera.position.set(distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch));camera.lookAt(0,0,0);
+ if(planetGroup){
+   if(!reducedMotion)planetGroup.rotation.y+=.002;
+   if(transition<1){transition=Math.min(1,transition+.065);const eased=1-Math.pow(1-transition,3);planetGroup.scale.setScalar(Math.max(.01,eased));if(previousGroup)previousGroup.scale.setScalar(Math.max(.01,1-eased));if(transition===1){disposeGroup(previousGroup);previousGroup=null;}}
+ }
+ renderer.render(scene,camera);
+}
+requestAnimationFrame(frame);
+</script>
+
+
+<!-- Secciones: vistas internas sin recargar la página -->
+<section id="sectionScreen" class="section-screen" aria-hidden="true">
+ <div class="section-content">
+  <button class="section-action" id="backDashboard">← Regresar al Dashboard</button>
+  <p class="section-eyebrow" style="margin-top:35px">RADIO JOCOQUI · COMUNIDAD</p>
+  <h2 id="sectionHeading"></h2>
+  <p id="sectionDescription"></p>
+  <div class="section-card" id="sectionCard"></div>
+ </div>
+</section>
+<!-- Mini-player global: usa el MISMO audio del Sol; nunca crea otro audio -->
+<div class="mini-player" aria-label="Mini-player global de Radio Jocoqui">
+ <button id="miniPrev" aria-label="Anterior">⏮</button>
+ <button id="miniPlay" aria-label="Reproducir">▶</button>
+ <button id="miniNext" aria-label="Siguiente">⏭</button>
+ <div class="mini-title"><strong>RADIO JOCOQUI</strong><span id="miniTrack">Archivo sonoro</span></div>
+ <input id="miniProgress" type="range" min="0" max="100" value="0" aria-label="Progreso de audio">
+</div>
+<script>
+/* PROTOTIPO: navegación y permisos ilustrativos; no hay login ni backend real. */
+const sectionData={
+ 'Casa Jocoqui':['Un espacio para encontrarnos.','Hospedaje, actividades y galería de Casa Jocoqui. Próximamente: contenido administrable.','public'],
+ 'Eventos':['Experiencias que nos reúnen.','Explora eventos públicamente. Para registrarse o pagar se requerirá una cuenta Básica aprobada.','public'],
+ 'Blogs':['Ideas, historias y cultura.','Lecturas y publicaciones de la comunidad. La edición estará limitada a moderadores autorizados por blog.','public'],
+ 'Colección de música':['El archivo de nuestra curaduría.','Colecciones y descubrimientos musicales de Radio Jocoqui.','public'],
+ 'Misiones':['Participa y suma Puntos.','Acceso mediante lista curada. Los Puntos serán un balance global por usuario.','curated'],
+ 'Chatroom':['Conversación en comunidad.','Para participar necesitarás una cuenta Básica aprobada.','basic'],
+ 'Perfil':['Tu identidad en la comunidad.','Los perfiles de otros usuarios estarán disponibles para cuentas Básicas aprobadas.','basic'],
+ 'Términos y Condiciones':['Reglas de convivencia.','Sección pública. El texto legal definitivo deberá agregarse antes de lanzar el registro.','public']
+};
+const sectionScreen=document.getElementById('sectionScreen');
+const sectionHeading=document.getElementById('sectionHeading');
+const sectionDescription=document.getElementById('sectionDescription');
+const sectionCard=document.getElementById('sectionCard');
+function showSection(name){
+ const data=sectionData[name];if(!data)return;
+ sectionHeading.textContent=name;
+ sectionDescription.textContent=data[0];
+ sectionCard.replaceChildren();
+ const p=document.createElement('p');p.textContent=data[1];sectionCard.append(p);
+ const access=document.createElement('p');
+ access.style.color='#f4c38d';
+ access.textContent=data[2]==='public'?'● Sección pública (vista de prueba)':data[2]==='basic'?'🔒 Requiere Usuario Básico aprobado':'🔒 Acceso por lista curada';
+ sectionCard.append(access);
+ if(data[2]!=='public'){
+  const info=document.createElement('p');info.textContent='Esta prueba no habilita cuentas ni acceso a datos privados. La autorización se implementará en el servidor.';sectionCard.append(info);
+ }
+ sectionScreen.classList.add('active');sectionScreen.setAttribute('aria-hidden','false');
+ document.body.style.overflow='hidden';
+ history.replaceState(null,'','#'+encodeURIComponent(name.toLowerCase().replaceAll(' ','-')));
+}
+function returnDashboard(){sectionScreen.classList.remove('active');sectionScreen.setAttribute('aria-hidden','true');document.body.style.overflow='';history.replaceState(null,'',location.pathname+location.search);}
+document.getElementById('backDashboard').addEventListener('click',returnDashboard);
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.go)));
+const names=['Casa Jocoqui','Eventos','Blogs','Colección de música','Misiones'];
+document.getElementById('enterSection').addEventListener('click',()=>{
+ const name=document.getElementById('explorerName').textContent;
+ const planetNames=['MERCURIO','VENUS','TIERRA','MARTE','SATURNO'];
+ const idx=planetNames.indexOf(name);
+ document.getElementById('explorerClose').click();
+ if(idx>=0)showSection(names[idx]);
+});
+const miniPlay=document.getElementById('miniPlay');
+const miniTrack=document.getElementById('miniTrack');
+const miniProgress=document.getElementById('miniProgress');
+document.getElementById('miniPrev').addEventListener('click',()=>document.getElementById('previous').click());
+document.getElementById('miniNext').addEventListener('click',()=>document.getElementById('next').click());
+miniPlay.addEventListener('click',()=>document.getElementById('play').click());
+function syncMini(){miniPlay.textContent=audio.paused?'▶':'❚❚';miniTrack.textContent=trackTitle.textContent;miniProgress.value=progress.value;}
+['play','pause','timeupdate','loadedmetadata','ended'].forEach(e=>audio.addEventListener(e,syncMini));
+miniProgress.addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&audio.duration>0)audio.currentTime=audio.duration*miniProgress.value/100;});
+setTimeout(syncMini,0);
+</script>
+
+</body>
+</html>
