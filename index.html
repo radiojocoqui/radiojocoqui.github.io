@@ -1568,5 +1568,69 @@ miniProgress.addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&a
 setTimeout(syncMini,0);
 </script>
 
+
+<!-- RADIO JOCOQUI · REGISTRO PUBLICO -->
+
+<style>
+  .jocoqui-registro {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 9999;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 13px 22px;
+    border: 1px solid rgba(190, 218, 250, 0.5);
+    border-radius: 8px;
+
+    background: rgba(8, 19, 36, 0.88);
+    color: #ffffff;
+
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-decoration: none;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .jocoqui-registro:hover {
+    background: #dcefff;
+    color: #081324;
+  }
+
+  .jocoqui-registro:focus-visible {
+    outline: 2px solid #f4c38d;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 600px) {
+    .jocoqui-registro {
+      top: 12px;
+      right: 12px;
+      padding: 10px 13px;
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+  }
+</style>
+
+<a
+  href="/registro.html"
+  class="jocoqui-registro"
+  aria-label="Crear cuenta en Radio Jocoqui"
+>
+  CREAR CUENTA
+</a>
+
+<!-- FIN REGISTRO PUBLICO -->
 </body>
 </html>
