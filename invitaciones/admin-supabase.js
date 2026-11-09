@@ -6,12 +6,20 @@ const status = message => { $('status').textContent = message; };
 let events = [];
 let selectedId = '';
 let busy = false;
+let invitations = [];
+let loadSequence = 0;
+const csvCell = value => {
+  let s = String(value ?? '');
+  if (/^[=+@\-\t\r]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g, '""') + '"';
+};
 function clearForm() {
   selectedId = '';
   $('eventSelect').value = '';
   $('eventForm').reset();
   $('saveEventButton').textContent = 'Crear evento';
   $('capacity').textContent = '—';
+  clearInvitations();
 }
 function showEvent(id) {
   selectedId = id || '';
@@ -24,6 +32,55 @@ function showEvent(id) {
   $('price').value = event.price_per_person;
   $('capacity').textContent = event.capacity;
   $('saveEventButton').textContent = 'Guardar cambios';
+  void loadInvitations(event.id);
+}
+function clearInvitations() {
+  loadSequence++;
+  invitations = [];
+  $('reserved').textContent = '—';
+  $('deposits').textContent = '—';
+  $('balances').textContent = '—';
+  $('guests').replaceChildren();
+  const row = $('guests').insertRow();
+  const cell = row.insertCell();
+  cell.colSpan = 7;
+  cell.textContent = 'Selecciona un evento para consultar sus invitaciones.';
+}
+function showInvitations(event) {
+  const body = $('guests');
+  body.replaceChildren();
+  const confirmed = invitations.filter(x => x.deposit_verified);
+  const reserved = confirmed.reduce((n,x) => n + x.seats, 0);
+  $('reserved').textContent = String(reserved);
+  $('deposits').textContent = money(confirmed.reduce((n,x) => n + Number(x.deposit_amount || 0), 0));
+  $('balances').textContent = money(confirmed.reduce((n,x) => n + Math.max(0, x.seats * Number(event.price_per_person) - Number(x.deposit_amount || 0) - Number(x.final_payment_amount || 0)), 0));
+  if (!invitations.length) {
+    const row = body.insertRow();
+    const cell = row.insertCell();
+    cell.colSpan = 7;
+    cell.textContent = 'Todavía no hay invitaciones para este evento.';
+    return;
+  }
+  for (const inv of invitations) {
+    const row = body.insertRow();
+    const total = inv.seats * Number(event.price_per_person);
+    const values = [inv.folio, inv.guest_name, inv.seats, money(total), money(inv.deposit_amount), inv.deposit_verified ? 'Anticipo verificado' : 'Pendiente · sin acceso', 'Validación de pagos: próxima etapa'];
+    for (const value of values) row.insertCell().textContent = String(value);
+  }
+}
+async function loadInvitations(id) {
+  const sequence = ++loadSequence;
+  invitations = [];
+  if (!id) { clearInvitations(); return; }
+  const event = events.find(x => x.id === id);
+  if (!event) { clearInvitations(); return; }
+  const {data,error} = await sb.from('rj_invitations')
+    .select('id,event_id,folio,guest_name,guest_contact,seats,deposit_verified,deposit_amount,final_payment_amount,checked_in_at,created_at')
+    .eq('event_id', id).order('created_at', {ascending:false}).limit(1000);
+  if (sequence !== loadSequence || selectedId !== id) return;
+  if (error) { status('Error al consultar invitaciones: ' + error.message); return; }
+  invitations = data || [];
+  showInvitations(event);
 }
 async function refresh(preferredId = selectedId) {
   const {data:{user},error:authError} = await sb.auth.getUser();
@@ -68,11 +125,7 @@ async function refresh(preferredId = selectedId) {
   if (preferredId === '' && events.length) showEvent(events[0].id);
   else if (preferredId === '') clearForm();
   else showEvent(events.some(x => x.id === preferredId) ? preferredId : (events[0]?.id || ''));
-  $('reserved').textContent = '—';
-  $('deposits').textContent = '—';
-  $('balances').textContent = '—';
-  $('guests').innerHTML = '<tr><td colspan="7">Las invitaciones todavía no están conectadas. No registrar pagos reales.</td></tr>';
-  status('Sesión administrativa activa · Eventos conectados a Supabase. Puedes crear o editar eventos. Invitaciones aún deshabilitadas.');
+  status('Sesión administrativa activa · Eventos e invitaciones conectados a Supabase. Los depósitos aún no se validan desde este panel.');
 }
 $('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
@@ -121,8 +174,54 @@ $('eventForm').addEventListener('submit', async e => {
     $('saveEventButton').disabled = false;
   }
 });
-$('guestForm').addEventListener('submit', e => {e.preventDefault();status('Las invitaciones se habilitarán después de verificar sus columnas y las reglas de cupo.');});
-$('export').addEventListener('click', () => status('La exportación de invitados todavía no está habilitada.'));
+$('guestForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (busy) return;
+  const event = events.find(x => x.id === selectedId);
+  if (!event) { status('Selecciona un evento guardado antes de crear la invitación.'); return; }
+  const guest_name = $('guestName').value.trim();
+  const guest_contact = $('contact').value.trim() || null;
+  const seats = Number($('seats').value);
+  if (!guest_name || !Number.isInteger(seats) || seats < 1 || seats > 50) {
+    status('Revisa el nombre y la cantidad de personas (1 a 50).'); return;
+  }
+  // El folio se genera en el navegador, pero nunca se considera acceso confirmado.
+  if (!globalThis.crypto?.randomUUID) { status('Tu navegador no permite generar un folio seguro. Actualízalo e inténtalo de nuevo.'); return; }
+  const folio = 'RJ-' + crypto.randomUUID().toUpperCase();
+  busy = true;
+  const button = $('guestForm').querySelector('button[type="submit"],button');
+  button.disabled = true;
+  status('Guardando invitación pendiente…');
+  try {
+    const {error} = await sb.from('rj_invitations').insert({
+      event_id:event.id, folio, guest_name, guest_contact, seats,
+      deposit_verified:false, deposit_amount:0, final_payment_amount:0
+    });
+    if (error) { status('No se pudo crear la invitación: ' + error.message); return; }
+    $('guestForm').reset();
+    $('seats').value = '1';
+    await loadInvitations(event.id);
+    status('Invitación pendiente creada. Folio: ' + folio + '. No reserva lugares ni permite acceso.');
+  } catch (error) {
+    status('Error de conexión al crear la invitación: ' + (error?.message || 'intenta de nuevo'));
+  } finally {
+    busy = false;
+    button.disabled = false;
+  }
+});
+$('export').addEventListener('click', () => {
+  const event = events.find(x => x.id === selectedId);
+  if (!event) { status('Selecciona un evento antes de exportar.'); return; }
+  const rows = [['Folio','Responsable','Contacto','Lugares','Anticipo verificado','Anticipo recibido','Pago final registrado'],
+    ...invitations.map(x => [x.folio,x.guest_name,x.guest_contact,x.seats,x.deposit_verified ? 'Sí':'No',x.deposit_amount,x.final_payment_amount])];
+  const csv = '\uFEFF' + rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'invitaciones-radio-jocoqui.csv';
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  status('CSV descargado. Contiene datos personales: guárdalo de forma privada.');
+});
 $('reset').disabled = true;
 const list = document.createElement('section');
 list.className = 'card';
