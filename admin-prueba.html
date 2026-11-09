@@ -18,9 +18,9 @@
 </main>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-// CONFIGURACIÓN: reemplaza únicamente estos dos valores.
-const SUPABASE_URL = 'grjqqhmzyfozrxrkvmyn';
-const SUPABASE_PUBLISHABLE_KEY = 'grjqqhmzyfozrxrkvmyn';
+// Configuración pública de Supabase para Radio Jocoqui.
+const SUPABASE_URL = 'https://grjqqhmzyfozrxrkvmyn.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe';
 const $=id=>document.getElementById(id);
 const show=(id,on=true)=>$(id).classList.toggle('hidden',!on);
 function msg(text,kind=''){const el=$('status');el.textContent=text;el.className='message'+(kind?' '+kind:'');}
