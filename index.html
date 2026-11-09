@@ -669,6 +669,24 @@ button { font: inherit; }
 .section-link{display:inline-block;margin-top:20px;color:#07101d;background:#f4c38d;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:600}
 @media(max-width:640px){.section-grid{grid-template-columns:1fr}.section-tile{min-height:125px}.section-hero{min-height:210px}.section-screen{padding-top:22px}.section-content h2{font-size:38px}}
 
+
+/* V4 · CONTROLES DE AUDIO MINIMALISTAS, SIN EMOJIS */
+.controls button, .mini-player button {
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:0;line-height:1;border-radius:12px;
+  background:rgba(7,17,31,.48);border:1px solid rgba(243,211,173,.58);
+  color:#fff5e8;box-shadow:none;transition:background .2s,border-color .2s,transform .2s;
+}
+.controls .play-button {border-radius:50%;background:rgba(7,17,31,.66);}
+.controls button:hover,.mini-player button:hover {background:rgba(45,77,110,.78);border-color:#f4c38d;}
+.controls button:active,.mini-player button:active {transform:scale(.94);}
+.controls button svg,.mini-player button svg {
+  display:block;width:21px;height:21px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
+}
+.controls .play-button svg {width:25px;height:25px;}
+.mini-player button {border-radius:10px;}
+@media(max-width:480px){.controls button svg,.mini-player button svg{width:18px;height:18px}.controls .play-button svg{width:21px;height:21px}}
 </style>
 </head>
 
@@ -702,9 +720,9 @@ button { font: inherit; }
     <div class="orbit four"></div>
     <div class="orbit five"></div>
 
-    <div class="planet mercury" data-section="Casa Jocoqui" role="button" tabindex="0" aria-label="Explorar Casa Jocoqui"></div>
+    <div class="planet mercury" data-section="Blogs" role="button" tabindex="0" aria-label="Explorar Blogs"></div>
     <div class="planet venus" data-section="Eventos" role="button" tabindex="0" aria-label="Explorar Eventos"></div>
-    <div class="planet earth" data-section="Blogs" role="button" tabindex="0" aria-label="Explorar Blogs"></div>
+    <div class="planet earth" data-section="Casa Jocoqui" role="button" tabindex="0" aria-label="Explorar Casa Jocoqui"></div>
     <div class="planet mars" data-section="Colección de música" role="button" tabindex="0" aria-label="Explorar Colección de música"></div>
     <div class="planet saturn" data-section="Misiones" role="button" tabindex="0" aria-label="Explorar Misiones"></div>
 
@@ -731,16 +749,16 @@ button { font: inherit; }
 
           <button id="previous"
             type="button"
-            aria-label="Canción anterior">⏮</button>
+            aria-label="Canción anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14M19 5 9 12l10 7V5Z"/></svg></button>
 
           <button id="play"
             class="play-button"
             type="button"
-            aria-label="Reproducir">▶</button>
+            aria-label="Reproducir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7V5Z"/></svg></button>
 
           <button id="next"
             type="button"
-            aria-label="Siguiente canción">⏭</button>
+            aria-label="Siguiente canción"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 5l10 7-10 7V5Z"/></svg></button>
 
         </div>
 
@@ -859,7 +877,7 @@ function renderPlaylist() {
 function updatePlayButton() {
   const playing = !audio.paused && !audio.ended;
 
-  playButton.textContent = playing ? "❚❚" : "▶";
+  playButton.innerHTML = playing ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7V5Z"/></svg>';
   playButton.setAttribute(
     "aria-label",
     playing ? "Pausar" : "Reproducir"
@@ -1452,9 +1470,9 @@ requestAnimationFrame(frame);
 </section>
 <!-- Mini-player global: usa el MISMO audio del Sol; nunca crea otro audio -->
 <div class="mini-player" aria-label="Mini-player global de Radio Jocoqui">
- <button id="miniPrev" aria-label="Anterior">⏮</button>
- <button id="miniPlay" aria-label="Reproducir">▶</button>
- <button id="miniNext" aria-label="Siguiente">⏭</button>
+ <button id="miniPrev" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14M19 5 9 12l10 7V5Z"/></svg></button>
+ <button id="miniPlay" aria-label="Reproducir"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7V5Z"/></svg></button>
+ <button id="miniNext" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 5l10 7-10 7V5Z"/></svg></button>
  <div class="mini-title"><strong>RADIO JOCOQUI</strong><span id="miniTrack">Archivo sonoro</span></div>
  <input id="miniProgress" type="range" min="0" max="100" value="0" aria-label="Progreso de audio">
 </div>
@@ -1529,7 +1547,7 @@ function returnDashboard(){
 }
 document.getElementById('backDashboard').addEventListener('click',returnDashboard);
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.go)));
-const names=['Casa Jocoqui','Eventos','Blogs','Colección de música','Misiones'];
+const names=['Blogs','Eventos','Casa Jocoqui','Colección de música','Misiones'];
 document.getElementById('enterSection').addEventListener('click',()=>{
  const name=document.getElementById('explorerName').textContent;
  const planetNames=['MERCURIO','VENUS','TIERRA','MARTE','SATURNO'];
@@ -1544,7 +1562,7 @@ const miniProgress=document.getElementById('miniProgress');
 document.getElementById('miniPrev').addEventListener('click',()=>document.getElementById('previous').click());
 document.getElementById('miniNext').addEventListener('click',()=>document.getElementById('next').click());
 miniPlay.addEventListener('click',()=>document.getElementById('play').click());
-function syncMini(){miniPlay.textContent=audio.paused?'▶':'❚❚';miniTrack.textContent=trackTitle.textContent;miniProgress.value=progress.value;}
+function syncMini(){miniPlay.innerHTML=audio.paused?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7V5Z"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>';miniTrack.textContent=trackTitle.textContent;miniProgress.value=progress.value;}
 ['play','pause','timeupdate','loadedmetadata','ended'].forEach(e=>audio.addEventListener(e,syncMini));
 miniProgress.addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&audio.duration>0)audio.currentTime=audio.duration*miniProgress.value/100;});
 setTimeout(syncMini,0);
