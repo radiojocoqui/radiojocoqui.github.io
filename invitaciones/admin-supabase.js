@@ -88,8 +88,94 @@ function showInvitations(event) {
       try { await navigator.clipboard.writeText(url); status('Enlace copiado. Compártelo solo con el destinatario; todavía no es un acceso confirmado.'); }
       catch { window.prompt('Copia este enlace:', url); }
     });
-    actions.append(mail, document.createTextNode(' '), copy);
+    
+actions.append(
+  mail,
+  document.createTextNode(' '),
+  copy
+);
+
+if (!inv.deposit_verified) {
+  const confirmBtn = document.createElement('button');
+  confirmBtn.type = 'button';
+  confirmBtn.textContent = 'Confirmar anticipo';
+
+  confirmBtn.addEventListener('click', async () => {
+    confirmBtn.disabled = true;
+
+    try {
+      await confirmDeposit(inv, event);
+    } finally {
+      confirmBtn.disabled = false;
+    }
+  });
+
+  actions.append(
+    document.createTextNode(' '),
+    confirmBtn
+  );
+}
+
   }
+}
+
+async function confirmDeposit(inv, event) {
+  const total = inv.seats * Number(event.price_per_person);
+  const minimum = total * 0.5;
+
+  const answer = window.prompt(
+    `Confirmar anticipo de ${inv.guest_name}\n` +
+    `Evento: ${event.title}\n` +
+    `Total: ${money(total)}\n` +
+    `Anticipo mínimo: ${money(minimum)}\n\n` +
+    `Escribe el importe recibido en MXN:`,
+    String(minimum)
+  );
+
+  if (answer === null) return;
+
+  const amount = Number(answer.trim());
+
+  if (
+    !Number.isFinite(amount) ||
+    amount < minimum ||
+    amount > total
+  ) {
+    status(
+      `El anticipo debe estar entre ${money(minimum)} ` +
+      `y ${money(total)}.`
+    );
+    return;
+  }
+
+  if (!window.confirm(
+    `¿Ya verificaste el pago de ${money(amount)} ` +
+    `de ${inv.guest_name}?\n\n` +
+    `Esta acción confirmará ${inv.seats} lugar(es).`
+  )) {
+    return;
+  }
+
+  status('Confirmando anticipo en Supabase…');
+
+  const { error } = await sb.rpc(
+    'rj_confirm_invitation',
+    {
+      p_invitation_id: inv.id,
+      p_deposit_amount: amount
+    }
+  );
+
+  if (error) {
+    status('No se pudo confirmar: ' + error.message);
+    return;
+  }
+
+  await loadInvitations(event.id);
+  status(
+    `Anticipo verificado. ${inv.guest_name} tiene ` +
+    `${inv.seats} lugar(es) confirmado(s).`
+  );
 }
 async function loadInvitations(id) {
   const sequence = ++loadSequence;
