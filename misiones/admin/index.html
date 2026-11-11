@@ -136,6 +136,65 @@
   </section>
 
   <section id="dashboard" hidden>
+    
+<!-- FORMULARIO PARA CREAR MISIONES -->
+<div class="card">
+  <h2>Crear nueva misión</h2>
+
+  <form id="createMissionForm">
+
+    <label for="missionArea">Área</label>
+    <select id="missionArea" required>
+      <option value="casa">Casa Jocoqui</option>
+      <option value="radio">Radio Jocoqui</option>
+    </select>
+
+    <br><br>
+
+    <label for="missionTitle">Título de la misión</label>
+    <input
+      id="missionTitle"
+      type="text"
+      placeholder="Ej. Revisar sistema de agua"
+      maxlength="150"
+      required
+    >
+
+    <br><br>
+
+    <label for="missionDescription">Descripción</label>
+    <textarea
+      id="missionDescription"
+      rows="4"
+      placeholder="Describe el trabajo que debe realizarse..."
+    ></textarea>
+
+    <br><br>
+
+    <label for="missionPriority">Prioridad</label>
+    <select id="missionPriority">
+      <option value="low">Baja</option>
+      <option value="medium" selected>Media</option>
+      <option value="high">Alta</option>
+      <option value="urgent">Urgente</option>
+    </select>
+
+    <br><br>
+
+    <label for="missionDueDate">Fecha límite (opcional)</label>
+    <input id="missionDueDate" type="date">
+
+    <br><br>
+
+    <button id="createMissionBtn" type="submit">
+      Crear misión
+    </button>
+
+    <p id="createMissionMessage" role="status"></p>
+  </form>
+</div>
+<!-- FIN DEL FORMULARIO -->
+
 
     <div class="card">
       <h2>Panel de control</h2>
@@ -436,7 +495,72 @@
     }
   }
 
-  $("refreshBtn").addEventListener(
+  
+  // CREAR NUEVA MISIÓN
+
+  $("createMissionForm").addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
+
+      const message = $("createMissionMessage");
+      const submitBtn = $("createMissionBtn");
+
+      const area = $("missionArea").value;
+      const title = $("missionTitle").value.trim();
+      const description =
+        $("missionDescription").value.trim();
+
+      const priority = $("missionPriority").value;
+      const dueDate = $("missionDueDate").value;
+
+      if (!adminUser) {
+        message.textContent =
+          "Debes iniciar sesión como administrador.";
+        return;
+      }
+
+      if (!title) {
+        message.textContent =
+          "Escribe el título de la misión.";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      message.textContent = "Guardando misión...";
+
+      try {
+        const { error } = await db
+          .from("rj_missions")
+          .insert({
+            area: area,
+            title: title,
+            description: description || null,
+            priority: priority,
+            due_date: dueDate || null,
+            status: "pending",
+            created_by: adminUser.id
+          });
+
+        if (error) throw error;
+
+        message.textContent =
+          "Misión creada correctamente.";
+
+        $("createMissionForm").reset();
+
+        await loadMissions();
+
+      } catch (error) {
+        message.textContent =
+          "Error al crear misión: " + error.message;
+
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+  );
+$("refreshBtn").addEventListener(
     "click",
     refresh
   );
