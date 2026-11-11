@@ -1636,9 +1636,15 @@ const sectionDescription=document.getElementById('sectionDescription');
 const sectionCard=document.getElementById('sectionCard');
 let lastFocus=null;
 function element(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text)el.textContent=text;return el;}
+
 async function showSection(name){
+ if(name === 'Misiones'){
+   window.location.href = '/misiones/';
+   return;
+ }
  if(name==='Eventos' && !(await window.jocoquiCheckEventAccess()))return;
  const data=sectionData[name];if(!data)return;
+
  lastFocus=document.activeElement;
  sectionHeading.textContent=name;
  sectionDescription.textContent=data.lead;
