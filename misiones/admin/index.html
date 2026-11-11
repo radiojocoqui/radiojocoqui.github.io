@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Administración de Misiones | Radio Jocoqui</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #090f1b;
+      color: #f2f4f8;
+    }
+
+    header {
+      padding: 25px;
+      border-bottom: 1px solid #28364c;
+    }
+
+    h1 { margin-bottom: 8px; }
+    h2 { font-size: 20px; }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: #152237;
+      border: 1px solid #304158;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .muted { color: #afbed2; }
+
+    button, input, select {
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      border: 0;
+      background: #c8aa7a;
+      color: #101722;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .secondary {
+      background: #31435e;
+      color: white;
+    }
+
+    .danger {
+      background: #a64e53;
+      color: white;
+    }
+
+    .item {
+      border-top: 1px solid #34445b;
+      padding: 16px 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 1px solid #526780;
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .error { color: #ff9e9e; }
+    .success { color: #9de2ba; }
+
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <strong>RADIO JOCOQUI</strong>
+  <h1>Administración de Misiones</h1>
+  <p class="muted">
+    Casa Jocoqui / Radio Jocoqui
+  </p>
+</header>
+
+<main class="container">
+
+  <section id="loading" class="card">
+    Verificando acceso...
+  </section>
+
+  <section id="login" class="card" hidden>
+    <h2>Acceso administrativo</h2>
+    <p>Inicia sesión con tu cuenta de administrador.</p>
+    <a href="/registro.html">
+      <button>Iniciar sesión</button>
+    </a>
+  </section>
+
+  <section id="denied" class="card" hidden>
+    <h2>Acceso restringido</h2>
+    <p>
+      Tu cuenta no tiene permisos de administrador.
+    </p>
+    <a href="/">Regresar a Radio Jocoqui</a>
+  </section>
+
+  <section id="dashboard" hidden>
+
+    <div class="card">
+      <h2>Panel de control</h2>
+      <p id="adminEmail" class="muted"></p>
+      <button id="refreshBtn" class="secondary">
+        Actualizar
+      </button>
+      <button id="logoutBtn" class="secondary">
+        Cerrar sesión
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>Solicitudes de acceso</h2>
+      <p class="muted">
+        Autoriza a cada usuario para Casa,
+        Radio o ambas áreas.
+      </p>
+      <div id="requests">
+        Cargando solicitudes...
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Misiones de Casa Jocoqui</h2>
+      <div id="casaMissions">
+        Cargando misiones...
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Misiones de Radio Jocoqui</h2>
+      <div id="radioMissions">
+        Cargando misiones...
+      </div>
+    </div>
+
+  </section>
+
+  <p id="notice" role="status"></p>
+
+</main>
+
+<script type="module">
+  import {
+    createClient
+  } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const SUPABASE_URL =
+    "https://grjqqhmzyfozrxrkvmyn.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe";
+
+  const db = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const $ = id => document.getElementById(id);
+
+  let adminUser = null;
+
+  function show(id) {
+    ["loading", "login", "denied", "dashboard"]
+      .forEach(name => {
+        $(name).hidden = name !== id;
+      });
+  }
+
+  function notice(message, error = false) {
+    $("notice").textContent = message;
+    $("notice").className =
+      error ? "error" : "success";
+  }
+
+  function element(tag, text, className = "") {
+    const node = document.createElement(tag);
+    node.textContent = text;
+    if (className) node.className = className;
+    return node;
+  }
+
+  function button(label, callback, className = "") {
+    const node = element("button", label, className);
+    node.type = "button";
+    node.addEventListener("click", callback);
+    return node;
+  }
+
+  function areaName(area) {
+    return area === "casa"
+      ? "Casa Jocoqui"
+      : "Radio Jocoqui";
+  }
+
+  function statusName(status) {
+    return {
+      pending: "Pendiente",
+      approved: "Aprobado",
+      rejected: "Rechazado",
+      in_progress: "En proceso",
+      in_review: "En revisión",
+      completed: "Completada"
+    }[status] || status;
+  }
+
+  async function init() {
+    show("loading");
+
+    const {
+      data: { user },
+      error: userError
+    } = await db.auth.getUser();
+
+    if (userError || !user) {
+      show("login");
+      return;
+    }
+
+    const { data: isAdmin, error } =
+      await db.rpc("is_admin");
+
+    if (error || isAdmin !== true) {
+      show("denied");
+      return;
+    }
+
+    adminUser = user;
+    $("adminEmail").textContent = user.email || "";
+    show("dashboard");
+
+    await refresh();
+  }
+
+  async function refresh() {
+    notice("");
+    await Promise.all([
+      loadRequests(),
+      loadMissions()
+    ]);
+  }
+
+  async function loadRequests() {
+    const target = $("requests");
+    target.replaceChildren();
+
+    const { data, error } = await db
+      .from("rj_mission_access")
+      .select("id,user_id,area,status,requested_at")
+      .order("requested_at", {
+        ascending: false
+      });
+
+    if (error) {
+      target.textContent = error.message;
+      return;
+    }
+
+    if (!data.length) {
+      target.textContent =
+        "Todavía no hay solicitudes.";
+      return;
+    }
+
+    for (const request of data) {
+      const item = element("div", "", "item");
+
+      item.append(
+        element("strong", areaName(request.area)),
+        element("p", "Usuario: " + request.user_id),
+        element(
+          "span",
+          statusName(request.status),
+          "tag"
+        )
+      );
+
+      const actions = element("div", "", "actions");
+
+      if (request.status !== "approved") {
+        actions.append(
+          button("Aprobar", () =>
+            reviewAccess(request.id, "approved")
+          )
+        );
+      }
+
+      if (request.status !== "rejected") {
+        actions.append(
+          button(
+            request.status === "approved"
+              ? "Revocar acceso"
+              : "Rechazar",
+            () => reviewAccess(
+              request.id,
+              "rejected"
+            ),
+            "danger"
+          )
+        );
+      }
+
+      item.append(actions);
+      target.append(item);
+    }
+  }
+
+  async function reviewAccess(id, status) {
+    const action = status === "approved"
+      ? "aprobar"
+      : "rechazar o revocar";
+
+    if (!confirm(
+      "¿Confirmas que deseas " + action +
+      " este permiso?"
+    )) return;
+
+    const { error } = await db.rpc(
+      "rj_review_mission_access",
+      {
+        p_request_id: id,
+        p_status: status
+      }
+    );
+
+    if (error) {
+      notice(error.message, true);
+      return;
+    }
+
+    notice("Permiso actualizado correctamente.");
+    await loadRequests();
+  }
+
+  async function loadMissions() {
+    const { data, error } = await db
+      .from("rj_missions")
+      .select(
+        "id,area,title,description,priority,status,assigned_to,due_date"
+      )
+      .order("created_at", {
+        ascending: false
+      });
+
+    for (const area of ["casa", "radio"]) {
+      const target = $(
+        area === "casa"
+          ? "casaMissions"
+          : "radioMissions"
+      );
+
+      target.replaceChildren();
+
+      if (error) {
+        target.textContent = error.message;
+        continue;
+      }
+
+      const missions = data.filter(
+        mission => mission.area === area
+      );
+
+      if (!missions.length) {
+        target.textContent =
+          "Todavía no hay misiones registradas.";
+        continue;
+      }
+
+      for (const mission of missions) {
+        const item = element("div", "", "item");
+
+        item.append(
+          element("strong", mission.title),
+          element(
+            "p",
+            mission.description || "Sin descripción"
+          ),
+          element(
+            "p",
+            "Estado: " + statusName(mission.status)
+          ),
+          element(
+            "p",
+            "Prioridad: " + mission.priority,
+            "muted"
+          ),
+          element(
+            "p",
+            "Responsable: " +
+            (mission.assigned_to || "Sin asignar"),
+            "muted"
+          )
+        );
+
+        target.append(item);
+      }
+    }
+  }
+
+  $("refreshBtn").addEventListener(
+    "click",
+    refresh
+  );
+
+  $("logoutBtn").addEventListener(
+    "click",
+    async () => {
+      await db.auth.signOut();
+      adminUser = null;
+      show("login");
+    }
+  );
+
+  init();
+</script>
+
+</body>
+</html>
