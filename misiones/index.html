@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Centro de Misiones | Radio Jocoqui</title>
 
 <style>
@@ -11,25 +12,44 @@
   color-scheme: dark;
   font-family: Arial, sans-serif;
 }
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   background: #090f1b;
   color: #f2f4f8;
 }
+
 header {
   padding: 28px 20px;
   border-bottom: 1px solid #29394e;
 }
+
 main {
   max-width: 1000px;
   margin: auto;
   padding: 24px 16px;
 }
-h1 { margin: 10px 0; }
-h2 { font-size: 21px; }
-a { color: #e0c092; }
-.muted { color: #b6c5d7; }
+
+h1 {
+  margin: 10px 0;
+}
+
+h2 {
+  font-size: 21px;
+}
+
+a {
+  color: #e0c092;
+}
+
+.muted {
+  color: #b6c5d7;
+}
+
 .card {
   background: #152237;
   border: 1px solid #304158;
@@ -37,11 +57,13 @@ a { color: #e0c092; }
   padding: 22px;
   margin-bottom: 20px;
 }
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
+
 button {
   background: #d1b080;
   color: #111925;
@@ -50,15 +72,19 @@ button {
   padding: 12px 16px;
   font-weight: bold;
   cursor: pointer;
+  margin: 3px;
 }
+
 button:disabled {
   opacity: .55;
   cursor: not-allowed;
 }
+
 .secondary {
   background: #354860;
   color: white;
 }
+
 textarea {
   width: 100%;
   padding: 12px;
@@ -69,10 +95,12 @@ textarea {
   font: inherit;
   resize: vertical;
 }
+
 .item {
   border-top: 1px solid #34445b;
   padding: 16px 0;
 }
+
 .tag {
   display: inline-block;
   border: 1px solid #65758a;
@@ -80,55 +108,78 @@ textarea {
   border-radius: 20px;
   font-size: 12px;
 }
-.error { color: #ff9e9e; }
-.success { color: #9de2ba; }
-[hidden] { display: none !important; }
+
+.error {
+  color: #ff9e9e;
+}
+
+.success {
+  color: #9de2ba;
+}
+
+[hidden] {
+  display: none !important;
+}
+
 @media(max-width:650px) {
-  .grid { grid-template-columns: 1fr; }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <header>
   <strong>RADIO JOCOQUI</strong>
   <h1>Centro de Misiones</h1>
-  <p class="muted">CASA · RADIO · COLABORACIÓN</p>
+  <p class="muted">
+    CASA · RADIO · COLABORACIÓN
+  </p>
   <a href="/">Volver al sistema solar</a>
 </header>
 
 <main>
+
   <section id="loading" class="card">
     Verificando tu sesión...
   </section>
 
   <section id="login" class="card" hidden>
     <h2>Acceso para usuarios registrados</h2>
-    <p>Inicia sesión para solicitar acceso a las misiones.</p>
+    <p>
+      Inicia sesión para solicitar acceso a las misiones.
+    </p>
     <a href="/registro.html">
       <button>Iniciar sesión o registrarme</button>
     </a>
   </section>
 
   <section id="content" hidden>
+
     <div class="card">
       <h2>Bienvenido</h2>
       <p id="userEmail" class="muted"></p>
+
       <button id="refreshBtn" class="secondary">
         Actualizar
       </button>
+
       <button id="logoutBtn" class="secondary">
         Cerrar sesión
       </button>
     </div>
 
     <div class="grid">
+
       <section class="card">
         <h2>Casa Jocoqui</h2>
         <p class="muted">
           Mantenimiento, limpieza, hospedaje,
           cocina e instalaciones.
         </p>
+
         <div id="casaAccess"></div>
         <div id="casaMissions"></div>
       </section>
@@ -139,16 +190,20 @@ textarea {
           Música, transmisiones, producción,
           eventos y contenido.
         </p>
+
         <div id="radioAccess"></div>
         <div id="radioMissions"></div>
       </section>
+
     </div>
   </section>
 
   <p id="notice" role="status"></p>
+
 </main>
 
 <script type="module">
+
 import {
   createClient
 } from "https://esm.sh/@supabase/supabase-js@2";
@@ -159,10 +214,11 @@ const db = createClient(
 );
 
 const $ = id => document.getElementById(id);
+
 let currentUser = null;
 
 function show(id) {
-  for (const name of ["loading","login","content"]) {
+  for (const name of ["loading", "login", "content"]) {
     $(name).hidden = name !== id;
   }
 }
@@ -175,7 +231,11 @@ function notice(message, isError = false) {
 function node(tag, text, className = "") {
   const el = document.createElement(tag);
   el.textContent = text;
-  if (className) el.className = className;
+
+  if (className) {
+    el.className = className;
+  }
+
   return el;
 }
 
@@ -211,7 +271,9 @@ async function init() {
   }
 
   currentUser = user;
+
   $("userEmail").textContent = user.email || "";
+
   show("content");
 
   await refresh();
@@ -230,13 +292,17 @@ async function refresh() {
     return;
   }
 
-  for (const area of ["casa","radio"]) {
-    const access = data.find(row => row.area === area);
+  for (const area of ["casa", "radio"]) {
+    const access = (data || []).find(
+      row => row.area === area
+    );
+
     await renderArea(area, access);
   }
 }
 
 async function renderArea(area, access) {
+
   const accessBox = $(area + "Access");
   const missionsBox = $(area + "Missions");
 
@@ -246,14 +312,20 @@ async function renderArea(area, access) {
   if (!access) {
     accessBox.append(
       node("p", "Necesitas autorización para entrar."),
-      action("Solicitar acceso", () => requestAccess(area))
+      action(
+        "Solicitar acceso",
+        () => requestAccess(area)
+      )
     );
     return;
   }
 
   if (access.status === "pending") {
     accessBox.append(
-      node("p", "Tu solicitud está pendiente de aprobación.")
+      node(
+        "p",
+        "Tu solicitud está pendiente de aprobación."
+      )
     );
     return;
   }
@@ -265,7 +337,9 @@ async function renderArea(area, access) {
     return;
   }
 
-  if (access.status !== "approved") return;
+  if (access.status !== "approved") {
+    return;
+  }
 
   accessBox.append(
     node("p", "Acceso autorizado", "success")
@@ -280,11 +354,13 @@ async function renderArea(area, access) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    missionsBox.append(node("p", error.message, "error"));
+    missionsBox.append(
+      node("p", error.message, "error")
+    );
     return;
   }
 
-  if (!missions.length) {
+  if (!missions || !missions.length) {
     missionsBox.append(
       node("p", "Todavía no hay misiones en esta área.")
     );
@@ -292,62 +368,177 @@ async function renderArea(area, access) {
   }
 
   for (const mission of missions) {
+
     const item = node("div", "", "item");
 
     item.append(
       node("h3", mission.title),
-      node("p", mission.description || "Sin descripción"),
-      node("span", statusLabel(mission.status), "tag"),
-      node("p", "Prioridad: " + mission.priority, "muted"),
+
       node(
         "p",
-        "Fecha límite: " + (mission.due_date || "Sin definir"),
+        mission.description || "Sin descripción"
+      ),
+
+      node(
+        "span",
+        statusLabel(mission.status),
+        "tag"
+      ),
+
+      node(
+        "p",
+        "Prioridad: " + mission.priority,
+        "muted"
+      ),
+
+      node(
+        "p",
+        "Fecha límite: " +
+          (mission.due_date || "Sin definir"),
         "muted"
       )
     );
 
+    // FUNCIONES DEL RESPONSABLE ASIGNADO
+
     if (mission.assigned_to === currentUser.id) {
-      const textarea = document.createElement("textarea");
-      textarea.rows = 3;
-      textarea.maxLength = 2000;
-      textarea.placeholder = "Escribe tu avance...";
 
-      const sendBtn = action("Enviar avance", async () => {
-        const message = textarea.value.trim();
+      if (
+        mission.status === "pending" ||
+        mission.status === "in_progress"
+      ) {
 
-        if (!message) {
-          notice("Escribe un avance antes de enviarlo.", true);
-          return;
-        }
+        const textarea = document.createElement("textarea");
 
-        sendBtn.disabled = true;
+        textarea.rows = 3;
+        textarea.maxLength = 2000;
+        textarea.placeholder = "Escribe tu avance...";
 
-        const { error } = await db
-          .from("rj_mission_updates")
-          .insert({
-            mission_id: mission.id,
-            user_id: currentUser.id,
-            message
-          });
+        // ENVIAR AVANCE
 
-        sendBtn.disabled = false;
+        const sendBtn = action(
+          "Enviar avance",
+          async () => {
 
-        if (error) {
-          notice(error.message, true);
-          return;
-        }
+            const message = textarea.value.trim();
 
-        textarea.value = "";
-        notice("Avance enviado correctamente.");
-        await loadUpdates(mission.id, item);
-      });
+            if (!message) {
+              notice(
+                "Escribe un avance antes de enviarlo.",
+                true
+              );
+              return;
+            }
 
-      item.append(textarea, sendBtn);
+            sendBtn.disabled = true;
+
+            const { error } = await db
+              .from("rj_mission_updates")
+              .insert({
+                mission_id: mission.id,
+                user_id: currentUser.id,
+                message
+              });
+
+            sendBtn.disabled = false;
+
+            if (error) {
+              notice(error.message, true);
+              return;
+            }
+
+            textarea.value = "";
+
+            notice("Avance enviado correctamente.");
+
+            await loadUpdates(mission.id, item);
+          }
+        );
+
+        // AVISAR QUE LA MISIÓN ESTÁ TERMINADA
+
+        const finishBtn = action(
+          "Avisar que terminé la misión",
+          async () => {
+
+            const confirmed = confirm(
+              "¿Confirmas que terminaste esta misión " +
+              "y deseas enviarla a revisión?"
+            );
+
+            if (!confirmed) {
+              return;
+            }
+
+            finishBtn.disabled = true;
+            sendBtn.disabled = true;
+
+            const { error } = await db.rpc(
+              "rj_report_mission_finished",
+              {
+                p_mission_id: mission.id
+              }
+            );
+
+            if (error) {
+              finishBtn.disabled = false;
+              sendBtn.disabled = false;
+
+              notice(
+                "No se pudo enviar a revisión: " +
+                error.message,
+                true
+              );
+
+              return;
+            }
+
+            await renderArea(area, access);
+
+            notice(
+              "Misión enviada a revisión. " +
+              "El administrador verificará el trabajo."
+            );
+          }
+        );
+
+        item.append(
+          textarea,
+          sendBtn,
+          finishBtn
+        );
+
+      } else if (mission.status === "in_review") {
+
+        item.append(
+          node(
+            "p",
+            "Ya avisaste que terminaste. " +
+            "Esperando revisión del administrador.",
+            "success"
+          )
+        );
+
+      } else if (mission.status === "completed") {
+
+        item.append(
+          node(
+            "p",
+            "Misión completada y confirmada.",
+            "success"
+          )
+        );
+      }
     }
 
+    // HISTORIAL DE AVANCES
+
     const updates = node("div", "");
+
     updates.id = "updates-" + mission.id;
+
     item.append(updates);
+
     missionsBox.append(item);
 
     await loadUpdates(mission.id, item);
@@ -355,9 +546,14 @@ async function renderArea(area, access) {
 }
 
 async function loadUpdates(missionId, item) {
+
   const target = item.querySelector(
     "#updates-" + missionId
   );
+
+  if (!target) {
+    return;
+  }
 
   target.replaceChildren();
 
@@ -368,15 +564,19 @@ async function loadUpdates(missionId, item) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    target.append(node("p", error.message, "error"));
+    target.append(
+      node("p", error.message, "error")
+    );
     return;
   }
 
-  if (data.length) {
-    target.append(node("h4", "Historial de avances"));
+  if (data && data.length) {
+    target.append(
+      node("h4", "Historial de avances")
+    );
   }
 
-  for (const update of data) {
+  for (const update of data || []) {
     target.append(
       node("p", update.message, "muted")
     );
@@ -384,7 +584,10 @@ async function loadUpdates(missionId, item) {
 }
 
 async function requestAccess(area) {
-  if (!currentUser) return;
+
+  if (!currentUser) {
+    return;
+  }
 
   const label = area === "casa"
     ? "Casa Jocoqui"
@@ -392,7 +595,9 @@ async function requestAccess(area) {
 
   if (!confirm(
     "¿Deseas solicitar acceso a " + label + "?"
-  )) return;
+  )) {
+    return;
+  }
 
   const { error } = await db
     .from("rj_mission_access")
@@ -407,19 +612,31 @@ async function requestAccess(area) {
     return;
   }
 
-  notice("Solicitud enviada al administrador.");
   await refresh();
+
+  notice("Solicitud enviada al administrador.");
 }
 
-$("refreshBtn").addEventListener("click", refresh);
+$("refreshBtn").addEventListener(
+  "click",
+  refresh
+);
 
-$("logoutBtn").addEventListener("click", async () => {
-  await db.auth.signOut();
-  currentUser = null;
-  show("login");
-});
+$("logoutBtn").addEventListener(
+  "click",
+  async () => {
+
+    await db.auth.signOut();
+
+    currentUser = null;
+
+    show("login");
+  }
+);
 
 init();
+
 </script>
+
 </body>
 </html>
