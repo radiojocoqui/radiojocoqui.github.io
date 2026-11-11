@@ -5,501 +5,773 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Administración de Misiones | Radio Jocoqui</title>
+
 <style>
-:root{color-scheme:dark;font-family:Arial,sans-serif}
-*{box-sizing:border-box}
-body{margin:0;background:#090f1b;color:#f2f4f8}
-header{padding:25px;border-bottom:1px solid #28364c}
-.container{max-width:1100px;margin:auto;padding:24px}
-.card{background:#152237;border:1px solid #304158;border-radius:14px;padding:20px;margin-bottom:20px}
-.muted{color:#afbed2}
-button,input,select,textarea{padding:11px 14px;border-radius:8px;font-size:14px;max-width:100%}
-input,select,textarea{background:#0b1728;color:white;border:1px solid #425671}
-textarea{width:100%;font-family:inherit}
-button{border:0;background:#c8aa7a;color:#101722;cursor:pointer;font-weight:bold}
-button:disabled{opacity:.5;cursor:not-allowed}
-.secondary{background:#31435e;color:white}
-.danger{background:#a64e53;color:white}
-.item{border-top:1px solid #34445b;padding:16px 0}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.tag{display:inline-block;border:1px solid #526780;border-radius:20px;padding:5px 10px;font-size:12px}
-.error{color:#ff9e9e}
-.success{color:#9de2ba}
-.field{margin:15px 0}
-.field label{display:block;margin-bottom:7px}
-[hidden]{display:none!important}
+:root {
+  color-scheme: dark;
+  font-family: Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #090f1b;
+  color: #f2f4f8;
+}
+header {
+  padding: 25px;
+  border-bottom: 1px solid #28364c;
+}
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 24px;
+}
+.card {
+  background: #152237;
+  border: 1px solid #304158;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.muted { color: #afbed2; }
+button, input, select, textarea {
+  padding: 11px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  max-width: 100%;
+}
+input, select, textarea {
+  background: #0b1728;
+  color: white;
+  border: 1px solid #425671;
+}
+textarea {
+  width: 100%;
+  font-family: inherit;
+}
+button {
+  border: 0;
+  background: #c8aa7a;
+  color: #101722;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.secondary {
+  background: #31435e;
+  color: white;
+}
+.danger {
+  background: #a64e53;
+  color: white;
+}
+.item {
+  border-top: 1px solid #34445b;
+  padding: 16px 0;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.tag {
+  display: inline-block;
+  border: 1px solid #526780;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.error { color: #ff9e9e; }
+.success { color: #9de2ba; }
+.field { margin: 15px 0; }
+.field label {
+  display: block;
+  margin-bottom: 7px;
+}
+[hidden] { display: none !important; }
 </style>
 </head>
+
 <body>
 
 <header>
-<strong>RADIO JOCOQUI</strong>
-<h1>Administración de Misiones</h1>
-<p class="muted">Casa Jocoqui / Radio Jocoqui</p>
+  <strong>RADIO JOCOQUI</strong>
+  <h1>Administración de Misiones</h1>
+  <p class="muted">Casa Jocoqui / Radio Jocoqui</p>
 </header>
 
 <main class="container">
-<section id="loading" class="card">Verificando acceso...</section>
+
+<section id="loading" class="card">
+  Verificando acceso...
+</section>
 
 <section id="login" class="card" hidden>
-<h2>Acceso administrativo</h2>
-<p>Inicia sesión con tu cuenta de administrador.</p>
-<a href="/registro.html">Iniciar sesión</a>
+  <h2>Acceso administrativo</h2>
+  <p>Inicia sesión con tu cuenta de administrador.</p>
+  <a href="/registro.html">Iniciar sesión</a>
 </section>
 
 <section id="denied" class="card" hidden>
-<h2>Acceso restringido</h2>
-<p>Tu cuenta no tiene permisos de administrador.</p>
-<a href="/">Regresar a Radio Jocoqui</a>
+  <h2>Acceso restringido</h2>
+  <p>Tu cuenta no tiene permisos de administrador.</p>
+  <a href="/">Regresar a Radio Jocoqui</a>
 </section>
 
 <section id="dashboard" hidden>
 
-<div class="card">
-<h2>Crear nueva misión</h2>
-<form id="createMissionForm">
+  <div class="card">
+    <h2>Crear nueva misión</h2>
 
-<div class="field">
-<label for="missionArea">Área</label>
-<select id="missionArea" required>
-<option value="casa">Casa Jocoqui</option>
-<option value="radio">Radio Jocoqui</option>
-</select>
-</div>
+    <form id="createMissionForm">
 
-<div class="field">
-<label for="missionTitle">Título de la misión</label>
-<input id="missionTitle" type="text" maxlength="150" required>
-</div>
+      <div class="field">
+        <label for="missionArea">Área</label>
+        <select id="missionArea" required>
+          <option value="casa">Casa Jocoqui</option>
+          <option value="radio">Radio Jocoqui</option>
+        </select>
+      </div>
 
-<div class="field">
-<label for="missionDescription">Descripción</label>
-<textarea id="missionDescription" rows="4"></textarea>
-</div>
+      <div class="field">
+        <label for="missionTitle">Título de la misión</label>
+        <input id="missionTitle"
+               type="text"
+               maxlength="150"
+               required>
+      </div>
 
-<div class="field">
-<label for="missionPriority">Prioridad</label>
-<select id="missionPriority">
-<option value="low">Baja</option>
-<option value="medium" selected>Media</option>
-<option value="high">Alta</option>
-<option value="urgent">Urgente</option>
-</select>
-</div>
+      <div class="field">
+        <label for="missionDescription">Descripción</label>
+        <textarea id="missionDescription" rows="4"></textarea>
+      </div>
 
-<div class="field">
-<label for="missionDueDate">Fecha límite</label>
-<input id="missionDueDate" type="date">
-</div>
+      <div class="field">
+        <label for="missionPriority">Prioridad</label>
+        <select id="missionPriority">
+          <option value="low">Baja</option>
+          <option value="medium" selected>Media</option>
+          <option value="high">Alta</option>
+          <option value="urgent">Urgente</option>
+        </select>
+      </div>
 
-<div class="field">
-<label for="missionAssignee">Asignar responsable</label>
-<select id="missionAssignee">
-<option value="">Sin asignar</option>
-</select>
-</div>
+      <div class="field">
+        <label for="missionDueDate">Fecha límite</label>
+        <input id="missionDueDate" type="date">
+      </div>
 
-<button id="createMissionBtn" type="submit">Crear misión</button>
-<p id="createMissionMessage" role="status"></p>
-</form>
-</div>
+      <div class="field">
+        <label for="missionAssignee">Asignar responsable</label>
+        <select id="missionAssignee">
+          <option value="">Sin asignar</option>
+        </select>
+      </div>
 
-<div class="card">
-<h2>Panel de control</h2>
-<p id="adminEmail" class="muted"></p>
-<div class="actions">
-<button id="refreshBtn" class="secondary">Actualizar</button>
-<button id="logoutBtn" class="secondary">Cerrar sesión</button>
-</div>
-</div>
+      <button id="createMissionBtn" type="submit">
+        Crear misión
+      </button>
 
-<div class="card">
-<h2>Solicitudes de acceso</h2>
-<p class="muted">Autoriza usuarios para Casa, Radio o ambas áreas.</p>
-<div id="requests">Cargando solicitudes...</div>
-</div>
+      <p id="createMissionMessage" role="status"></p>
+    </form>
+  </div>
 
-<div class="card">
-<h2>Misiones de Casa Jocoqui</h2>
-<div id="casaMissions">Cargando misiones...</div>
-</div>
+  <div class="card">
+    <h2>Panel de control</h2>
+    <p id="adminEmail" class="muted"></p>
 
-<div class="card">
-<h2>Misiones de Radio Jocoqui</h2>
-<div id="radioMissions">Cargando misiones...</div>
-</div>
+    <div class="actions">
+      <button id="refreshBtn" class="secondary">
+        Actualizar
+      </button>
+      <button id="logoutBtn" class="secondary">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Solicitudes de acceso</h2>
+    <p class="muted">
+      Autoriza usuarios para Casa, Radio o ambas áreas.
+    </p>
+    <div id="requests">Cargando solicitudes...</div>
+  </div>
+
+  <div class="card">
+    <h2>Misiones de Casa Jocoqui</h2>
+    <div id="casaMissions">Cargando misiones...</div>
+  </div>
+
+  <div class="card">
+    <h2>Misiones de Radio Jocoqui</h2>
+    <div id="radioMissions">Cargando misiones...</div>
+  </div>
 
 </section>
+
 <p id="notice" role="status"></p>
 </main>
 
 <script type="module">
-import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 
-const db=createClient(
-"https://grjqqhmzyfozrxrkvmyn.supabase.co",
-"sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe"
+import { createClient }
+  from "https://esm.sh/@supabase/supabase-js@2";
+
+const db = createClient(
+  "https://grjqqhmzyfozrxrkvmyn.supabase.co",
+  "sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe"
 );
 
-const $=id=>document.getElementById(id);
-let adminUser=null;
-let approvedCollaborators=[];
+const $ = id => document.getElementById(id);
 
-function show(id){
-for(const name of ["loading","login","denied","dashboard"]){
-$(name).hidden=name!==id;
-}
-}
+let adminUser = null;
+let approvedCollaborators = [];
 
-function notice(message,isError=false){
-$("notice").textContent=message;
-$("notice").className=isError?"error":"success";
+function show(id) {
+  for (const name of [
+    "loading", "login", "denied", "dashboard"
+  ]) {
+    $(name).hidden = name !== id;
+  }
 }
 
-function element(tag,text="",className=""){
-const el=document.createElement(tag);
-el.textContent=text;
-if(className)el.className=className;
-return el;
+function notice(message, isError = false) {
+  $("notice").textContent = message;
+  $("notice").className = isError ? "error" : "success";
 }
 
-function button(label,callback,className=""){
-const btn=element("button",label,className);
-btn.type="button";
-btn.addEventListener("click",callback);
-return btn;
+function element(tag, text = "", className = "") {
+  const el = document.createElement(tag);
+  el.textContent = text;
+  if (className) el.className = className;
+  return el;
 }
 
-function areaName(area){
-return area==="casa"?"Casa Jocoqui":"Radio Jocoqui";
+function button(label, callback, className = "") {
+  const btn = element("button", label, className);
+  btn.type = "button";
+  btn.addEventListener("click", callback);
+  return btn;
 }
 
-function statusName(status){
-return {
-pending:"Pendiente",
-approved:"Aprobado",
-rejected:"Rechazado",
-in_progress:"En proceso",
-in_review:"En revisión",
-completed:"Completada"
-}[status]||status;
+function areaName(area) {
+  return area === "casa"
+    ? "Casa Jocoqui"
+    : "Radio Jocoqui";
 }
 
-async function init(){
-show("loading");
-
-const {data:{user},error:userError}=await db.auth.getUser();
-
-if(userError||!user){
-show("login");
-return;
+function statusName(status) {
+  return {
+    pending: "Pendiente",
+    approved: "Aprobado",
+    rejected: "Rechazado",
+    in_progress: "En proceso",
+    in_review: "En revisión",
+    completed: "Completada"
+  }[status] || status;
 }
 
-const {data:isAdmin,error}=await db.rpc("is_admin");
+async function init() {
+  show("loading");
 
-if(error||isAdmin!==true){
-show("denied");
-return;
+  const {
+    data: { user },
+    error: userError
+  } = await db.auth.getUser();
+
+  if (userError || !user) {
+    show("login");
+    return;
+  }
+
+  const { data: isAdmin, error } =
+    await db.rpc("is_admin");
+
+  if (error || isAdmin !== true) {
+    show("denied");
+    return;
+  }
+
+  adminUser = user;
+  $("adminEmail").textContent = user.email || "";
+
+  show("dashboard");
+  await refresh();
 }
 
-adminUser=user;
-$("adminEmail").textContent=user.email||"";
-show("dashboard");
-await refresh();
+async function refresh() {
+  notice("");
+
+  await Promise.all([
+    loadRequests(),
+    loadCollaborators()
+  ]);
+
+  await loadMissions();
 }
 
-async function refresh(){
-notice("");
-await Promise.all([
-loadRequests(),
-loadCollaborators()
-]);
-await loadMissions();
+async function loadCollaborators() {
+  const { data, error } =
+    await db.rpc("rj_mission_collaborators");
+
+  if (error) {
+    approvedCollaborators = [];
+    notice(
+      "Error al cargar colaboradores: " + error.message,
+      true
+    );
+  } else {
+    approvedCollaborators = data || [];
+  }
+
+  renderCreateAssignees();
 }
 
-async function loadCollaborators(){
-const {data,error}=await db.rpc("rj_mission_collaborators");
+function renderCreateAssignees() {
+  const select = $("missionAssignee");
+  const selected = select.value;
+  const area = $("missionArea").value;
 
-if(error){
-approvedCollaborators=[];
-notice("Error al cargar colaboradores: "+error.message,true);
-}else{
-approvedCollaborators=data||[];
-}
-renderCreateAssignees();
-}
+  select.replaceChildren(
+    new Option("Sin asignar", "")
+  );
 
-function renderCreateAssignees(){
-const select=$("missionAssignee");
-const selected=select.value;
-const area=$("missionArea").value;
+  for (const person of approvedCollaborators) {
+    if (person.area !== area) continue;
 
-select.replaceChildren(new Option("Sin asignar",""));
+    select.add(new Option(
+      person.display_name || "Colaborador sin nombre",
+      person.user_id
+    ));
+  }
 
-for(const person of approvedCollaborators){
-if(person.area!==area)continue;
-
-select.add(new Option(
-person.display_name||"Colaborador sin nombre",
-person.user_id
-));
+  if ([...select.options].some(
+    option => option.value === selected
+  )) {
+    select.value = selected;
+  }
 }
 
-if([...select.options].some(o=>o.value===selected)){
-select.value=selected;
-}
+function collaboratorName(userId, area) {
+  if (!userId) return "Sin asignar";
+
+  const person = approvedCollaborators.find(
+    p => p.user_id === userId && p.area === area
+  );
+
+  return person
+    ? (person.display_name || "Colaborador")
+    : "Responsable sin autorización vigente";
 }
 
-function collaboratorName(userId,area){
-if(!userId)return "Sin asignar";
+async function assignMission(mission, userId, select) {
+  select.disabled = true;
 
-const person=approvedCollaborators.find(
-p=>p.user_id===userId&&p.area===area
+  const { data, error } = await db
+    .from("rj_missions")
+    .update({
+      assigned_to: userId || null
+    })
+    .eq("id", mission.id)
+    .select("id");
+
+  if (error) {
+    notice(
+      "No se pudo asignar: " + error.message,
+      true
+    );
+  } else if (!data || data.length === 0) {
+    notice(
+      "No se guardó la asignación. Revisa los permisos.",
+      true
+    );
+  } else {
+    notice("Responsable actualizado correctamente.");
+  }
+
+  await loadMissions();
+}
+
+async function loadRequests() {
+  const target = $("requests");
+  target.replaceChildren();
+
+  const { data, error } = await db
+    .from("rj_mission_access")
+    .select("id,user_id,area,status,requested_at")
+    .order("requested_at", {
+      ascending: false
+    });
+
+  if (error) {
+    target.textContent = error.message;
+    return;
+  }
+
+  if (!data || !data.length) {
+    target.textContent = "Todavía no hay solicitudes.";
+    return;
+  }
+
+  const userIds = [
+    ...new Set(data.map(request => request.user_id))
+  ];
+
+  const {
+    data: profiles,
+    error: profilesError
+  } = await db
+    .from("profiles")
+    .select("id,display_name")
+    .in("id", userIds);
+
+  const names = new Map();
+
+  if (!profilesError) {
+    for (const profile of profiles || []) {
+      names.set(profile.id, profile.display_name);
+    }
+  }
+
+  for (const request of data) {
+    const item = element("div", "", "item");
+
+    item.append(
+      element("strong", areaName(request.area)),
+      element(
+        "p",
+        "Usuario: " +
+        (names.get(request.user_id) ||
+         "Sin nombre registrado")
+      ),
+      element(
+        "span",
+        statusName(request.status),
+        "tag"
+      )
+    );
+
+    const actions = element("div", "", "actions");
+
+    if (request.status !== "approved") {
+      actions.append(
+        button(
+          "Aprobar",
+          () => reviewAccess(request.id, "approved")
+        )
+      );
+    }
+
+    if (request.status !== "rejected") {
+      actions.append(
+        button(
+          request.status === "approved"
+            ? "Revocar acceso"
+            : "Rechazar",
+          () => reviewAccess(request.id, "rejected"),
+          "danger"
+        )
+      );
+    }
+
+    item.append(actions);
+    target.append(item);
+  }
+}
+
+async function reviewAccess(id, status) {
+  const verb = status === "approved"
+    ? "aprobar"
+    : "rechazar o revocar";
+
+  if (!confirm(
+    "¿Confirmas que deseas " + verb + " este permiso?"
+  )) {
+    return;
+  }
+
+  const { error } = await db.rpc(
+    "rj_review_mission_access",
+    {
+      p_request_id: id,
+      p_status: status
+    }
+  );
+
+  if (error) {
+    notice(error.message, true);
+    return;
+  }
+
+  await Promise.all([
+    loadRequests(),
+    loadCollaborators()
+  ]);
+
+  await loadMissions();
+
+  notice("Permiso actualizado correctamente.");
+}
+
+// APROBAR MISIÓN EN REVISIÓN
+
+async function approveMission(mission, btn) {
+  if (!confirm(
+    "¿Confirmas que deseas aprobar la misión: " +
+    mission.title + "?"
+  )) {
+    return;
+  }
+
+  btn.disabled = true;
+
+  const { error } = await db.rpc(
+    "rj_approve_mission",
+    {
+      p_mission_id: mission.id
+    }
+  );
+
+  if (error) {
+    btn.disabled = false;
+    notice(
+      "No se pudo aprobar la misión: " +
+      error.message,
+      true
+    );
+    return;
+  }
+
+  await loadMissions();
+
+  notice(
+    "Misión aprobada correctamente. Estado: Completada."
+  );
+}
+
+// MOSTRAR MISIONES Y RESPONSABLES
+
+async function loadMissions() {
+  const { data, error } = await db
+    .from("rj_missions")
+    .select(
+      "id,area,title,description,priority,status,assigned_to,due_date"
+    )
+    .order("created_at", {
+      ascending: false
+    });
+
+  for (const area of ["casa", "radio"]) {
+    const target = $(area + "Missions");
+    target.replaceChildren();
+
+    if (error) {
+      target.textContent = error.message;
+      continue;
+    }
+
+    const missions = (data || []).filter(
+      mission => mission.area === area
+    );
+
+    if (!missions.length) {
+      target.textContent =
+        "Todavía no hay misiones registradas.";
+      continue;
+    }
+
+    for (const mission of missions) {
+      const item = element("div", "", "item");
+
+      item.append(
+        element("h3", mission.title),
+        element(
+          "p",
+          mission.description || "Sin descripción"
+        ),
+        element(
+          "p",
+          "Estado: " + statusName(mission.status)
+        ),
+        element(
+          "p",
+          "Prioridad: " + mission.priority,
+          "muted"
+        ),
+        element(
+          "p",
+          "Responsable: " +
+          collaboratorName(mission.assigned_to, area),
+          "muted"
+        )
+      );
+
+      const field = element("div", "", "field");
+      const label = element(
+        "label",
+        "Asignar responsable:"
+      );
+      const select = document.createElement("select");
+
+      select.setAttribute(
+        "aria-label",
+        "Responsable de " + mission.title
+      );
+
+      select.add(new Option("Sin asignar", ""));
+
+      for (const person of approvedCollaborators) {
+        if (person.area !== area) continue;
+
+        select.add(new Option(
+          person.display_name || "Colaborador sin nombre",
+          person.user_id
+        ));
+      }
+
+      if (
+        mission.assigned_to &&
+        ![...select.options].some(
+          option => option.value === mission.assigned_to
+        )
+      ) {
+        select.add(new Option(
+          "Responsable sin autorización vigente",
+          mission.assigned_to
+        ));
+      }
+
+      select.value = mission.assigned_to || "";
+
+      select.addEventListener("change", () => {
+        assignMission(mission, select.value, select);
+      });
+
+      field.append(label, select);
+      item.append(field);
+
+      // BOTÓN PARA APROBAR MISIONES EN REVISIÓN
+
+      if (mission.status === "in_review") {
+        const actions = element("div", "", "actions");
+
+        const approveBtn = button(
+          "Aprobar misión",
+          () => approveMission(mission, approveBtn)
+        );
+
+        actions.append(approveBtn);
+        item.append(actions);
+      }
+
+      if (mission.status === "completed") {
+        item.append(
+          element(
+            "p",
+            "Misión completada y aprobada.",
+            "success"
+          )
+        );
+      }
+
+      target.append(item);
+    }
+  }
+}
+
+// CREAR NUEVA MISIÓN
+
+$("createMissionForm").addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
+
+    const message = $("createMissionMessage");
+    const submitBtn = $("createMissionBtn");
+
+    const area = $("missionArea").value;
+    const title = $("missionTitle").value.trim();
+    const description =
+      $("missionDescription").value.trim();
+
+    const priority = $("missionPriority").value;
+    const dueDate = $("missionDueDate").value;
+    const assignee = $("missionAssignee").value || null;
+
+    if (!adminUser) {
+      message.textContent =
+        "Debes iniciar sesión como administrador.";
+      return;
+    }
+
+    if (!title) {
+      message.textContent =
+        "Escribe el título de la misión.";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    message.textContent = "Guardando misión...";
+
+    try {
+      const { error } = await db
+        .from("rj_missions")
+        .insert({
+          area,
+          title,
+          description: description || null,
+          priority,
+          due_date: dueDate || null,
+          status: "pending",
+          created_by: adminUser.id,
+          assigned_to: assignee
+        });
+
+      if (error) throw error;
+
+      message.textContent =
+        "Misión creada correctamente.";
+
+      $("createMissionForm").reset();
+      renderCreateAssignees();
+
+      await loadMissions();
+
+    } catch (error) {
+      message.textContent =
+        "Error al crear misión: " + error.message;
+    } finally {
+      submitBtn.disabled = false;
+    }
+  }
 );
 
-return person
-?(person.display_name||"Colaborador")
-:"Responsable sin autorización vigente";
-}
-
-async function assignMission(mission,userId,select){
-select.disabled=true;
-
-const {data,error}=await db
-.from("rj_missions")
-.update({assigned_to:userId||null})
-.eq("id",mission.id)
-.select("id");
-
-if(error){
-notice("No se pudo asignar: "+error.message,true);
-}else if(!data||data.length===0){
-notice("No se guardó la asignación. Revisa los permisos de Supabase.",true);
-}else{
-notice("Responsable actualizado correctamente.");
-}
-
-await loadMissions();
-}
-
-async function loadRequests(){
-const target=$("requests");
-target.replaceChildren();
-
-const {data,error}=await db
-.from("rj_mission_access")
-.select("id,user_id,area,status,requested_at")
-.order("requested_at",{ascending:false});
-
-if(error){
-target.textContent=error.message;
-return;
-}
-
-if(!data||!data.length){
-target.textContent="Todavía no hay solicitudes.";
-return;
-}
-
-const userIds=[...new Set(data.map(r=>r.user_id))];
-
-const {data:profiles,error:profilesError}=await db
-.from("profiles")
-.select("id,display_name")
-.in("id",userIds);
-
-const names=new Map();
-
-if(!profilesError){
-for(const profile of profiles||[]){
-names.set(profile.id,profile.display_name);
-}
-}
-
-for(const request of data){
-const item=element("div","","item");
-
-item.append(
-element("strong",areaName(request.area)),
-element("p","Usuario: "+(names.get(request.user_id)||"Sin nombre registrado")),
-element("span",statusName(request.status),"tag")
+$("missionArea").addEventListener(
+  "change",
+  renderCreateAssignees
 );
 
-const actions=element("div","","actions");
-
-if(request.status!=="approved"){
-actions.append(button("Aprobar",()=>
-reviewAccess(request.id,"approved")));
-}
-
-if(request.status!=="rejected"){
-actions.append(button(
-request.status==="approved"?"Revocar acceso":"Rechazar",
-()=>reviewAccess(request.id,"rejected"),
-"danger"
-));
-}
-
-item.append(actions);
-target.append(item);
-}
-}
-
-async function reviewAccess(id,status){
-const verb=status==="approved"?"aprobar":"rechazar o revocar";
-
-if(!confirm("¿Confirmas que deseas "+verb+" este permiso?")){
-return;
-}
-
-const {error}=await db.rpc("rj_review_mission_access",{
-p_request_id:id,
-p_status:status
-});
-
-if(error){
-notice(error.message,true);
-return;
-}
-
-await Promise.all([loadRequests(),loadCollaborators()]);
-await loadMissions();
-notice("Permiso actualizado correctamente.");
-}
-
-async function loadMissions(){
-const {data,error}=await db
-.from("rj_missions")
-.select("id,area,title,description,priority,status,assigned_to,due_date")
-.order("created_at",{ascending:false});
-
-for(const area of ["casa","radio"]){
-const target=$(area+"Missions");
-target.replaceChildren();
-
-if(error){
-target.textContent=error.message;
-continue;
-}
-
-const missions=(data||[]).filter(m=>m.area===area);
-
-if(!missions.length){
-target.textContent="Todavía no hay misiones registradas.";
-continue;
-}
-
-for(const mission of missions){
-const item=element("div","","item");
-
-item.append(
-element("h3",mission.title),
-element("p",mission.description||"Sin descripción"),
-element("p","Estado: "+statusName(mission.status)),
-element("p","Prioridad: "+mission.priority,"muted"),
-element("p","Responsable: "+collaboratorName(mission.assigned_to,area),"muted")
+$("refreshBtn").addEventListener(
+  "click",
+  refresh
 );
 
-const field=element("div","","field");
-const label=element("label","Asignar responsable:");
-const select=document.createElement("select");
-
-select.setAttribute("aria-label","Responsable de "+mission.title);
-select.add(new Option("Sin asignar",""));
-
-for(const person of approvedCollaborators){
-if(person.area!==area)continue;
-
-select.add(new Option(
-person.display_name||"Colaborador sin nombre",
-person.user_id
-));
-}
-
-if(mission.assigned_to&&![
-...select.options
-].some(o=>o.value===mission.assigned_to)){
-select.add(new Option(
-"Responsable sin autorización vigente",
-mission.assigned_to
-));
-}
-
-select.value=mission.assigned_to||"";
-
-select.addEventListener("change",()=>{
-assignMission(mission,select.value,select);
-});
-
-field.append(label,select);
-item.append(field);
-target.append(item);
-}
-}
-}
-
-$("createMissionForm").addEventListener("submit",async event=>{
-event.preventDefault();
-
-const message=$("createMissionMessage");
-const submitBtn=$("createMissionBtn");
-
-const area=$("missionArea").value;
-const title=$("missionTitle").value.trim();
-const description=$("missionDescription").value.trim();
-const priority=$("missionPriority").value;
-const dueDate=$("missionDueDate").value;
-const assignee=$("missionAssignee").value||null;
-
-if(!adminUser){
-message.textContent="Debes iniciar sesión como administrador.";
-return;
-}
-
-if(!title){
-message.textContent="Escribe el título de la misión.";
-return;
-}
-
-submitBtn.disabled=true;
-message.textContent="Guardando misión...";
-
-try{
-const {error}=await db.from("rj_missions").insert({
-area,
-title,
-description:description||null,
-priority,
-due_date:dueDate||null,
-status:"pending",
-created_by:adminUser.id,
-assigned_to:assignee
-});
-
-if(error)throw error;
-
-message.textContent="Misión creada correctamente.";
-$("createMissionForm").reset();
-renderCreateAssignees();
-await loadMissions();
-
-}catch(error){
-message.textContent="Error al crear misión: "+error.message;
-}finally{
-submitBtn.disabled=false;
-}
-});
-
-$("missionArea").addEventListener("change",renderCreateAssignees);
-$("refreshBtn").addEventListener("click",refresh);
-
-$("logoutBtn").addEventListener("click",async()=>{
-await db.auth.signOut();
-adminUser=null;
-show("login");
-});
+$("logoutBtn").addEventListener(
+  "click",
+  async () => {
+    await db.auth.signOut();
+    adminUser = null;
+    show("login");
+  }
+);
 
 init();
+
 </script>
 </body>
 </html>
