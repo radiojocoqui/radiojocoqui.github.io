@@ -1,0 +1,665 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Solicitar acceso · Radio Jocoqui</title>
+<link rel="stylesheet" href="estilos.css">
+
+<style>
+[hidden] { display:none!important; }
+
+.request-wrap {
+  max-width: 650px;
+  margin: 30px auto;
+}
+
+.request-card {
+  background: #141e30;
+  border: 1px solid #40516a;
+  border-radius: 18px;
+  padding: 25px;
+}
+
+.request-field {
+  margin: 18px 0;
+}
+
+.request-field label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.request-field input,
+.request-field select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid #506075;
+  background: #0b1423;
+  color: #fff;
+  font: inherit;
+}
+
+.request-field input[readonly] {
+  opacity: .75;
+}
+
+.request-summary {
+  border-top: 1px solid #40516a;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+.request-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 9px 0;
+}
+
+.request-total {
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.request-button {
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  border-radius: 10px;
+  background: #e5b481;
+  color: #101725;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 18px;
+}
+
+.request-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.request-message {
+  padding: 13px;
+  margin: 16px 0;
+  border-radius: 9px;
+  background: #25334a;
+  overflow-wrap: anywhere;
+}
+
+.request-success {
+  border: 1px solid #5b9d7b;
+}
+
+.request-error {
+  border: 1px solid #b45d68;
+}
+
+.request-muted {
+  opacity: .8;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<main class="wrap">
+
+<header>
+  <div>
+    <div class="brand">
+      RADIO JOCOQUI / COMUNIDAD
+    </div>
+
+    <h1>Solicitar acceso</h1>
+    <p>Música · Cultura · Conciencia</p>
+  </div>
+
+  <nav class="nav">
+    <a class="btn" href="/">
+      Regresar a Radio Jocoqui
+    </a>
+  </nav>
+</header>
+
+<div class="request-wrap">
+
+  <div id="status"
+       class="request-message"
+       role="status">
+    Verificando tu cuenta…
+  </div>
+
+  <section id="loginPanel"
+           class="request-card"
+           hidden>
+
+    <h2>Iniciar sesión</h2>
+
+    <p>
+      Para solicitar acceso necesitas una cuenta
+      registrada y aprobada de Radio Jocoqui.
+    </p>
+
+    <form id="loginForm">
+
+      <div class="request-field">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required>
+      </div>
+
+      <div class="request-field">
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required>
+      </div>
+
+      <button class="request-button" type="submit">
+        Iniciar sesión
+      </button>
+
+    </form>
+
+    <p class="request-muted">
+      ¿No tienes cuenta?
+      <a href="/usuarios-prueba.html">
+        Crear cuenta en Radio Jocoqui
+      </a>
+    </p>
+
+  </section>
+
+  <section id="pendingPanel"
+           class="request-card"
+           hidden>
+
+    <h2>Cuenta pendiente</h2>
+
+    <p>
+      Tu cuenta está registrada, pero todavía
+      necesita aprobación del administrador
+      de Radio Jocoqui.
+    </p>
+
+    <button
+      id="pendingLogout"
+      class="request-button"
+      type="button">
+      Cerrar sesión
+    </button>
+
+  </section>
+
+  <section id="requestPanel"
+           class="request-card"
+           hidden>
+
+    <h2>Reserva tu lugar</h2>
+
+    <p class="request-muted">
+      Selecciona el evento y el número de personas.
+      El total se calculará automáticamente.
+    </p>
+
+    <form id="requestForm">
+
+      <div class="request-field">
+        <label for="guestName">
+          Nombre registrado
+        </label>
+
+        <input id="guestName" readonly>
+      </div>
+
+      <div class="request-field">
+        <label for="guestEmail">
+          Correo electrónico
+        </label>
+
+        <input id="guestEmail" readonly>
+      </div>
+
+      <div class="request-field">
+        <label for="eventSelect">
+          Evento
+        </label>
+
+        <select id="eventSelect" required>
+          <option value="">
+            Cargando eventos…
+          </option>
+        </select>
+      </div>
+
+      <div class="request-field">
+        <label for="seats">
+          Número de personas
+        </label>
+
+        <select id="seats" required>
+          <option value="1">1 persona</option>
+          <option value="2">2 personas</option>
+          <option value="3">3 personas</option>
+          <option value="4">4 personas</option>
+          <option value="5">5 personas</option>
+          <option value="6">6 personas</option>
+          <option value="7">7 personas</option>
+          <option value="8">8 personas</option>
+          <option value="9">9 personas</option>
+          <option value="10">10 personas</option>
+        </select>
+      </div>
+
+      <div class="request-summary">
+
+        <div class="request-row">
+          <span>Precio por persona</span>
+          <strong id="unitPrice">$200.00</strong>
+        </div>
+
+        <div class="request-row">
+          <span>Número de personas</span>
+          <strong id="seatCount">1</strong>
+        </div>
+
+        <div class="request-row request-total">
+          <span>Total</span>
+          <span id="total">$200.00</span>
+        </div>
+
+        <div class="request-row">
+          <span>Anticipo mínimo (50 %)</span>
+          <strong id="deposit">$100.00</strong>
+        </div>
+
+        <div class="request-row">
+          <span>Saldo restante</span>
+          <strong id="remaining">$100.00</strong>
+        </div>
+
+      </div>
+
+      <p class="request-muted">
+        Enviar esta solicitud no garantiza
+        la reservación. Tu lugar quedará
+        confirmado cuando Radio Jocoqui
+        valide el anticipo y exista cupo.
+      </p>
+
+      <button
+        id="submitBtn"
+        class="request-button"
+        type="submit">
+        Enviar solicitud
+      </button>
+
+    </form>
+
+    <button
+      id="logoutBtn"
+      type="button"
+      class="request-button"
+      style="background:#26344c;color:white">
+      Cerrar sesión
+    </button>
+
+  </section>
+
+  <section id="successPanel"
+           class="request-card request-success"
+           hidden>
+
+    <h2>Solicitud recibida</h2>
+
+    <p>
+      Tu solicitud fue registrada correctamente.
+      Todavía no tienes acceso confirmado.
+    </p>
+
+    <p>
+      Radio Jocoqui deberá validar tu anticipo
+      antes de reservar tus lugares.
+    </p>
+
+    <p>
+      <strong>Identificador de solicitud:</strong>
+      <span id="requestId"></span>
+    </p>
+
+    <a class="btn" href="/">
+      Regresar a Radio Jocoqui
+    </a>
+
+  </section>
+
+</div>
+
+<p class="foot">
+  RADIO JOCOQUI · CASA JOCOQUI
+</p>
+
+</main>
+
+<script type="module">
+
+import { createClient }
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient(
+  'https://grjqqhmzyfozrxrkvmyn.supabase.co',
+  'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe'
+);
+
+const $ = id => document.getElementById(id);
+
+const money = value =>
+  new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  }).format(Number(value) || 0);
+
+const PRICE = 200;
+
+let events = [];
+let currentUser = null;
+let busy = false;
+
+function status(message, error = false) {
+  $('status').textContent = message;
+  $('status').className =
+    'request-message ' +
+    (error ? 'request-error' : '');
+}
+
+function show(panel) {
+  for (const id of [
+    'loginPanel',
+    'pendingPanel',
+    'requestPanel',
+    'successPanel'
+  ]) {
+    $(id).hidden = id !== panel;
+  }
+}
+
+function updatePrice() {
+  const seats = Number($('seats').value);
+  const total = seats * PRICE;
+
+  $('unitPrice').textContent = money(PRICE);
+  $('seatCount').textContent = seats;
+  $('total').textContent = money(total);
+  $('deposit').textContent = money(total * .5);
+  $('remaining').textContent = money(total * .5);
+}
+
+function requestedEventNumber() {
+  return new URLSearchParams(
+    window.location.search
+  ).get('evento');
+}
+
+async function loadEvents() {
+  const { data, error } = await sb
+    .from('rj_events')
+    .select(
+      'id,title,event_date,capacity,price_per_person'
+    )
+    .order('event_date', { ascending: true })
+    .limit(200);
+
+  if (error) throw error;
+
+  events = (data || []).filter(
+    event => Number(event.price_per_person) === PRICE
+  );
+
+  const select = $('eventSelect');
+  select.replaceChildren();
+
+  select.add(
+    new Option('Selecciona un evento', '')
+  );
+
+  for (const event of events) {
+    select.add(
+      new Option(
+        event.title + ' · ' + event.event_date,
+        event.id
+      )
+    );
+  }
+
+  const requested = requestedEventNumber();
+
+  if (requested) {
+    const match = events.find(
+      event => event.title
+        .trim()
+        .toUpperCase()
+        .endsWith(' ' + requested.toUpperCase())
+    );
+
+    if (match) {
+      select.value = match.id;
+    }
+  }
+}
+
+async function initialize() {
+  status('Verificando tu cuenta…');
+
+  const { data, error } = await sb.auth.getUser();
+
+  if (error || !data.user) {
+    currentUser = null;
+    show('loginPanel');
+    status('Inicia sesión para solicitar acceso.');
+    return;
+  }
+
+  currentUser = data.user;
+
+  const profileResult = await sb
+    .from('profiles')
+    .select('display_name,role')
+    .eq('id', currentUser.id)
+    .single();
+
+  if (profileResult.error) {
+    show('pendingPanel');
+    status(
+      'No se pudo verificar tu perfil: ' +
+      profileResult.error.message,
+      true
+    );
+    return;
+  }
+
+  const profile = profileResult.data;
+
+  if (!['basic', 'admin'].includes(profile.role)) {
+    show('pendingPanel');
+    status(
+      'Tu cuenta está pendiente de aprobación.'
+    );
+    return;
+  }
+
+  $('guestName').value =
+    profile.display_name ||
+    currentUser.email.split('@')[0];
+
+  $('guestEmail').value =
+    currentUser.email || '';
+
+  try {
+    await loadEvents();
+
+    show('requestPanel');
+    updatePrice();
+
+    if (!events.length) {
+      $('submitBtn').disabled = true;
+      status('No hay eventos disponibles.');
+    } else {
+      $('submitBtn').disabled = false;
+      status('Cuenta aprobada. Puedes solicitar acceso.');
+    }
+
+  } catch (error) {
+    show('requestPanel');
+    $('submitBtn').disabled = true;
+
+    status(
+      'No se pudieron cargar los eventos: ' +
+      error.message,
+      true
+    );
+  }
+}
+
+$('loginForm').addEventListener(
+  'submit',
+  async event => {
+    event.preventDefault();
+
+    status('Iniciando sesión…');
+
+    const { error } =
+      await sb.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+
+    $('password').value = '';
+
+    if (error) {
+      status(
+        'No se pudo iniciar sesión: ' +
+        error.message,
+        true
+      );
+      return;
+    }
+
+    await initialize();
+  }
+);
+
+$('seats').addEventListener(
+  'change',
+  updatePrice
+);
+
+$('requestForm').addEventListener(
+  'submit',
+  async event => {
+    event.preventDefault();
+
+    if (busy) return;
+
+    const eventId = $('eventSelect').value;
+    const seats = Number($('seats').value);
+
+    if (!events.some(e => e.id === eventId)) {
+      status('Selecciona un evento válido.', true);
+      return;
+    }
+
+    if (
+      !Number.isInteger(seats) ||
+      seats < 1 ||
+      seats > 10
+    ) {
+      status(
+        'Selecciona entre 1 y 10 personas.',
+        true
+      );
+      return;
+    }
+
+    const total = seats * PRICE;
+
+    if (!confirm(
+      `¿Enviar solicitud para ${seats} persona(s)?\n` +
+      `Total: ${money(total)}\n` +
+      `Anticipo mínimo: ${money(total / 2)}\n\n` +
+      `La solicitud quedará pendiente de confirmación.`
+    )) return;
+
+    busy = true;
+    $('submitBtn').disabled = true;
+
+    status('Enviando solicitud…');
+
+    try {
+      const { data, error } = await sb.rpc(
+        'rj_request_invitation',
+        {
+          p_event_id: eventId,
+          p_seats: seats
+        }
+      );
+
+      if (error) throw error;
+
+      $('requestId').textContent = data;
+
+      show('successPanel');
+
+      status(
+        'Solicitud registrada. Pendiente de anticipo.'
+      );
+
+    } catch (error) {
+      status(
+        'No se pudo registrar la solicitud: ' +
+        error.message,
+        true
+      );
+    } finally {
+      busy = false;
+      $('submitBtn').disabled = false;
+    }
+  }
+);
+
+async function logout() {
+  await sb.auth.signOut();
+  currentUser = null;
+  show('loginPanel');
+  status('Sesión cerrada.');
+}
+
+$('logoutBtn').addEventListener(
+  'click',
+  logout
+);
+
+$('pendingLogout').addEventListener(
+  'click',
+  logout
+);
+
+updatePrice();
+await initialize();
+
+</script>
+
+</body>
+</html>
