@@ -3,168 +3,315 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Notificaciones | Radio Jocoqui</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(
-    circle at top,
-    #19324d,
-    #060b13 70%
-  );
+  background: radial-gradient(circle at top,#19324d,#060b13 70%);
   color: white;
-  font-family: Arial, sans-serif;
+  font-family: Arial,sans-serif;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   padding: 20px;
 }
 
 .panel {
   width: 100%;
-  max-width: 440px;
-  padding: 35px 25px;
+  max-width: 460px;
+  padding: 30px 24px;
+  background: #0d1a2a;
   border: 1px solid #38536c;
   border-radius: 18px;
-  background: #0d1a2a;
   text-align: center;
 }
 
-h1 {
-  font-size: 25px;
-  font-weight: 400;
-}
+h1 { font-size: 25px; font-weight: 400; }
 
-p {
-  color: #b8c8d9;
-  line-height: 1.6;
+p { color: #b8c8d9; line-height: 1.6; }
+
+input {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  background: #081522;
+  color: white;
+  border: 1px solid #526c84;
+  border-radius: 8px;
+  font-size: 15px;
 }
 
 button {
   width: 100%;
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid #e2bb88;
+  margin-top: 14px;
+  padding: 15px;
   background: #e2bb88;
   color: #101824;
+  border: none;
+  border-radius: 9px;
   font-weight: bold;
   cursor: pointer;
 }
 
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+.secondary {
+  background: transparent;
+  color: #c4d5e6;
+  border: 1px solid #526c84;
 }
 
 #estado {
-  margin-top: 22px;
+  padding: 12px;
+  margin-top: 20px;
   font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
 a {
   display: inline-block;
-  margin-top: 30px;
+  margin-top: 22px;
   color: #c4d5e6;
-  text-decoration: none;
 }
+
+.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
 <div class="panel">
-
   <p>RADIO JOCOQUI</p>
-
   <h1>Notificaciones</h1>
 
   <p>
-    Recibe avisos cuando tu solicitud
-    de asistencia a un evento sea aprobada.
+    Recibe avisos cuando se confirme
+    tu invitación a un evento.
   </p>
 
-  <button id="activar">
-    ACTIVAR NOTIFICACIONES
-  </button>
+  <div id="loginBox" class="hidden">
+    <form id="loginForm">
+      <input id="email" type="email"
+        placeholder="Correo electrónico"
+        autocomplete="username" required>
 
-  <p id="estado">
-    Verificando compatibilidad...
-  </p>
+      <input id="password" type="password"
+        placeholder="Contraseña"
+        autocomplete="current-password" required>
 
-  <a href="/">
-    Volver al sistema solar
-  </a>
+      <button type="submit">INICIAR SESIÓN</button>
+    </form>
+  </div>
 
+  <div id="accountBox" class="hidden">
+    <p id="accountEmail"></p>
+
+    <button id="activate" type="button">
+      ACTIVAR NOTIFICACIONES
+    </button>
+
+    <button id="logout" type="button" class="secondary">
+      CERRAR SESIÓN
+    </button>
+  </div>
+
+  <div id="estado" role="status">
+    Verificando sesión…
+  </div>
+
+  <a href="/">Volver al sistema solar</a>
 </div>
 
-<script>
-const boton = document.getElementById("activar");
-const estado = document.getElementById("estado");
+<script type="module">
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-async function verificar() {
-  if (
-    !("serviceWorker" in navigator) ||
-    !("PushManager" in window) ||
-    !("Notification" in window)
-  ) {
-    estado.textContent =
-      "Este navegador no admite las notificaciones push necesarias.";
-    boton.disabled = true;
-    return;
-  }
+const SUPABASE_URL =
+  'https://grjqqhmzyfozrxrkvmyn.supabase.co';
 
-  try {
-    await navigator.serviceWorker.register("/sw.js");
+const SUPABASE_KEY =
+  'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe';
 
-    if (Notification.permission === "granted") {
-      estado.textContent =
-        "Permiso de notificaciones concedido. " +
-        "Falta vincular este dispositivo para recibir avisos.";
-    } else if (Notification.permission === "denied") {
-      estado.textContent =
-        "Las notificaciones están bloqueadas. " +
-        "Revisa los permisos del navegador.";
-      boton.disabled = true;
-    } else {
-      estado.textContent =
-        "Presiona el botón para autorizar las notificaciones.";
-    }
-  } catch (error) {
-    estado.textContent =
-      "Error al registrar el servicio: " + error.message;
+const VAPID_PUBLIC_KEY =
+  'BM4FkT-zoqGt_4BMiSCs7mTp2MOSdo3vhiIgK7EUmsPNOcSjz-O8Nntp-QUuRgSgxD6-NLyctIFQBtRRXQgH39A';
+
+const sb = createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+
+function status(message) {
+  $('estado').textContent = message;
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat(
+    (4 - base64String.length % 4) % 4
+  );
+
+  const base64 = (base64String + padding)
+    .replace(/-/g,'+')
+    .replace(/_/g,'/');
+
+  const raw = atob(base64);
+
+  return Uint8Array.from(
+    [...raw].map(char => char.charCodeAt(0))
+  );
+}
+
+async function checkSession() {
+  const { data, error } = await sb.auth.getUser();
+
+  const user = error ? null : data.user;
+
+  $('loginBox').classList.toggle('hidden',!!user);
+  $('accountBox').classList.toggle('hidden',!user);
+
+  if (user) {
+    $('accountEmail').textContent = user.email || '';
+    status('Sesión iniciada. Puedes registrar este dispositivo.');
+  } else {
+    status('Inicia sesión para registrar tu dispositivo.');
   }
 }
 
-boton.addEventListener("click", async () => {
-  try {
-    const permiso = await Notification.requestPermission();
+$('loginForm').addEventListener('submit',async event => {
+  event.preventDefault();
 
-    if (permiso === "granted") {
-      estado.textContent =
-        "Permiso concedido correctamente. " +
-        "Próximamente vincularemos tu dispositivo " +
-        "con tu cuenta de Radio Jocoqui.";
-    } else {
-      estado.textContent =
-        "No se concedió el permiso de notificaciones.";
+  status('Iniciando sesión…');
+
+  const { error } = await sb.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('password').value
+  });
+
+  $('password').value = '';
+
+  if (error) {
+    status('Error: ' + error.message);
+    return;
+  }
+
+  await checkSession();
+});
+
+$('activate').addEventListener('click',async () => {
+  const button = $('activate');
+  button.disabled = true;
+
+  try {
+    if (
+      !('serviceWorker' in navigator) ||
+      !('PushManager' in window) ||
+      !('Notification' in window)
+    ) {
+      throw new Error(
+        'Este navegador no admite notificaciones push.'
+      );
     }
+
+    const { data: { user }, error: userError } =
+      await sb.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error('Debes iniciar sesión.');
+    }
+
+    status('Preparando notificaciones…');
+
+    const registration =
+      await navigator.serviceWorker.register('/sw.js');
+
+    await navigator.serviceWorker.ready;
+
+    let permission = Notification.permission;
+
+    if (permission === 'default') {
+      permission = await Notification.requestPermission();
+    }
+
+    if (permission !== 'granted') {
+      throw new Error(
+        'Debes autorizar las notificaciones en tu navegador.'
+      );
+    }
+
+    let subscription =
+      await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      subscription =
+        await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey:
+            urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        });
+    }
+
+    const json = subscription.toJSON();
+
+    if (
+      !json.endpoint ||
+      !json.keys?.p256dh ||
+      !json.keys?.auth
+    ) {
+      throw new Error(
+        'No se pudieron obtener las claves del dispositivo.'
+      );
+    }
+
+    const { error: saveError } = await sb
+      .from('rj_push_subscriptions')
+      .upsert({
+        user_id: user.id,
+        endpoint: json.endpoint,
+        p256dh: json.keys.p256dh,
+        auth_key: json.keys.auth
+      }, {
+        onConflict: 'endpoint'
+      });
+
+    if (saveError) {
+      throw saveError;
+    }
+
+    const { error: preferenceError } = await sb
+      .from('rj_notification_preferences')
+      .upsert({
+        user_id: user.id,
+        push_enabled: true
+      }, {
+        onConflict: 'user_id'
+      });
+
+    if (preferenceError) {
+      throw preferenceError;
+    }
+
+    status(
+      'DISPOSITIVO REGISTRADO CORRECTAMENTE. ' +
+      'Tu cuenta ya tiene una suscripción push guardada.'
+    );
+
   } catch (error) {
-    estado.textContent =
-      "Error: " + error.message;
+    status('ERROR: ' + error.message);
+  } finally {
+    button.disabled = false;
   }
 });
 
-verificar();
+$('logout').addEventListener('click',async () => {
+  await sb.auth.signOut();
+  await checkSession();
+});
+
+await checkSession();
 </script>
 
 </body>
