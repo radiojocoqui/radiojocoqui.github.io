@@ -1,1 +1,704 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caseta · Radio Jocoqui · Demo</title><link rel="stylesheet" href="estilos.css"></head><body><main class="wrap"><header><div><div class="brand">RADIO JOCOQUI / DEMO INDEPENDIENTE</div><h1>Control de acceso · Caseta</h1><p id="eventLabel"></p></div><nav class="nav"><a class="btn" href="index.html">Administración</a><a class="btn" href="confirmacion.html">Confirmación</a></nav></header><div class="note">Simulación local sin autenticación ni conexión a Supabase. No utilizar esta página para autorizar ingresos reales.</div><section class="panel"><label for="search">Buscar invitado por nombre o folio</label><input id="search" placeholder="Ej. RJ-001 o nombre del invitado" autocomplete="off"><div class="tablewrap" style="margin-top:15px"><table><thead><tr><th>Folio</th><th>Nombre</th><th>Lugares</th><th>Anticipo</th><th>Saldo</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="results"></tbody></table></div></section><p class="foot">En la versión definitiva, el personal de caseta tendrá permisos limitados y los pagos serán validados desde el servidor.</p></main><script src="datos-demo.js"></script><script>let d=load();const $=id=>document.getElementById(id);function render(){d=load();$('eventLabel').textContent=d.event.name+' · '+d.event.date;const q=$('search').value.trim().toLowerCase();const guests=d.guests.filter(g=>(g.name+' '+g.id).toLowerCase().includes(q));$('results').innerHTML=guests.map(g=>`<tr><td>${escapeHtml(g.id)}</td><td>${escapeHtml(g.name)}</td><td>${g.seats}</td><td>${g.verified?'<span class="pill ok">Validado</span>':'<span class="pill no">Sin confirmar</span>'}</td><td>${money(balance(g,d))}</td><td><span class="pill ${g.entered?'ok':g.verified?'warn':'no'}">${g.entered?'Ingresó':g.verified?'Por liquidar':'Sin acceso'}</span></td><td>${!g.verified?'<small>Acceso denegado</small>':g.entered?'<small>Entrada registrada</small>':`<button data-enter="${g.id}">Simular liquidación e ingreso</button>`}</td></tr>`).join('')||'<tr><td colspan="7">Sin resultados</td></tr>';document.querySelectorAll('[data-enter]').forEach(b=>b.onclick=()=>{let g=d.guests.find(x=>x.id===b.dataset.enter);if(!g||!g.verified||g.entered)return;if(confirm('Simular cobro del saldo de '+money(balance(g,d))+' y registrar ingreso de '+g.seats+' persona(s)?')){g.balancePaid=true;g.entered=true;save(d);render()}})}$('search').oninput=render;render();</script></body></html>
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Caseta · Radio Jocoqui</title>
+<link rel="stylesheet" href="estilos.css">
+
+<style>
+[hidden] {
+  display: none !important;
+}
+
+.case-select,
+.case-input {
+  width: 100%;
+  padding: 11px;
+  background: #101b2c;
+  color: inherit;
+  border: 1px solid #506075;
+  border-radius: 8px;
+}
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.case-actions button {
+  white-space: nowrap;
+}
+
+.case-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.case-metrics span {
+  padding: 10px;
+  border: 1px solid #506075;
+  border-radius: 8px;
+}
+
+.case-muted {
+  opacity: .8;
+}
+</style>
+</head>
+
+<body>
+<main class="wrap">
+
+<header>
+  <div>
+    <div class="brand">
+      RADIO JOCOQUI / CONTROL DE ACCESO
+    </div>
+    <h1>Control de acceso · Caseta</h1>
+    <p>Pagos finales y entradas registrados en Supabase</p>
+  </div>
+
+  <nav class="nav">
+    <a class="btn" href="index.html">Administración</a>
+    <a class="btn" href="confirmacion.html">Confirmación</a>
+  </nav>
+</header>
+
+<div class="note" id="status" role="status">
+  Verificando sesión…
+</div>
+
+<section class="card" id="loginPanel" hidden>
+  <h2>Acceso administrativo</h2>
+
+  <form id="loginForm">
+    <div class="fields">
+      <div class="field wide">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required>
+      </div>
+
+      <div class="field wide">
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" type="submit">
+        Iniciar sesión
+      </button>
+    </div>
+  </form>
+</section>
+
+<div id="caseArea" hidden>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Evento seleccionado</h2>
+
+    <label for="eventSelect">Seleccionar evento</label>
+    <select id="eventSelect" class="case-select"></select>
+
+    <div class="case-metrics">
+      <span>
+        Cupo: <strong id="capacity">—</strong>
+      </span>
+      <span>
+        Confirmados: <strong id="confirmed">—</strong>
+      </span>
+      <span>
+        Ingresaron: <strong id="entered">—</strong>
+      </span>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="refreshBtn">
+        Actualizar lista
+      </button>
+      <button type="button" id="logoutBtn">
+        Cerrar sesión
+      </button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <label for="search">
+      Buscar invitado por nombre o folio
+    </label>
+
+    <input
+      id="search"
+      class="case-input"
+      placeholder="Nombre o folio"
+      autocomplete="off">
+
+    <p class="case-muted">
+      Para registrar un ingreso, primero confirma
+      el anticipo y liquida el saldo.
+      Una invitación registra una sola entrada
+      para todos sus lugares.
+    </p>
+
+    <div class="tablewrap" style="margin-top:15px">
+      <table>
+        <thead>
+          <tr>
+            <th>Folio</th>
+            <th>Nombre</th>
+            <th>Lugares</th>
+            <th>Anticipo</th>
+            <th>Saldo</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="results"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<p class="foot">
+  Radio Jocoqui · Acceso exclusivo para administradores.
+  Los pagos y entradas se guardan en Supabase.
+</p>
+
+</main>
+
+<script type="module">
+
+import { createClient }
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient(
+  'https://grjqqhmzyfozrxrkvmyn.supabase.co',
+  'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe'
+);
+
+const $ = id => document.getElementById(id);
+
+const money = n =>
+  new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  }).format(Number(n) || 0);
+
+let events = [];
+let invitations = [];
+let selectedId = '';
+let busy = false;
+let requestVersion = 0;
+
+function status(message) {
+  $('status').textContent = message;
+}
+
+function td(row, value) {
+  const cell = row.insertCell();
+  cell.textContent = String(value ?? '');
+  return cell;
+}
+
+function action(label, callback) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = label;
+  button.addEventListener('click', callback);
+  return button;
+}
+
+function selectedEvent() {
+  return events.find(event => event.id === selectedId);
+}
+
+function balance(inv, event) {
+  return Math.max(
+    0,
+    Number(inv.seats) * Number(event.price_per_person)
+    - Number(inv.deposit_amount || 0)
+    - Number(inv.final_payment_amount || 0)
+  );
+}
+
+// VERIFICAR ADMINISTRADOR
+
+async function checkAdmin() {
+  const {
+    data: { user },
+    error
+  } = await sb.auth.getUser();
+
+  if (error || !user) return false;
+
+  const result = await sb.rpc('is_admin');
+
+  if (result.error) {
+    status(
+      'No se pudo verificar el administrador: ' +
+      result.error.message
+    );
+    return false;
+  }
+
+  return result.data === true;
+}
+
+// INICIAR CASETA
+
+async function initialize() {
+  const allowed = await checkAdmin();
+
+  $('loginPanel').hidden = allowed;
+  $('caseArea').hidden = !allowed;
+
+  if (!allowed) {
+    status(
+      'Inicia sesión con una cuenta administradora.'
+    );
+    return;
+  }
+
+  await loadEvents();
+}
+
+// CARGAR EVENTOS
+
+async function loadEvents() {
+  status('Cargando eventos…');
+
+  const { data, error } = await sb
+    .from('rj_events')
+    .select(
+      'id,title,event_date,capacity,price_per_person'
+    )
+    .order('event_date', { ascending: true })
+    .limit(200);
+
+  if (error) {
+    status(
+      'Error al cargar eventos: ' + error.message
+    );
+    return;
+  }
+
+  events = data || [];
+
+  const select = $('eventSelect');
+  select.replaceChildren();
+
+  for (const event of events) {
+    select.add(
+      new Option(
+        `${event.title} · ${event.event_date}`,
+        event.id
+      )
+    );
+  }
+
+  if (!events.length) {
+    selectedId = '';
+    invitations = [];
+    render();
+    status('Todavía no hay eventos.');
+    return;
+  }
+
+  selectedId = events.some(
+    event => event.id === selectedId
+  )
+    ? selectedId
+    : events[0].id;
+
+  select.value = selectedId;
+
+  await loadInvitations();
+}
+
+// CARGAR INVITACIONES
+
+async function loadInvitations() {
+  const event = selectedEvent();
+  const version = ++requestVersion;
+
+  if (!event) {
+    invitations = [];
+    render();
+    return;
+  }
+
+  status(
+    'Consultando invitados de ' + event.title + '…'
+  );
+
+  const { data, error } = await sb
+    .from('rj_invitations')
+    .select(
+      'id,event_id,folio,guest_name,seats,' +
+      'deposit_verified,deposit_amount,' +
+      'final_payment_amount,checked_in_at,created_at'
+    )
+    .eq('event_id', event.id)
+    .order('created_at', { ascending: false })
+    .limit(1000);
+
+  if (
+    version !== requestVersion ||
+    selectedId !== event.id
+  ) return;
+
+  if (error) {
+    status(
+      'Error al cargar invitados: ' + error.message
+    );
+    return;
+  }
+
+  invitations = data || [];
+
+  render();
+
+  status(
+    'Lista actualizada: ' + event.title + '.'
+  );
+}
+
+// MOSTRAR INVITADOS
+
+function render() {
+  const event = selectedEvent();
+  const body = $('results');
+
+  body.replaceChildren();
+
+  $('capacity').textContent = event
+    ? String(event.capacity)
+    : '—';
+
+  $('confirmed').textContent = String(
+    invitations
+      .filter(inv => inv.deposit_verified)
+      .reduce(
+        (total, inv) => total + Number(inv.seats),
+        0
+      )
+  );
+
+  $('entered').textContent = String(
+    invitations
+      .filter(inv => inv.checked_in_at)
+      .reduce(
+        (total, inv) => total + Number(inv.seats),
+        0
+      )
+  );
+
+  if (!event) {
+    const row = body.insertRow();
+    td(row, 'Selecciona un evento').colSpan = 7;
+    return;
+  }
+
+  const q = $('search')
+    .value
+    .trim()
+    .toLocaleLowerCase('es-MX');
+
+  const visible = invitations.filter(inv =>
+    (
+      String(inv.guest_name || '') + ' ' +
+      String(inv.folio || '')
+    )
+      .toLocaleLowerCase('es-MX')
+      .includes(q)
+  );
+
+  if (!visible.length) {
+    const row = body.insertRow();
+    td(row, 'Sin resultados para este evento')
+      .colSpan = 7;
+    return;
+  }
+
+  for (const inv of visible) {
+    const row = body.insertRow();
+
+    td(row, inv.folio);
+    td(row, inv.guest_name);
+    td(row, inv.seats);
+
+    td(
+      row,
+      inv.deposit_verified
+        ? 'Validado · ' + money(inv.deposit_amount)
+        : 'Sin confirmar'
+    );
+
+    const remaining = balance(inv, event);
+
+    td(row, money(remaining));
+
+    const state = inv.checked_in_at
+      ? 'Ingresó'
+      : !inv.deposit_verified
+        ? 'Sin acceso'
+        : remaining > 0.009
+          ? 'Por liquidar'
+          : 'Listo para ingresar';
+
+    td(row, state);
+
+    const cell = row.insertCell();
+    const actions = document.createElement('div');
+
+    actions.className = 'case-actions';
+
+    if (inv.checked_in_at) {
+      cell.textContent = 'Entrada registrada';
+      continue;
+    }
+
+    if (!inv.deposit_verified) {
+      cell.textContent = 'Anticipo pendiente';
+      continue;
+    }
+
+    if (remaining > 0.009) {
+      actions.append(
+        action(
+          'Registrar pago',
+          () => registerPayment(inv, event)
+        )
+      );
+    } else {
+      actions.append(
+        action(
+          'Registrar ingreso',
+          () => registerEntry(inv, event)
+        )
+      );
+    }
+
+    cell.append(actions);
+  }
+}
+
+// REGISTRAR PAGO FINAL
+
+async function registerPayment(inv, event) {
+  if (busy) return;
+
+  const due = balance(inv, event);
+
+  const answer = prompt(
+    `Pago final de ${inv.guest_name}\n` +
+    `Evento: ${event.title}\n` +
+    `Saldo pendiente: ${money(due)}\n\n` +
+    `Importe recibido (MXN):`,
+    due.toFixed(2)
+  );
+
+  if (answer === null) return;
+
+  const amount = Number(answer.trim());
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0 ||
+    Math.abs(
+      Math.round(amount * 100) - amount * 100
+    ) > 0.000001 ||
+    amount > due + 0.00001
+  ) {
+    status(
+      'Importe inválido. Debe ser positivo, ' +
+      'con máximo dos decimales y no superar el saldo.'
+    );
+    return;
+  }
+
+  if (!confirm(
+    `¿Confirmas que recibiste ${money(amount)} ` +
+    `de ${inv.guest_name}?`
+  )) return;
+
+  busy = true;
+  status('Guardando pago final…');
+
+  try {
+    const { error } = await sb.rpc(
+      'rj_register_final_payment',
+      {
+        p_invitation_id: inv.id,
+        p_amount: amount
+      }
+    );
+
+    if (error) {
+      status(
+        'No se registró el pago: ' + error.message
+      );
+      return;
+    }
+
+    await loadInvitations();
+
+    status(
+      'Pago registrado correctamente para ' +
+      inv.guest_name + '.'
+    );
+
+  } catch (error) {
+    status(
+      'Error de conexión: ' +
+      (error?.message || 'Intenta nuevamente.')
+    );
+  } finally {
+    busy = false;
+  }
+}
+
+// REGISTRAR INGRESO
+
+async function registerEntry(inv, event) {
+  if (busy) return;
+
+  if (!confirm(
+    `¿Registrar el ingreso de ${inv.guest_name} ` +
+    `(${inv.seats} persona(s)) a ${event.title}?\n` +
+    `Esta invitación no podrá ingresar nuevamente.`
+  )) return;
+
+  busy = true;
+  status('Registrando ingreso…');
+
+  try {
+    const { error } = await sb.rpc(
+      'rj_check_in_invitation',
+      {
+        p_invitation_id: inv.id
+      }
+    );
+
+    if (error) {
+      status(
+        'No se registró el ingreso: ' + error.message
+      );
+      return;
+    }
+
+    await loadInvitations();
+
+    status(
+      'Ingreso registrado correctamente para ' +
+      inv.guest_name + '.'
+    );
+
+  } catch (error) {
+    status(
+      'Error de conexión: ' +
+      (error?.message || 'Intenta nuevamente.')
+    );
+  } finally {
+    busy = false;
+  }
+}
+
+// INICIAR SESIÓN
+
+$('loginForm').addEventListener(
+  'submit',
+  async event => {
+    event.preventDefault();
+
+    status('Iniciando sesión…');
+
+    const { error } =
+      await sb.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+
+    $('password').value = '';
+
+    if (error) {
+      status(
+        'Error de acceso: ' + error.message
+      );
+      return;
+    }
+
+    await initialize();
+  }
+);
+
+// CERRAR SESIÓN
+
+$('logoutBtn').addEventListener(
+  'click',
+  async () => {
+    const { error } = await sb.auth.signOut();
+
+    if (error) {
+      status(
+        'Error al cerrar sesión: ' + error.message
+      );
+      return;
+    }
+
+    events = [];
+    invitations = [];
+    selectedId = '';
+
+    $('caseArea').hidden = true;
+    $('loginPanel').hidden = false;
+
+    status('Sesión cerrada.');
+  }
+);
+
+// CAMBIAR EVENTO
+
+$('eventSelect').addEventListener(
+  'change',
+  async event => {
+    selectedId = event.target.value;
+    await loadInvitations();
+  }
+);
+
+// ACTUALIZAR LISTA
+
+$('refreshBtn').addEventListener(
+  'click',
+  loadInvitations
+);
+
+// BUSCAR INVITADOS
+
+$('search').addEventListener(
+  'input',
+  render
+);
+
+// INICIAR SISTEMA
+
+await initialize();
+
+</script>
+</body>
+</html>
