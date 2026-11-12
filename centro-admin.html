@@ -1,0 +1,834 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Centro de administración · Radio Jocoqui</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #050b16;
+  color: #e9f2fc;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    #172c49,
+    #050b16 65%
+  );
+  min-height: 100vh;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 28px 18px 90px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #31465f;
+  padding-bottom: 25px;
+}
+
+h1 {
+  font-size: clamp(25px, 5vw, 40px);
+  font-weight: 400;
+  margin: 8px 0;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 15px;
+}
+
+p {
+  line-height: 1.55;
+  color: #b9c9dc;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: .25em;
+  color: #e5b783;
+}
+
+a { color: #dcecff; }
+
+.button, button {
+  display: inline-block;
+  border: 1px solid #7697b8;
+  border-radius: 8px;
+  background: #192f4b;
+  color: #f4f8ff;
+  padding: 12px 15px;
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover, .button:hover {
+  background: #28486c;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: #dfb482;
+  color: #0d1724;
+  border-color: #dfb482;
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 13px;
+  margin: 25px 0;
+}
+
+.tile {
+  background: #0d1a2c;
+  border: 1px solid #344d68;
+  border-radius: 12px;
+  padding: 19px;
+  text-decoration: none;
+  min-height: 118px;
+}
+
+.tile strong {
+  display: block;
+  font-size: 17px;
+  margin-bottom: 10px;
+  color: #f4f8ff;
+}
+
+.tile span {
+  color: #b2c7db;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.panel {
+  background: rgba(14,27,45,.95);
+  border: 1px solid #36506d;
+  border-radius: 13px;
+  padding: 22px;
+  margin: 22px 0;
+}
+
+.item {
+  border-top: 1px solid #354961;
+  padding: 17px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.item:first-child {
+  border-top: 0;
+}
+
+.item strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.item small {
+  color: #b5c5d7;
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.actions input[type=number] {
+  width: 105px;
+  background: #071322;
+  color: #fff;
+  border: 1px solid #6c849d;
+  border-radius: 7px;
+  padding: 11px;
+  font: inherit;
+}
+
+.actions label {
+  font-size: 12px;
+  color: #d2e0ed;
+}
+
+.notice {
+  padding: 14px 16px;
+  border: 1px solid #58738e;
+  border-radius: 9px;
+  background: #13253a;
+  margin: 18px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.error {
+  border-color: #b65b68;
+  color: #ffd9dd;
+}
+
+.success {
+  border-color: #6eab87;
+  color: #d7ffe6;
+}
+
+.muted {
+  color: #aabbd0;
+  font-size: 13px;
+}
+
+.hide { display: none !important; }
+
+#app { display: none; }
+
+#login {
+  max-width: 470px;
+  margin: 60px auto;
+}
+
+input[type=email],
+input[type=password] {
+  width: 100%;
+  margin: 7px 0 17px;
+  background: #081625;
+  color: #fff;
+  border: 1px solid #6884a0;
+  padding: 13px;
+  border-radius: 8px;
+  font: inherit;
+}
+
+label { display: block; }
+
+footer {
+  font-size: 11px;
+  letter-spacing: .15em;
+  color: #8fa4bd;
+  text-align: center;
+  margin-top: 35px;
+}
+
+@media(max-width:750px) {
+  .grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:430px) {
+  .grid { grid-template-columns: 1fr; }
+  .item { align-items: stretch; }
+  .actions { width: 100%; }
+  .actions button { flex: 1; }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<header>
+  <div>
+    <div class="eyebrow">
+      RADIO JOCOQUI / CONTROL PRIVADO
+    </div>
+
+    <h1>Centro de administración</h1>
+
+    <p>
+      Usuarios · Invitaciones · Eventos · Misiones
+    </p>
+  </div>
+
+  <a class="button" href="/">
+    Volver al sistema solar
+  </a>
+</header>
+
+<div id="notice" class="notice" role="status">
+  Verificando sesión y permisos…
+</div>
+
+<section id="login" class="panel hide">
+  <h2>Acceso administrativo</h2>
+
+  <p>
+    Inicia sesión con una cuenta que tenga
+    el rol <strong>admin</strong> en Radio Jocoqui.
+  </p>
+
+  <form id="loginForm">
+    <label>
+      Correo
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        required>
+    </label>
+
+    <label>
+      Contraseña
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required>
+    </label>
+
+    <button class="primary" type="submit">
+      Iniciar sesión
+    </button>
+  </form>
+</section>
+
+<div id="app">
+
+  <div class="grid">
+
+    <a class="tile" href="#usuarios">
+      <strong>01 · Aprobar usuarios</strong>
+      <span>
+        Revisar nuevas cuentas pendientes
+        y autorizarlas.
+      </span>
+    </a>
+
+    <a class="tile" href="#solicitudes">
+      <strong>02 · Solicitudes a eventos</strong>
+      <span>
+        Validar manualmente anticipos recibidos.
+      </span>
+    </a>
+
+    <a class="tile" href="/invitaciones/index.html">
+      <strong>03 · Panel de eventos</strong>
+      <span>
+        Gestionar eventos e invitaciones.
+      </span>
+    </a>
+
+    <a class="tile" href="/">
+      <strong>04 · Misiones</strong>
+      <span>
+        Volver al sistema solar
+        y seleccionar Saturno.
+      </span>
+    </a>
+
+    <a class="tile" href="/invitaciones/caseta.html">
+      <strong>05 · Caseta</strong>
+      <span>
+        Registrar pagos finales y entradas.
+      </span>
+    </a>
+
+    <a class="tile" href="/invitaciones/dashboard.html">
+      <strong>06 · Estadísticas</strong>
+      <span>
+        Consultar el dashboard de invitaciones.
+      </span>
+    </a>
+
+  </div>
+
+  <section class="panel" id="usuarios">
+
+    <h2>Usuarios pendientes de aprobación</h2>
+
+    <p class="muted">
+      Aquí aparecerán las cuentas pendientes
+      que Supabase permita consultar.
+    </p>
+
+    <div id="usersList">
+      Cargando usuarios…
+    </div>
+
+    <button type="button" id="reloadUsers">
+      Actualizar usuarios
+    </button>
+
+  </section>
+
+  <section class="panel" id="solicitudes">
+
+    <h2>Solicitudes pendientes de anticipo</h2>
+
+    <p class="muted">
+      Confirma únicamente después de comprobar
+      que el dinero fue recibido. El anticipo
+      mínimo es del 50 %.
+    </p>
+
+    <div id="requestsList">
+      Cargando solicitudes…
+    </div>
+
+    <button type="button" id="reloadRequests">
+      Actualizar solicitudes
+    </button>
+
+  </section>
+
+  <section class="panel">
+    <h2>Sesión administrativa</h2>
+
+    <p id="adminIdentity"></p>
+
+    <button id="logout" type="button">
+      Cerrar sesión
+    </button>
+  </section>
+
+</div>
+
+<footer>
+  RADIO JOCOQUI · MÚSICA · CULTURA · CONCIENCIA
+</footer>
+
+</main>
+
+<script type="module">
+
+import { createClient }
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient(
+  'https://grjqqhmzyfozrxrkvmyn.supabase.co',
+  'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe'
+);
+
+const $ = id => document.getElementById(id);
+
+const money = n =>
+  new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  }).format(Number(n) || 0);
+
+function notice(message, type = '') {
+  $('notice').textContent = message;
+  $('notice').className = 'notice ' + type;
+}
+
+function el(tag, text, cls) {
+  const e = document.createElement(tag);
+
+  if (text !== undefined) {
+    e.textContent = String(text);
+  }
+
+  if (cls) e.className = cls;
+
+  return e;
+}
+
+function empty(container, message) {
+  container.replaceChildren(
+    el('p', message, 'muted')
+  );
+}
+
+async function start() {
+  $('app').style.display = 'none';
+  $('login').classList.add('hide');
+
+  notice('Verificando sesión y permisos…');
+
+  const {
+    data: { user },
+    error
+  } = await sb.auth.getUser();
+
+  if (error || !user) {
+    $('login').classList.remove('hide');
+
+    notice(
+      'Inicia sesión para acceder al centro de administración.'
+    );
+
+    return;
+  }
+
+  const profile = await sb
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profile.error) {
+    notice(
+      'No se pudo verificar el rol: ' +
+      profile.error.message,
+      'error'
+    );
+    return;
+  }
+
+  if (profile.data?.role !== 'admin') {
+    notice(
+      'Acceso restringido: esta cuenta no tiene rol de administrador.',
+      'error'
+    );
+    return;
+  }
+
+  $('app').style.display = 'block';
+
+  $('adminIdentity').textContent =
+    user.email || 'Administrador';
+
+  notice('Acceso administrativo verificado.', 'success');
+
+  await Promise.all([
+    loadUsers(),
+    loadRequests()
+  ]);
+}
+
+async function loadUsers() {
+  const box = $('usersList');
+
+  empty(box, 'Consultando cuentas…');
+
+  const { data, error } = await sb
+    .from('profiles')
+    .select('id,display_name,role,created_at')
+    .eq('role', 'pending')
+    .order('created_at', { ascending: true })
+    .limit(100);
+
+  if (error) {
+    empty(
+      box,
+      'No fue posible consultar usuarios: ' +
+      error.message
+    );
+    return;
+  }
+
+  if (!data?.length) {
+    empty(box, 'No hay usuarios pendientes visibles.');
+    return;
+  }
+
+  box.replaceChildren();
+
+  for (const u of data) {
+    const row = el('div', undefined, 'item');
+    const info = el('div');
+
+    const name = el(
+      'strong',
+      u.display_name || 'Usuario sin nombre'
+    );
+
+    const id = el('small', 'ID: ' + u.id);
+
+    const btn = el(
+      'button',
+      'Aprobar usuario',
+      'primary'
+    );
+
+    info.append(name, id);
+    row.append(info, btn);
+    box.append(row);
+
+    btn.addEventListener('click', async () => {
+      if (!confirm(
+        '¿Aprobar esta cuenta para que pueda solicitar acceso a eventos?'
+      )) return;
+
+      btn.disabled = true;
+
+      const { error } = await sb.rpc(
+        'approve_user',
+        { target_user_id: u.id }
+      );
+
+      if (error) {
+        notice(
+          'Error al aprobar usuario: ' +
+          error.message,
+          'error'
+        );
+
+        btn.disabled = false;
+        return;
+      }
+
+      notice(
+        'Usuario aprobado correctamente.',
+        'success'
+      );
+
+      await loadUsers();
+    });
+  }
+}
+
+async function loadRequests() {
+  const box = $('requestsList');
+
+  empty(box, 'Consultando solicitudes…');
+
+  const [inv, ev] = await Promise.all([
+    sb.from('rj_invitations')
+      .select(
+        'id,event_id,folio,guest_name,guest_contact,seats,deposit_verified,created_at'
+      )
+      .eq('deposit_verified', false)
+      .order('created_at', { ascending: true })
+      .limit(100),
+
+    sb.from('rj_events')
+      .select('id,title,price_per_person')
+      .limit(200)
+  ]);
+
+  if (inv.error) {
+    empty(
+      box,
+      'No fue posible consultar solicitudes: ' +
+      inv.error.message
+    );
+    return;
+  }
+
+  if (ev.error) {
+    empty(
+      box,
+      'No fue posible consultar los eventos: ' +
+      ev.error.message
+    );
+    return;
+  }
+
+  if (!inv.data?.length) {
+    empty(
+      box,
+      'No hay solicitudes pendientes visibles.'
+    );
+    return;
+  }
+
+  const events = new Map(
+    (ev.data || []).map(e => [e.id, e])
+  );
+
+  box.replaceChildren();
+
+  for (const r of inv.data) {
+    const event = events.get(r.event_id);
+
+    const price = Number(
+      event?.price_per_person || 0
+    );
+
+    const minimum =
+      price * Number(r.seats || 0) * .5;
+
+    const row = el('div', undefined, 'item');
+    const info = el('div');
+    const actions = el('div', undefined, 'actions');
+
+    info.append(
+      el('strong', r.guest_name || 'Invitado'),
+      el(
+        'small',
+        (event?.title || 'Evento no identificado') +
+        ' · ' + r.seats + ' lugar(es)'
+      ),
+      el(
+        'small',
+        'Folio: ' + (r.folio || r.id) +
+        ' · Contacto: ' +
+        (r.guest_contact || 'Sin contacto')
+      ),
+      el(
+        'small',
+        'Anticipo mínimo esperado: ' +
+        money(minimum)
+      )
+    );
+
+    const input = el('input');
+    input.type = 'number';
+    input.min = String(minimum);
+    input.step = '0.01';
+    input.placeholder = 'Monto MXN';
+    input.setAttribute(
+      'aria-label',
+      'Anticipo recibido en pesos'
+    );
+
+    const label = el('label');
+
+    const checkbox = el('input');
+    checkbox.type = 'checkbox';
+
+    label.append(
+      checkbox,
+      document.createTextNode(' Pago verificado')
+    );
+
+    const btn = el(
+      'button',
+      'Confirmar anticipo',
+      'primary'
+    );
+
+    actions.append(input, label, btn);
+    row.append(info, actions);
+    box.append(row);
+
+    btn.addEventListener('click', async () => {
+      const amount = Number(input.value);
+
+      if (!price) {
+        notice(
+          'No se pudo comprobar el precio de este evento.',
+          'error'
+        );
+        return;
+      }
+
+      if (!checkbox.checked) {
+        notice(
+          'Primero marca que verificaste el pago.',
+          'error'
+        );
+        return;
+      }
+
+      if (
+        !Number.isFinite(amount) ||
+        amount < minimum
+      ) {
+        notice(
+          'El anticipo debe ser de al menos ' +
+          money(minimum) + '.',
+          'error'
+        );
+        return;
+      }
+
+      if (!confirm(
+        '¿Confirmas haber recibido ' +
+        money(amount) +
+        ' para ' +
+        (r.guest_name || 'este invitado') +
+        '?'
+      )) return;
+
+      btn.disabled = true;
+
+      const { error } = await sb.rpc(
+        'rj_confirm_invitation',
+        {
+          p_invitation_id: r.id,
+          p_deposit_amount: amount
+        }
+      );
+
+      if (error) {
+        notice(
+          'No se pudo confirmar el anticipo: ' +
+          error.message,
+          'error'
+        );
+
+        btn.disabled = false;
+        return;
+      }
+
+      notice(
+        'Anticipo confirmado. La invitación fue actualizada.',
+        'success'
+      );
+
+      await loadRequests();
+    });
+  }
+}
+
+$('loginForm').addEventListener(
+  'submit',
+  async e => {
+    e.preventDefault();
+
+    notice('Iniciando sesión…');
+
+    const { error } =
+      await sb.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+
+    $('password').value = '';
+
+    if (error) {
+      notice(
+        'No se pudo iniciar sesión: ' +
+        error.message,
+        'error'
+      );
+      return;
+    }
+
+    await start();
+  }
+);
+
+$('logout').addEventListener(
+  'click',
+  async () => {
+    await sb.auth.signOut();
+    await start();
+  }
+);
+
+$('reloadUsers').addEventListener(
+  'click',
+  loadUsers
+);
+
+$('reloadRequests').addEventListener(
+  'click',
+  loadRequests
+);
+
+await start();
+
+</script>
+</body>
+</html>
