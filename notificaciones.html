@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
+
+<title>Notificaciones | Radio Jocoqui</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(
+    circle at top,
+    #19324d,
+    #060b13 70%
+  );
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.panel {
+  width: 100%;
+  max-width: 440px;
+  padding: 35px 25px;
+  border: 1px solid #38536c;
+  border-radius: 18px;
+  background: #0d1a2a;
+  text-align: center;
+}
+
+h1 {
+  font-size: 25px;
+  font-weight: 400;
+}
+
+p {
+  color: #b8c8d9;
+  line-height: 1.6;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e2bb88;
+  background: #e2bb88;
+  color: #101824;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+#estado {
+  margin-top: 22px;
+  font-size: 14px;
+}
+
+a {
+  display: inline-block;
+  margin-top: 30px;
+  color: #c4d5e6;
+  text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+
+  <p>RADIO JOCOQUI</p>
+
+  <h1>Notificaciones</h1>
+
+  <p>
+    Recibe avisos cuando tu solicitud
+    de asistencia a un evento sea aprobada.
+  </p>
+
+  <button id="activar">
+    ACTIVAR NOTIFICACIONES
+  </button>
+
+  <p id="estado">
+    Verificando compatibilidad...
+  </p>
+
+  <a href="/">
+    Volver al sistema solar
+  </a>
+
+</div>
+
+<script>
+const boton = document.getElementById("activar");
+const estado = document.getElementById("estado");
+
+async function verificar() {
+  if (
+    !("serviceWorker" in navigator) ||
+    !("PushManager" in window) ||
+    !("Notification" in window)
+  ) {
+    estado.textContent =
+      "Este navegador no admite las notificaciones push necesarias.";
+    boton.disabled = true;
+    return;
+  }
+
+  try {
+    await navigator.serviceWorker.register("/sw.js");
+
+    if (Notification.permission === "granted") {
+      estado.textContent =
+        "Permiso de notificaciones concedido. " +
+        "Falta vincular este dispositivo para recibir avisos.";
+    } else if (Notification.permission === "denied") {
+      estado.textContent =
+        "Las notificaciones están bloqueadas. " +
+        "Revisa los permisos del navegador.";
+      boton.disabled = true;
+    } else {
+      estado.textContent =
+        "Presiona el botón para autorizar las notificaciones.";
+    }
+  } catch (error) {
+    estado.textContent =
+      "Error al registrar el servicio: " + error.message;
+  }
+}
+
+boton.addEventListener("click", async () => {
+  try {
+    const permiso = await Notification.requestPermission();
+
+    if (permiso === "granted") {
+      estado.textContent =
+        "Permiso concedido correctamente. " +
+        "Próximamente vincularemos tu dispositivo " +
+        "con tu cuenta de Radio Jocoqui.";
+    } else {
+      estado.textContent =
+        "No se concedió el permiso de notificaciones.";
+    }
+  } catch (error) {
+    estado.textContent =
+      "Error: " + error.message;
+  }
+});
+
+verificar();
+</script>
+
+</body>
+</html>
