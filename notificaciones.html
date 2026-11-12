@@ -116,7 +116,11 @@ a {
       ACTIVAR NOTIFICACIONES
     </button>
 
-    <button id="logout" type="button" class="secondary">
+    
+<button id="testPush" type="button" class="secondary">
+  ENVIAR NOTIFICACIÓN DE PRUEBA
+</button>
+<button id="logout" type="button" class="secondary">
       CERRAR SESIÓN
     </button>
   </div>
@@ -306,6 +310,47 @@ $('activate').addEventListener('click',async () => {
   }
 });
 
+
+/* RADIO JOCOQUI - PRUEBA PUSH */
+
+$('testPush').addEventListener('click', async () => {
+
+  const boton = $('testPush');
+  boton.disabled = true;
+
+  status('Enviando notificación de prueba…');
+
+  try {
+    const { data, error } = await sb.functions.invoke(
+      'rj-send-push',
+      { body: {} }
+    );
+
+    if (error) {
+      let mensaje = error.message;
+
+      if (error.context) {
+        try {
+          const detalle = await error.context.json();
+          mensaje = detalle.error || mensaje;
+        } catch (_) {}
+      }
+
+      throw new Error(mensaje);
+    }
+
+    status(
+      'RESULTADO DE LA PRUEBA: ' +
+      JSON.stringify(data)
+    );
+
+  } catch (error) {
+    status('ERROR: ' + error.message);
+  } finally {
+    boton.disabled = false;
+  }
+
+});
 $('logout').addEventListener('click',async () => {
   await sb.auth.signOut();
   await checkSession();
