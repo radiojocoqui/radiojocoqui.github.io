@@ -1685,7 +1685,45 @@ async function showSection(name){
   sectionCard.append(hero);
   sectionCard.append(element('h3','section-subtitle','EXPLORA LA SECCIÓN'));
   const grid=element('div','section-grid');
-  data.tiles.forEach(tile=>{const card=element('article','section-tile');card.append(element('span','tile-index',tile[0]),element('h3','',tile[1]),element('p','',tile[2]));grid.append(card);});
+  
+data.tiles.forEach((tile, index) => {
+  const card = element('article', 'section-tile');
+
+  card.append(
+    element('span', 'tile-index', tile[0]),
+    element('h3', '', tile[1]),
+    element('p', '', tile[2])
+  );
+
+  // Agregar botones solamente en Eventos
+  if (name === 'Eventos') {
+    const eventNumbers = ['XIII', 'XIV', 'XV', 'XVI'];
+    const eventNumber = eventNumbers[index];
+
+    if (eventNumber) {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'btn';
+      button.textContent = 'Solicitar acceso';
+
+      button.style.marginTop = '16px';
+      button.style.width = '100%';
+      button.style.cursor = 'pointer';
+
+      button.addEventListener('click', () => {
+        window.location.href =
+          '/invitaciones/solicitar.html?evento=' +
+          encodeURIComponent(eventNumber);
+      });
+
+      card.append(button);
+    }
+  }
+
+  grid.append(card);
+});
+
   sectionCard.append(grid);
  } else if(data.access==='basic'||data.access==='curated'){
   const message=data.access==='basic'?'Sección reservada a usuarios Básicos aprobados.':'Acceso por lista curada: un moderador o administrador deberá autorizar al usuario expresamente.';
