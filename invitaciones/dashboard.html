@@ -1,0 +1,886 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Dashboard · Radio Jocoqui</title>
+<link rel="stylesheet" href="estilos.css">
+
+<style>
+[hidden] { display: none !important; }
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.metric {
+  padding: 20px;
+  background: #152235;
+  border: 1px solid #40516a;
+  border-radius: 12px;
+}
+
+.metric small {
+  display: block;
+  color: #b7c4d6;
+  margin-bottom: 10px;
+}
+
+.metric strong {
+  display: block;
+  font-size: 26px;
+  overflow-wrap: anywhere;
+}
+
+.section-title {
+  margin: 28px 0 14px;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 12px;
+  border-bottom: 1px solid #40516a;
+  text-align: left;
+}
+
+.dashboard-table th {
+  color: #b7c4d6;
+  font-size: 12px;
+}
+
+.dashboard-table td {
+  font-size: 13px;
+}
+
+.dashboard-table tr:hover {
+  background: rgba(255,255,255,.04);
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.dashboard-actions button {
+  cursor: pointer;
+}
+
+.dashboard-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background: #101b2c;
+  color: inherit;
+  border: 1px solid #506075;
+}
+
+.dashboard-note {
+  margin-top: 12px;
+  opacity: .8;
+}
+
+@media(max-width:900px) {
+  .dashboard {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+}
+
+@media(max-width:480px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="wrap">
+
+<header>
+  <div>
+    <div class="brand">
+      RADIO JOCOQUI / ADMINISTRACIÓN
+    </div>
+
+    <h1>Dashboard General</h1>
+    <p>Música · Cultura · Conciencia</p>
+  </div>
+
+  <nav class="nav">
+    <a class="btn" href="index.html">
+      Administración
+    </a>
+
+    <a class="btn" href="caseta.html">
+      Caseta
+    </a>
+
+    <a class="btn" href="confirmacion.html">
+      Confirmación
+    </a>
+  </nav>
+</header>
+
+<div class="note" id="status" role="status">
+  Conectando con Supabase…
+</div>
+
+<section class="card" id="loginPanel" hidden>
+
+  <h2>Acceso administrativo</h2>
+
+  <form id="loginForm">
+
+    <div class="fields">
+
+      <div class="field wide">
+        <label for="email">
+          Correo electrónico
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required>
+      </div>
+
+      <div class="field wide">
+        <label for="password">
+          Contraseña
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required>
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button class="primary" type="submit">
+        Iniciar sesión
+      </button>
+    </div>
+
+  </form>
+</section>
+
+<div id="dashboardArea" hidden>
+
+  <section class="card" style="margin-top:16px">
+
+    <h2>Resumen de eventos</h2>
+
+    <p>
+      Estadísticas generales de Radio Jocoqui
+      actualizadas desde Supabase.
+    </p>
+
+    <div class="dashboard-actions">
+
+      <button id="refreshBtn" type="button">
+        Actualizar datos
+      </button>
+
+      <button id="logoutBtn" type="button">
+        Cerrar sesión
+      </button>
+
+    </div>
+
+    <div class="dashboard">
+
+      <div class="metric">
+        <small>Eventos</small>
+        <strong id="totalEvents">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Capacidad total</small>
+        <strong id="totalCapacity">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Lugares confirmados</small>
+        <strong id="confirmedSeats">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Lugares disponibles</small>
+        <strong id="availableSeats">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Anticipos recibidos</small>
+        <strong id="totalDeposits">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Pagos finales</small>
+        <strong id="totalFinalPayments">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Ingresos cobrados</small>
+        <strong id="totalCollected">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Saldos pendientes</small>
+        <strong id="totalPending">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Personas ingresadas</small>
+        <strong id="totalEntered">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Invitaciones confirmadas</small>
+        <strong id="confirmedInvitations">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Invitaciones pendientes</small>
+        <strong id="pendingInvitations">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Ocupación</small>
+        <strong id="occupancy">—</strong>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="card" style="margin-top:16px">
+
+    <h2>Resumen por evento</h2>
+
+    <div class="tablewrap">
+
+      <table class="dashboard-table">
+
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Fecha</th>
+            <th>Cupo</th>
+            <th>Confirmados</th>
+            <th>Disponibles</th>
+            <th>Anticipos</th>
+            <th>Pagos finales</th>
+            <th>Pendiente</th>
+            <th>Ingresaron</th>
+          </tr>
+        </thead>
+
+        <tbody id="eventsTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+  <section class="card" style="margin-top:16px">
+
+    <h2>Detalle de invitaciones</h2>
+
+    <label for="eventFilter">
+      Filtrar por evento
+    </label>
+
+    <select
+      id="eventFilter"
+      class="dashboard-input">
+      <option value="">Todos los eventos</option>
+    </select>
+
+    <div class="tablewrap" style="margin-top:16px">
+
+      <table class="dashboard-table">
+
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Folio</th>
+            <th>Invitado</th>
+            <th>Lugares</th>
+            <th>Anticipo</th>
+            <th>Pago final</th>
+            <th>Saldo</th>
+            <th>Estado</th>
+            <th>Ingreso</th>
+          </tr>
+        </thead>
+
+        <tbody id="invitationsTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+  <p class="dashboard-note">
+    Los importes corresponden a pagos registrados
+    en Supabase. Este dashboard es de solo lectura.
+  </p>
+
+</div>
+
+<p class="foot">
+  Radio Jocoqui · Sistema de administración de eventos
+</p>
+
+</main>
+
+<script type="module">
+
+import { createClient }
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient(
+  'https://grjqqhmzyfozrxrkvmyn.supabase.co',
+  'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe'
+);
+
+const $ = id => document.getElementById(id);
+
+const money = value =>
+  new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  }).format(Number(value) || 0);
+
+const number = value => Number(value) || 0;
+
+let events = [];
+let invitations = [];
+let summaries = [];
+let loading = false;
+
+function status(message) {
+  $('status').textContent = message;
+}
+
+function setText(id, value) {
+  $(id).textContent = String(value);
+}
+
+function cell(row, value) {
+  const td = row.insertCell();
+  td.textContent = String(value ?? '');
+  return td;
+}
+
+function dateLabel(value) {
+  if (!value) return '—';
+
+  const [year, month, day] = value.split('-');
+
+  return `${day}/${month}/${year}`;
+}
+
+function invitationTotal(inv, event) {
+  return number(inv.seats) *
+    number(event.price_per_person);
+}
+
+function invitationPaid(inv) {
+  return number(inv.deposit_amount) +
+    number(inv.final_payment_amount);
+}
+
+function invitationBalance(inv, event) {
+  return Math.max(
+    0,
+    invitationTotal(inv, event) - invitationPaid(inv)
+  );
+}
+
+// COMPROBAR ADMINISTRADOR
+
+async function checkAdmin() {
+
+  const {
+    data: { user },
+    error
+  } = await sb.auth.getUser();
+
+  if (error || !user) return false;
+
+  const result = await sb.rpc('is_admin');
+
+  if (result.error) {
+    status(
+      'Error al verificar administrador: ' +
+      result.error.message
+    );
+
+    return false;
+  }
+
+  return result.data === true;
+}
+
+// INICIAR DASHBOARD
+
+async function initialize() {
+
+  const allowed = await checkAdmin();
+
+  $('loginPanel').hidden = allowed;
+  $('dashboardArea').hidden = !allowed;
+
+  if (!allowed) {
+    status(
+      'Inicia sesión con una cuenta administradora.'
+    );
+    return;
+  }
+
+  await loadDashboard();
+}
+
+// CARGAR INFORMACIÓN
+
+async function loadDashboard() {
+
+  if (loading) return;
+
+  loading = true;
+  $('refreshBtn').disabled = true;
+
+  status('Actualizando estadísticas…');
+
+  try {
+
+    const eventsResult = await sb
+      .from('rj_events')
+      .select(
+        'id,title,event_date,capacity,price_per_person'
+      )
+      .order('event_date', { ascending: true })
+      .limit(200);
+
+    if (eventsResult.error) {
+      throw eventsResult.error;
+    }
+
+    events = eventsResult.data || [];
+
+    const invitationsResult = await sb
+      .from('rj_invitations')
+      .select(
+        'id,event_id,folio,guest_name,seats,' +
+        'deposit_verified,deposit_amount,' +
+        'final_payment_amount,checked_in_at'
+      )
+      .limit(10000);
+
+    if (invitationsResult.error) {
+      throw invitationsResult.error;
+    }
+
+    invitations = invitationsResult.data || [];
+
+    buildSummaries();
+    renderMetrics();
+    renderEvents();
+    renderFilters();
+    renderInvitations();
+
+    status(
+      'Dashboard actualizado correctamente.'
+    );
+
+  } catch (error) {
+
+    status(
+      'Error al cargar estadísticas: ' +
+      (error.message || 'Error desconocido')
+    );
+
+  } finally {
+
+    loading = false;
+    $('refreshBtn').disabled = false;
+
+  }
+}
+
+// CALCULAR RESÚMENES
+
+function buildSummaries() {
+
+  summaries = events.map(event => {
+
+    const list = invitations.filter(
+      inv => inv.event_id === event.id
+    );
+
+    const confirmed = list.filter(
+      inv => inv.deposit_verified
+    );
+
+    const pending = list.filter(
+      inv => !inv.deposit_verified
+    );
+
+    const confirmedSeats = confirmed.reduce(
+      (sum, inv) => sum + number(inv.seats),
+      0
+    );
+
+    const enteredSeats = confirmed
+      .filter(inv => inv.checked_in_at)
+      .reduce(
+        (sum, inv) => sum + number(inv.seats),
+        0
+      );
+
+    const deposits = confirmed.reduce(
+      (sum, inv) =>
+        sum + number(inv.deposit_amount),
+      0
+    );
+
+    const finalPayments = confirmed.reduce(
+      (sum, inv) =>
+        sum + number(inv.final_payment_amount),
+      0
+    );
+
+    const pendingBalance = confirmed.reduce(
+      (sum, inv) =>
+        sum + invitationBalance(inv, event),
+      0
+    );
+
+    return {
+      event,
+      confirmedSeats,
+      enteredSeats,
+      deposits,
+      finalPayments,
+      pendingBalance,
+      confirmedInvitations: confirmed.length,
+      pendingInvitations: pending.length,
+      available: Math.max(
+        0,
+        number(event.capacity) - confirmedSeats
+      )
+    };
+
+  });
+
+}
+
+// INDICADORES GENERALES
+
+function renderMetrics() {
+
+  const sum = key => summaries.reduce(
+    (total, item) => total + number(item[key]),
+    0
+  );
+
+  const capacity = events.reduce(
+    (total, event) =>
+      total + number(event.capacity),
+    0
+  );
+
+  const confirmed = sum('confirmedSeats');
+
+  const deposits = sum('deposits');
+  const finalPayments = sum('finalPayments');
+
+  setText('totalEvents', events.length);
+  setText('totalCapacity', capacity);
+  setText('confirmedSeats', confirmed);
+
+  setText(
+    'availableSeats',
+    sum('available')
+  );
+
+  setText('totalDeposits', money(deposits));
+
+  setText(
+    'totalFinalPayments',
+    money(finalPayments)
+  );
+
+  setText(
+    'totalCollected',
+    money(deposits + finalPayments)
+  );
+
+  setText(
+    'totalPending',
+    money(sum('pendingBalance'))
+  );
+
+  setText(
+    'totalEntered',
+    sum('enteredSeats')
+  );
+
+  setText(
+    'confirmedInvitations',
+    sum('confirmedInvitations')
+  );
+
+  setText(
+    'pendingInvitations',
+    sum('pendingInvitations')
+  );
+
+  setText(
+    'occupancy',
+    capacity > 0
+      ? (confirmed / capacity * 100).toFixed(1) + '%'
+      : '0%'
+  );
+}
+
+// TABLA POR EVENTO
+
+function renderEvents() {
+
+  const body = $('eventsTable');
+  body.replaceChildren();
+
+  if (!summaries.length) {
+    const row = body.insertRow();
+    cell(row, 'No hay eventos registrados')
+      .colSpan = 9;
+    return;
+  }
+
+  for (const item of summaries) {
+
+    const row = body.insertRow();
+
+    cell(row, item.event.title);
+
+    cell(
+      row,
+      dateLabel(item.event.event_date)
+    );
+
+    cell(row, item.event.capacity);
+    cell(row, item.confirmedSeats);
+    cell(row, item.available);
+
+    cell(row, money(item.deposits));
+
+    cell(row, money(item.finalPayments));
+
+    cell(row, money(item.pendingBalance));
+
+    cell(row, item.enteredSeats);
+  }
+}
+
+// FILTRO POR EVENTO
+
+function renderFilters() {
+
+  const select = $('eventFilter');
+  const previous = select.value;
+
+  select.replaceChildren();
+
+  select.add(
+    new Option('Todos los eventos', '')
+  );
+
+  for (const event of events) {
+    select.add(
+      new Option(
+        event.title + ' · ' +
+        dateLabel(event.event_date),
+        event.id
+      )
+    );
+  }
+
+  if (events.some(event => event.id === previous)) {
+    select.value = previous;
+  }
+}
+
+// DETALLE DE INVITACIONES
+
+function renderInvitations() {
+
+  const body = $('invitationsTable');
+  body.replaceChildren();
+
+  const filter = $('eventFilter').value;
+
+  const visible = invitations.filter(
+    inv => !filter || inv.event_id === filter
+  );
+
+  const eventMap = new Map(
+    events.map(event => [event.id, event])
+  );
+
+  if (!visible.length) {
+
+    const row = body.insertRow();
+
+    cell(row, 'No hay invitaciones registradas')
+      .colSpan = 9;
+
+    return;
+  }
+
+  for (const inv of visible) {
+
+    const event = eventMap.get(inv.event_id);
+
+    if (!event) continue;
+
+    const row = body.insertRow();
+
+    cell(row, event.title);
+    cell(row, inv.folio);
+    cell(row, inv.guest_name);
+    cell(row, inv.seats);
+
+    cell(
+      row,
+      money(inv.deposit_amount)
+    );
+
+    cell(
+      row,
+      money(inv.final_payment_amount)
+    );
+
+    cell(
+      row,
+      money(invitationBalance(inv, event))
+    );
+
+    const state = inv.checked_in_at
+      ? 'Ingresó'
+      : !inv.deposit_verified
+        ? 'Sin confirmar'
+        : invitationBalance(inv, event) > 0.009
+          ? 'Por liquidar'
+          : 'Liquidado';
+
+    cell(row, state);
+
+    cell(
+      row,
+      inv.checked_in_at
+        ? new Date(
+            inv.checked_in_at
+          ).toLocaleString('es-MX')
+        : '—'
+    );
+  }
+}
+
+// INICIAR SESIÓN
+
+$('loginForm').addEventListener(
+  'submit',
+  async event => {
+
+    event.preventDefault();
+
+    status('Iniciando sesión…');
+
+    const { error } =
+      await sb.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+
+    $('password').value = '';
+
+    if (error) {
+      status(
+        'Error de acceso: ' + error.message
+      );
+      return;
+    }
+
+    await initialize();
+  }
+);
+
+// CERRAR SESIÓN
+
+$('logoutBtn').addEventListener(
+  'click',
+  async () => {
+
+    const { error } = await sb.auth.signOut();
+
+    if (error) {
+      status(
+        'Error al cerrar sesión: ' + error.message
+      );
+      return;
+    }
+
+    events = [];
+    invitations = [];
+    summaries = [];
+
+    $('dashboardArea').hidden = true;
+    $('loginPanel').hidden = false;
+
+    status('Sesión cerrada.');
+  }
+);
+
+// ACTUALIZAR
+
+$('refreshBtn').addEventListener(
+  'click',
+  loadDashboard
+);
+
+// FILTRAR
+
+$('eventFilter').addEventListener(
+  'change',
+  renderInvitations
+);
+
+// INICIAR
+
+await initialize();
+
+</script>
+
+</body>
+</html>
