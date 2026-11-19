@@ -75,7 +75,9 @@ $('logout').addEventListener('click',async()=>{await sb.auth.signOut();location.
 $('uploadForm').addEventListener('submit',async e=>{
  e.preventDefault();const file=$('audio').files?.[0];
  if(!file){status('Selecciona un MP3.');return;}
- if(file.size>25*1024*1024){status('El archivo supera los 25 MB.');return;}
+ 
+if(file.size>100*1024*1024){status('El archivo supera los 100 MB.');return;}
+
  if(!file.name.toLowerCase().endsWith('.mp3')){status('Solo se permiten archivos MP3.');return;}
  const title=$('title').value.trim(),artist=$('artist').value.trim(),genre=$('genre').value.trim();
  if(!title||!artist){status('Completa título y artista.');return;}
