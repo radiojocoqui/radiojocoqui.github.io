@@ -70,6 +70,41 @@ $('loginForm').addEventListener('submit',async e=>{
  btn.disabled=false;
  if(error){alert('No se pudo iniciar sesión: '+safeError(error));return;}
  $('password').value='';await init();
+  
+async function verificarAccesoCloudflare() {
+  const { data: { session }, error } = await sb.auth.getSession();
+
+  if (error || !session?.access_token) {
+    console.log("Cloudflare: no hay sesión activa");
+    return;
+  }
+
+  try {
+    const respuesta = await fetch(
+      "https://radio-jocoqui-musica.radiojocoqui.workers.dev/verificar",
+      {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      }
+    );
+
+    const resultado = await respuesta.json();
+
+    console.log("Verificación Cloudflare:", resultado);
+
+    if (resultado.autorizado === true) {
+      status("Cloudflare R2: acceso autorizado para " + resultado.tipo);
+    } else {
+      status("Cloudflare: acceso no autorizado");
+    }
+  } catch (error) {
+    console.error("Error al verificar Cloudflare:", error);
+  }
+}
+
+await verificarAccesoCloudflare();
+
 });
 $('logout').addEventListener('click',async()=>{await sb.auth.signOut();location.reload();});
 $('uploadForm').addEventListener('submit',async e=>{
