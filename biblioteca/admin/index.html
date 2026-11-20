@@ -1,1 +1,223 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radio Jocoqui · Music Manager</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b111b;color:#f2f4f7;font:16px system-ui,Arial}main{max-width:900px;margin:36px auto;padding:20px}h1{font-size:clamp(28px,5vw,44px)}.card{background:#162132;border:1px solid #304258;border-radius:16px;padding:22px;margin:20px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:620px){.grid{grid-template-columns:1fr}}label{display:block;margin:10px 0 5px}input,button{font:inherit}input{width:100%;background:#0b111b;border:1px solid #4c6077;color:white;padding:12px;border-radius:9px}button{border:0;border-radius:9px;background:#e4b85c;color:#15191f;padding:12px 18px;font-weight:700;cursor:pointer;margin-top:14px}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#36465b;color:white}.muted{color:#abb8c9}.hidden{display:none}table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1px solid #344357;padding:9px;overflow-wrap:anywhere}small{color:#b9c7d9}#status{white-space:pre-wrap}</style></head><body><main><p class="muted">RADIO JOCOQUI / MUSIC MANAGER</p><h1>Biblioteca musical</h1><p class="muted">Sube MP3 y envíalos a aprobación. Nada se publica automáticamente.</p><section id="login" class="card"><h2>Iniciar sesión</h2><form id="loginForm"><label>Correo electrónico<input id="email" type="email" required autocomplete="email"></label><label>Contraseña<input id="password" type="password" required autocomplete="current-password"></label><button>Entrar</button></form></section><section id="app" class="hidden"><div class="card"><p id="identity"></p><button id="logout" class="secondary">Cerrar sesión</button></div><section class="card"><h2>Subir MP3</h2><form id="uploadForm"><div class="grid"><label>Título<input id="title" maxlength="160" required></label><label>Artista / DJ<input id="artist" maxlength="160" required></label></div><label>Género<input id="genre" maxlength="100" placeholder="Downtempo, House, Ambient..."></label><label>Archivo MP3 (máximo 100 MB)<input id="audio" type="file" accept=".mp3,audio/mpeg" required></label><button id="uploadBtn">Enviar a revisión</button></form><p id="status" role="status"></p></section><section class="card"><h2 id="listTitle">Mis archivos</h2><div style="overflow:auto"><table><thead><tr><th>Título</th><th>Artista</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="tracks"></tbody></table></div></section></section><p class="muted"><small>Panel independiente de la página principal. La aprobación no publica automáticamente los archivos al público.</small></p></main><script type="module" src="app.js"></script></body></html>
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radio Jocoqui · Music Manager</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0b111b;color:#f2f4f7;font:16px system-ui,Arial}
+main{max-width:900px;margin:36px auto;padding:20px}
+h1{font-size:clamp(28px,5vw,44px)}
+.card{background:#162132;border:1px solid #304258;border-radius:16px;padding:22px;margin:20px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+label{display:block;margin:10px 0 5px}
+input,button{font:inherit}
+input{width:100%;background:#0b111b;border:1px solid #4c6077;color:white;padding:12px;border-radius:9px}
+button{border:0;border-radius:9px;background:#e4b85c;color:#15191f;padding:12px 18px;font-weight:700;cursor:pointer;margin-top:14px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#36465b;color:white}
+.muted{color:#abb8c9}
+.hidden{display:none}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;border-bottom:1px solid #344357;padding:9px;overflow-wrap:anywhere}
+small{color:#b9c7d9}
+#status{white-space:pre-wrap;line-height:1.6}
+.dropzone{border:2px dashed #61748e;border-radius:16px;padding:32px 18px;text-align:center;cursor:pointer;background:#101a29;transition:.2s;margin-top:12px}
+.dropzone:hover,.dropzone.dragging{border-color:#e4b85c;background:#243149}
+.dropzone strong{display:block;font-size:19px;margin-bottom:8px}
+.dropzone p{color:#abb8c9;margin:8px 0}
+.dropzone .symbol{font-size:35px;color:#e4b85c;margin-bottom:12px}
+#selectedFile{color:#e4b85c;overflow-wrap:anywhere;margin-top:12px}
+.progress{height:9px;background:#0b111b;border-radius:20px;overflow:hidden;margin-top:18px}
+.progressbar{height:100%;width:0%;background:#e4b85c;transition:width .2s}
+.progresslabel{font-size:13px;color:#abb8c9;margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+<p class="muted">RADIO JOCOQUI / MUSIC MANAGER</p>
+<h1>Biblioteca musical</h1>
+<p class="muted">Sube tus sets originales. Cada archivo pasa por revisión antes de publicarse.</p>
+
+<section id="login" class="card">
+<h2>Iniciar sesión</h2>
+<form id="loginForm">
+<label>Correo electrónico
+<input id="email" type="email" required autocomplete="email">
+</label>
+<label>Contraseña
+<input id="password" type="password" required autocomplete="current-password">
+</label>
+<button type="submit">Entrar</button>
+</form>
+</section>
+
+<section id="app" class="hidden">
+<div class="card">
+<p id="identity"></p>
+<button id="logout" class="secondary" type="button">Cerrar sesión</button>
+</div>
+
+<section class="card">
+<h2>Subir un set</h2>
+<p class="muted">MP3 original · Hasta 200 MB · Sin compresión</p>
+
+<form id="uploadForm">
+<div class="grid">
+<label>Título del set
+<input id="title" maxlength="160" required placeholder="Nombre del set">
+</label>
+<label>Artista / DJ
+<input id="artist" maxlength="160" required placeholder="Nombre del artista">
+</label>
+</div>
+
+<label>Género musical
+<input id="genre" maxlength="100" placeholder="Downtempo, House, Ambient...">
+</label>
+
+<div id="dropzone" class="dropzone" role="button" tabindex="0" aria-label="Seleccionar o arrastrar archivo MP3">
+<div class="symbol" aria-hidden="true">↑</div>
+<strong>Arrastra tu MP3 aquí</strong>
+<p>O haz clic para seleccionar un archivo</p>
+<small>Máximo 200 MB por archivo</small>
+</div>
+
+<input id="audio" type="file" accept=".mp3,audio/mpeg" required hidden>
+<p id="selectedFile" aria-live="polite"></p>
+
+<div id="progressContainer" class="hidden">
+<div class="progress" role="progressbar" aria-label="Progreso de subida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+<div id="progressBar" class="progressbar"></div>
+</div>
+<p id="progressLabel" class="progresslabel">0%</p>
+</div>
+
+<button id="uploadBtn" type="submit">Enviar a revisión</button>
+</form>
+
+<p id="status" role="status"></p>
+</section>
+
+<section class="card">
+<h2 id="listTitle">Mis archivos</h2>
+<div style="overflow:auto">
+<table>
+<thead>
+<tr>
+<th>Título</th>
+<th>Artista</th>
+<th>Estado</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody id="tracks"></tbody>
+</table>
+</div>
+</section>
+</section>
+
+<p class="muted"><small>Radio Jocoqui · Los archivos nuevos permanecen privados hasta completar su aprobación y publicación.</small></p>
+</main>
+
+<script>
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('audio');
+const selectedFile = document.getElementById('selectedFile');
+const progressContainer = document.getElementById('progressContainer');
+const progressBar = document.getElementById('progressBar');
+const progressLabel = document.getElementById('progressLabel');
+const progressTrack = document.querySelector('.progress');
+
+function showSelectedFile() {
+  const file = fileInput.files?.[0];
+
+  if (!file) {
+    selectedFile.textContent = '';
+    return;
+  }
+
+  const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+  selectedFile.textContent = `${file.name} · ${sizeMB} MB`;
+
+  progressContainer.classList.add('hidden');
+  progressBar.style.width = '0%';
+  progressLabel.textContent = '0%';
+  progressTrack.setAttribute('aria-valuenow', '0');
+}
+
+dropzone.addEventListener('click', () => fileInput.click());
+
+dropzone.addEventListener('keydown', event => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    fileInput.click();
+  }
+});
+
+dropzone.addEventListener('dragover', event => {
+  event.preventDefault();
+  dropzone.classList.add('dragging');
+});
+
+dropzone.addEventListener('dragleave', () => {
+  dropzone.classList.remove('dragging');
+});
+
+dropzone.addEventListener('drop', event => {
+  event.preventDefault();
+  dropzone.classList.remove('dragging');
+
+  const file = event.dataTransfer.files?.[0];
+  if (!file) return;
+
+  if (!file.name.toLowerCase().endsWith('.mp3')) {
+    selectedFile.textContent = 'Selecciona un archivo MP3 válido.';
+    return;
+  }
+
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+  fileInput.files = transfer.files;
+  showSelectedFile();
+});
+
+fileInput.addEventListener('change', showSelectedFile);
+
+const statusElement = document.getElementById('status');
+
+const statusObserver = new MutationObserver(() => {
+  const message = statusElement.textContent;
+  const match = message.match(/Subiendo .*?: (\d+)%/);
+
+  if (match) {
+    const percent = Math.min(100, Number(match[1]));
+    progressContainer.classList.remove('hidden');
+    progressBar.style.width = percent + '%';
+    progressLabel.textContent = percent + '%';
+    progressTrack.setAttribute('aria-valuenow', String(percent));
+  }
+
+  if (message.includes('MP3 recibido correctamente')) {
+    progressContainer.classList.remove('hidden');
+    progressBar.style.width = '100%';
+    progressLabel.textContent = '100% · Archivo recibido';
+    progressTrack.setAttribute('aria-valuenow', '100');
+    selectedFile.textContent = '';
+  }
+});
+
+statusObserver.observe(statusElement, {
+  childList: true,
+  characterData: true,
+  subtree: true
+});
+</script>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
