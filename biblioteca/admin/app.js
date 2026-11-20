@@ -83,7 +83,42 @@ async function refresh() {
 
     if (admin && track.status === 'pending') {
       if (isR2) {
-        cell.textContent = 'Pendiente de integración R2';
+        
+const btn = document.createElement('button');
+btn.type = 'button';
+btn.textContent = 'Verificar archivo';
+
+btn.addEventListener('click', async () => {
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+
+  try {
+    const result = await workerRequest('/aprobar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        trackId: track.id
+      })
+    });
+
+    if (result.verificado && result.archivoEncontrado) {
+      const mb = (result.tamanoBytes / 1024 / 1024).toFixed(2);
+      alert(`Archivo encontrado en R2 privado: ${mb} MB`);
+    } else {
+      alert('No se pudo confirmar el archivo.');
+    }
+  } catch (error) {
+    alert('Error de verificación: ' + error.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Verificar archivo';
+  }
+});
+
+cell.appendChild(btn);
+
       } else {
         for (const [label, next] of [
           ['Aprobar', 'approved'],
