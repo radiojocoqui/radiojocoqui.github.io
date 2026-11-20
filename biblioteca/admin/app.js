@@ -6,6 +6,13 @@ const SUPABASE_KEY = 'sb_publishable_6JiVK0CopQQiY-d2Ha0-mQ_Q6VuKGIe';
 const WORKER_URL = 'https://radio-jocoqui-musica.radiojocoqui.workers.dev';
 
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+window.verificarRadioJocoqui = async () => {
+  const resultado = await workerRequest('/verificar');
+
+  console.log('Diagnóstico Radio Jocoqui:', resultado);
+
+  return resultado;
+};
 const $ = id => document.getElementById(id);
 
 const MAX_SIZE = 200 * 1024 * 1024;
