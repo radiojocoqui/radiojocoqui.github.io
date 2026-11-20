@@ -103,7 +103,7 @@ async function verificarAccesoCloudflare() {
   }
 }
 
-await verificarAccesoCloudflare();
+
 
 });
 $('logout').addEventListener('click',async()=>{await sb.auth.signOut();location.reload();});
@@ -130,3 +130,4 @@ if(file.size>100*1024*1024){status('El archivo supera los 100 MB.');return;}
  finally{btn.disabled=false;}
 });
 await init();
+await verificarAccesoCloudflare();
