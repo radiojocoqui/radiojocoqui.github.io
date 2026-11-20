@@ -199,9 +199,13 @@ button { font: inherit; }
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  width: min(58vw, 330px);
-  aspect-ratio: 1;
-  border-radius: 50%;
+  
+width: min(58vw, 330px);
+height: min(58vw, 330px);
+min-height: 0;
+aspect-ratio: 1 / 1;
+border-radius: 50%;
+
   display: grid;
   place-items: center;
   isolation: isolate;
@@ -713,7 +717,15 @@ button { font: inherit; }
   .brand-logo { height: 145px !important; }
   .universe { padding-top: 205px; }
   .dashboard-extra .jocoqui-registro { font-size: 10px; padding: 12px 18px; }
-}
+  
+  .player {
+    width: 86%;
+    height: 86%;
+    aspect-ratio: 1 / 1;
+    padding: 8px;
+    gap: 4px;
+    min-height: 0;
+  }
 
 
 /* EVENTOS · CARTEL DENTRO DEL ZOOM DE VENUS */
@@ -747,6 +759,22 @@ button { font: inherit; }
   object-fit: contain;
 }
 
+
+
+
+
+@media (max-width: 600px) {
+  .sun {
+    width: min(58vw, 330px);
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 50%;
+  }
+
+  .audio-title .radio-logo {
+    width: 100px;
+  }
+}
 </style>
 </head>
 
@@ -801,9 +829,7 @@ button { font: inherit; }
       <section class="player"
         aria-label="Reproductor musical">
 
-        <div class="audio-title">
-          RADIO JOCOQUI
-        </div>
+        
 
         
 <div class="audio-title">
