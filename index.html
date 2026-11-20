@@ -818,7 +818,7 @@ border-radius: 50%;
     <div class="orbit four"></div>
     <div class="orbit five"></div>
 
-    <div class="planet mercury" data-section="Blogs" role="button" tabindex="0" aria-label="Explorar Blogs"></div>
+<div class="planet mercury" data-section="Lecturas con Raúl" role="button" tabindex="0" aria-label="Explorar Lecturas con Raúl"></div>
     <div class="planet venus" data-section="Eventos" role="button" tabindex="0" aria-label="Explorar Eventos"></div>
     <div class="planet earth" data-section="Casa Jocoqui" role="button" tabindex="0" aria-label="Explorar Casa Jocoqui"></div>
     <div class="planet mars" data-section="Colección de música" role="button" tabindex="0" aria-label="Explorar Colección de música"></div>
@@ -1699,7 +1699,7 @@ const sectionData={
 },
 
 
- 'Blogs':{
+ 'Lecturas con Raúl':{
   lead:'Un archivo editorial de ideas, sonidos, lecturas y conversaciones.',
   hero:['ARCHIVO EDITORIAL','Historias de nuestro universo','Textos sobre música, cultura, creación y vida en comunidad.'],
   tiles:[['01','Música y escucha','Crónicas, selecciones musicales y reflexiones sobre el sonido.'],['02','Arte y cultura','Ideas y colaboraciones que nacen alrededor de Radio Jocoqui.'],['03','Comunidad','Historias, entrevistas y conversaciones entre colaboradores.']],
@@ -1800,7 +1800,7 @@ function returnDashboard(){
 }
 document.getElementById('backDashboard').addEventListener('click',returnDashboard);
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.go)));
-const names=['Blogs','Eventos','Casa Jocoqui','Colección de música','Misiones'];
+const names=['Lecturas con Raúl','Eventos','Casa Jocoqui','Colección de música','Misiones'];
 document.getElementById('enterSection').addEventListener('click',()=>{
  const name=document.getElementById('explorerName').textContent;
  const planetNames=['MERCURIO','VENUS','TIERRA','MARTE','SATURNO'];
