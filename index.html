@@ -853,6 +853,36 @@ border-radius: 50%;
     height: 16px;
   }
 }
+/* ARCHIVO SONORO DESPLEGABLE */
+
+.library.is-expanded {
+  position: fixed;
+  bottom: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 500px);
+  max-height: 65vh;
+  overflow-y: auto;
+  margin: 0;
+  z-index: 350;
+  background: #0d1726;
+  box-shadow: 0 12px 45px rgba(0,0,0,.65);
+}
+
+.mini-player .mini-title {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.mini-player .mini-title:hover {
+  color: #f4c38d;
+}
+
+@media (max-width: 600px) {
+  .library.is-expanded {
+    bottom: calc(85px + env(safe-area-inset-bottom));
+  }
+}
 </style>
 </head>
 
@@ -1935,5 +1965,34 @@ miniProgress.addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&a
 setTimeout(syncMini,0);
 </script>
 
+  <script>
+const miniTitle = document.querySelector(".mini-player .mini-title");
+const soundLibrary = document.querySelector(".library");
+
+miniTitle.setAttribute("role", "button");
+miniTitle.setAttribute("tabindex", "0");
+miniTitle.setAttribute("aria-expanded", "false");
+
+function toggleSoundLibrary() {
+  const expanded = soundLibrary.classList.toggle("is-expanded");
+  miniTitle.setAttribute("aria-expanded", String(expanded));
+}
+
+miniTitle.addEventListener("click", toggleSoundLibrary);
+
+miniTitle.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    toggleSoundLibrary();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    soundLibrary.classList.remove("is-expanded");
+    miniTitle.setAttribute("aria-expanded", "false");
+  }
+});
+</script>
 </body>
 </html>
