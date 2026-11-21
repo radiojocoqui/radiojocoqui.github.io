@@ -771,15 +771,51 @@ border-radius: 50%;
 
 @media (max-width: 600px) {
   .sun {
-  width: min(58vw, 330px);
-  height: min(58vw, 330px);
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-}
+    width: min(58vw, 330px);
+    height: min(58vw, 330px);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+  }
+
   .audio-title .radio-logo {
     width: 100px;
   }
 }
+
+/* CORRECCIÓN DEL REPRODUCTOR CENTRAL */
+
+#sun > .player {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 86%;
+  height: 86%;
+  display: flex;
+  box-sizing: border-box;
+  border-radius: 50%;
+  z-index: 12;
+}
+
+#sun .audio-title {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+#sun .radio-logo {
+  display: block;
+  width: 140px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  #sun .radio-logo {
+    width: 100px;
+  }
+}
+
 </style>
 </head>
 
