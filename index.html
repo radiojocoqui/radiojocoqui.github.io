@@ -816,7 +816,43 @@ border-radius: 50%;
     width: 100px;
   }
 }
+/* AJUSTE DE CONTROLES Y VOLUMEN */
 
+#sun .controls {
+  width: 100%;
+  gap: 8px;
+}
+
+#sun .controls button {
+  flex-shrink: 0;
+}
+
+#volumeSlider {
+  flex-shrink: 0;
+  margin: 0;
+  height: 12px;
+}
+
+@media (max-width: 600px) {
+  #sun .controls {
+    gap: 5px;
+  }
+
+  #sun .controls button {
+    width: 27px;
+    height: 27px;
+  }
+
+  #sun .controls .play-button {
+    width: 35px;
+    height: 35px;
+  }
+
+  #sun .controls button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
 </style>
 </head>
 
@@ -979,6 +1015,34 @@ const tracks = [
   }
 ];
 const audio = document.getElementById("audio");
+
+const volumeButton = document.getElementById("volumeButton");
+
+const volumeSlider = document.createElement("input");
+
+volumeSlider.type = "range";
+volumeSlider.id = "volumeSlider";
+volumeSlider.min = "0";
+volumeSlider.max = "1";
+volumeSlider.step = "0.01";
+volumeSlider.value = audio.volume;
+volumeSlider.style.display = "none";
+volumeSlider.style.width = "80%";
+volumeSlider.style.accentColor = "#f4c38d";
+volumeSlider.setAttribute("aria-label", "Volumen");
+
+volumeButton.closest(".controls").after(volumeSlider);
+
+volumeButton.addEventListener("click", () => {
+  volumeSlider.style.display =
+    volumeSlider.style.display === "none"
+      ? "block"
+      : "none";
+});
+
+volumeSlider.addEventListener("input", () => {
+  audio.volume = Number(volumeSlider.value);
+});
 const playButton = document.getElementById("play");
 const previousButton = document.getElementById("previous");
 const nextButton = document.getElementById("next");
